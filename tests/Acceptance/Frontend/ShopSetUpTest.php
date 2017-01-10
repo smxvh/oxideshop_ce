@@ -158,13 +158,15 @@ class ShopSetUpTest extends FrontendTestCase
         $this->assertFalse($this->isEditable("sDbPass"), "Hidden element is visible: sDbPass");
         $this->assertTrue($this->isEditable("sDbPassPlain"), "Element not editable: sDbPassPlain");
 
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->type("aDB[dbUser]", $user);
         $this->type("sDbPassPlain", $password);
         $this->type("aDB[dbName]", $name);
         $this->assertEquals("localhost", $this->getValue("aDB[dbHost]"));
         $this->type("aDB[dbHost]", $host);
+        $this->assertEquals("3306", $this->getValue("aDB[dbPort]"));
+        $this->type("aDB[dbPort]", $port);
         $this->assertEquals(1, $this->getValue("aDB[dbiDemoData]"));
         $this->check("aDB[dbiDemoData]");
         $this->checkForErrors();
@@ -300,7 +302,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDatabaseEntryPageWhenDatabaseUserDoesNotHaveAccess()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -313,7 +315,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, 'test', 'test', 'test');
+        $this->provideDatabaseParameters($host, $port, 'test', 'test', 'test');
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->assertTextPresent("ERROR: No database connection possible!");
@@ -328,7 +330,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDatabaseEntryPageWhenDatabaseUserIsValidButCantCreateDatabase()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         if ($user === 'root') {
             $this->markTestSkipped('Unable to reuse this test with root user as it can create any database.');
@@ -345,7 +347,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, 'test', $user, $password);
+        $this->provideDatabaseParameters($host, $port, 'test', $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->assertTextPresent("ERROR: Database not available and also cannot be created! - ERROR: Issue while inserting this SQL statements: ( CREATE DATABASE `test` ): SQLSTATE[42000]: Syntax error or access violation: 1044 Access denied for user '$user'@'$host' to database 'test'");
@@ -358,7 +360,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testUserIsNotifiedIfAValidDatabaseAlreadyExistsBeforeTryingToOverwriteIt()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->createEmptyValidOxidEshopDatabase();
 
@@ -373,7 +375,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->assertTextPresent("ERROR: Seems there is already OXID eShop installed in database $name. Please delete it prior continuing!");
@@ -399,7 +401,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->hideSetupSqlFile($setupSqlFile);
 
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -412,7 +414,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456');
@@ -437,7 +439,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->includeSyntaxErrorToSetupSqlFile($setupSqlFile);
 
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -450,7 +452,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456');
@@ -478,7 +480,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDirInfoEntryPageWhenNotAllFieldsAreFilled()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -491,7 +493,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->clickContinueAndProceedTo(self::FINISH_CE_STEP);
@@ -506,7 +508,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDirInfoEntryPageWhenPasswordIsTooShort()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -519,7 +521,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '12345');
@@ -535,7 +537,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDirInfoEntryPageWhenPasswordDoesNotMatch()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -548,7 +550,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123457');
@@ -564,7 +566,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDirInfoEntryPageWhenInvalidEmailUsed()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -577,7 +579,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('invalid_email', '123456', '123456');
@@ -593,7 +595,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupRedirectsToDirInfoEntryPageWhenSetupCantFindConfigFile()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -606,7 +608,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopDirectoryParameters(null, '/test/');
@@ -623,7 +625,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupShowsErrorMessageWhenMigrationFileContainsSyntaxErrors()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->createInvalidMigration();
 
@@ -638,7 +640,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123456');
@@ -659,7 +661,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupShowsErrorMessageWhenMigrationExecutableIsMissing()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->hideDatabaseMigrationExecutableFile();
 
@@ -674,7 +676,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123456');
@@ -694,7 +696,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupShowsErrorMessageWhenViewRegenerationReturnsErrorCode()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -709,7 +711,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123456');
@@ -728,7 +730,7 @@ class ShopSetUpTest extends FrontendTestCase
     public function testSetupShowsErrorMessageWhenViewsRegenerationExecutableIsMissing()
     {
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->hideDatabaseViewRegenerationExecutableFile();
 
@@ -743,7 +745,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123456');
@@ -767,7 +769,7 @@ class ShopSetUpTest extends FrontendTestCase
         }
 
         $this->clearDatabase();
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->goToSetup();
 
@@ -780,7 +782,7 @@ class ShopSetUpTest extends FrontendTestCase
         $this->selectAgreeWithLicense(true);
         $this->clickContinueAndProceedTo(self::DATABASE_INFO_STEP);
 
-        $this->provideDatabaseParameters($host, $name, $user, $password);
+        $this->provideDatabaseParameters($host, $port, $name, $user, $password);
         $this->clickContinueAndProceedTo(self::DIRECTORY_LOGIN_STEP);
 
         $this->provideEshopLoginParameters('test@test.com', '123456', '123456');
@@ -903,7 +905,7 @@ class ShopSetUpTest extends FrontendTestCase
         }
 
         $sOldConfigFile = file_get_contents($sPath);
-        $sSearchPattern = '/(.*\$this-\>(dbHost|dbName|dbUser|dbPwd)\s*=).*/';
+        $sSearchPattern = '/(.*\$this-\>(dbHost|dbPort|dbName|dbUser|dbPwd)\s*=).*/';
         $sReplacePattern = "\\1 '<\\2>';";
         $sConfigFile = preg_replace($sSearchPattern, $sReplacePattern, $sOldConfigFile);
         file_put_contents($sPath, $sConfigFile);
@@ -925,7 +927,7 @@ class ShopSetUpTest extends FrontendTestCase
 
     private function clearDatabase()
     {
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $this->executeDatabaseSqlQuery("DROP DATABASE IF EXISTS `$name`", false);
         $this->executeDatabaseSqlQuery("CREATE DATABASE `$name`", false);
@@ -933,7 +935,7 @@ class ShopSetUpTest extends FrontendTestCase
 
     private function executeDatabaseSqlQuery($query, $useDatabase = true)
     {
-        list($host, $name, $user, $password) = $this->getDatabaseParameters();
+        list($host, $port, $name, $user, $password) = $this->getDatabaseParameters();
 
         $dsn = "mysql:host=$host";
         if ($useDatabase)
@@ -1166,16 +1168,18 @@ class ShopSetUpTest extends FrontendTestCase
         $config = Registry::getConfig();
 
         $host = $config->getConfigParam('dbHost');
+        $port = $config->getConfigParam('dbPort');
         $name = $config->getConfigParam('dbName');
         $user = $config->getConfigParam('dbUser');
         $password = $config->getConfigParam('dbPwd');
 
-        return [$host, $name, $user, $password];
+        return [$host, $port, $name, $user, $password];
     }
 
-    private function provideDatabaseParameters($host, $name, $user, $password)
+    private function provideDatabaseParameters($host, $port, $name, $user, $password)
     {
         $this->type("//input[@name='aDB[dbHost]']", $host);
+        $this->type("//input[@name='aDB[dbPort]']", $port);
         $this->type("//input[@name='aDB[dbName]']", $name);
         $this->type("//input[@name='aDB[dbUser]']", $user);
         $this->type("//input[@name='aDB[dbPwd]']", $password);
