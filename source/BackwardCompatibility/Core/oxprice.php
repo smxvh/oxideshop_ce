@@ -27,6 +27,6 @@
  *
  */
 
-class oxPrice extends \OxidEsales\Eshop\Core\Price
+class oxPrice
 {
 }
