@@ -22,9 +22,10 @@
 namespace OxidEsales\EshopCommunity\Core;
 
 use oxException;
+use OxidEsales\Eshop\Application\Controller\ExceptionErrorController;
 use OxidEsales\Eshop\Application\Controller\FrontendController;
+use OxidEsales\Eshop\Core\SeoDecoder;
 use OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException;
-use OxidEsales\EshopCommunity\Core\Exception\DatabaseNotConfiguredException;
 use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 use OxidEsales\EshopEnterprise\Core\Cache\DynamicContent\ContentCache;
 use oxOutput;
@@ -134,12 +135,12 @@ class ShopControl extends \oxSuperCfg
      * to admin or regular activities). Additionally its possible to pass class name,
      * function name and parameters array to view, which will be executed.
      *
-     * @param string $class      Class name
-     * @param string $function   Function name
-     * @param array  $parameters Parameters array
-     * @param array  $viewsChain Array of views names that should be initialized also
+     * @param string $controllerId Id of the controller class to be processed
+     * @param string $function     Function name
+     * @param array  $parameters   Parameters array
+     * @param array  $viewsChain   Array of views names that should be initialized also
      */
-    public function start($class = null, $function = null, $parameters = null, $viewsChain = null)
+    public function start($controllerId = null, $function = null, $parameters = null, $viewsChain = null)
     {
         //sets default exception handler
         $this->_setDefaultExceptionHandler();
@@ -147,14 +148,27 @@ class ShopControl extends \oxSuperCfg
         try {
             $this->_runOnce();
 
+            // TODO refactor the following to 'Routing'
             $function = !is_null($function) ? $function : oxRegistry::getConfig()->getRequestParameter('fnc');
-            $class = !is_null($class) ? $class : $this->_getStartController();
+            $controllerId = !is_null($controllerId) ? $controllerId : $this->_getStartControllerId();
+            try {
+                $class = $this->getClassNameByControllerId($controllerId);
+            } catch (\Exception $exception) {
+                //Todo log exception
 
-            $this->_process($class, $function, $parameters, $viewsChain);
+                // @deprecated since 6.0 (2017-01-20) Exception will be rethrown in the future.
+                $class = $controllerId;
+                // throw $exception;
+                // end deprecated
+            }
+            // Refactor end
+
+            $this->_process($controllerId, $class, $function, $parameters, $viewsChain);
         } catch (\OxidEsales\EshopCommunity\Core\Exception\SystemComponentException $ex) {
             $this->_handleSystemException($ex);
         } catch (\OxidEsales\EshopCommunity\Core\Exception\CookieException $ex) {
             $this->_handleCookieException($ex);
+            //@todo: do not handle the same exception twice
         } catch (\OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException $exception) {
             $this->handleDbNotConfiguredException();
         } catch (\OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException $exception) {
@@ -198,21 +212,108 @@ class ShopControl extends \oxSuperCfg
      *
      * @return string
      */
+    protected function _getStartControllerId()
+    {
+        if (isSearchEngineUrl()) {
+            oxNew(SeoDecoder::class)->processSeoCall();
+        }
+        $controllerId = oxRegistry::getConfig()->getRequestParameter('cl');
+
+        if (!$controllerId) {
+            $session = oxRegistry::getSession();
+            if ($this->isAdmin()) {
+                $class = $session->getVariable("auth") ? \OxidEsales\Eshop\Application\Controller\Admin\AdminStart::class : \OxidEsales\Eshop\Application\Controller\Admin\LoginController::class;
+            } else {
+                $class = $this->_getFrontendStartController();
+            }
+            //@todo: look at all places where the cl variable is read. This is not a class name any more!
+            $controllerId = $this->getControllerIdByClassName($class);
+            $session->setVariable('cl', $controllerId);
+        }
+
+        return $controllerId;
+    }
+
+    /**
+     * Returns controller class which should be loaded.
+     *
+     * @return string
+     */
     protected function _getStartController()
     {
-        $class = oxRegistry::getConfig()->getRequestParameter('cl');
+        $controllerId = oxRegistry::getConfig()->getRequestParameter('cl');
+        $class = $this->getClassNameByControllerId($controllerId);
 
         if (!$class) {
             $session = oxRegistry::getSession();
             if ($this->isAdmin()) {
-                $class = $session->getVariable("auth") ? 'admin_start' : 'login';
+                $class = $session->getVariable("auth") ? \OxidEsales\Eshop\Application\Controller\Admin\AdminStart::class : \OxidEsales\Eshop\Application\Controller\Admin\LoginController::class;
+                $controllerId = $session->getVariable("auth") ? 'admin_start' : 'login';
             } else {
                 $class = $this->_getFrontendStartController();
+                $controllerId = 'start';
             }
-            $session->setVariable('cl', $class);
+            //@todo: look at all places where the cl variable is read. This is not a class name any more!
+            $session->setVariable('cl', $controllerId);
         }
 
         return $class;
+    }
+
+    /**
+     * @param string $controllerId
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function getClassNameByControllerId($controllerId)
+    {
+        /** @var \OxidEsales\EshopCommunity\Core\ControllerMap $ControllerMap */
+        $ControllerMap = oxNew(\OxidEsales\Eshop\Core\ControllerMap::class);
+        $map = $ControllerMap->getControllerMap();
+
+        if (isset($map[$controllerId])) {
+            $className = $map[$controllerId];
+        } else {
+            throw new \Exception(sprintf('No controller defined for id %s', $controllerId));
+        }
+
+        return $className;
+    }
+
+    /**
+     * @param $className
+     *
+     * @return string
+     * @throws \Exception
+     * @internal param string $controllerId
+     *
+     */
+    public function getControllerIdByClassName($className)
+    {
+        /** @var \OxidEsales\EshopCommunity\Core\ControllerMap $ControllerMap */
+        $ControllerMap = oxNew(\OxidEsales\Eshop\Core\ControllerMap::class);
+        $map = array_flip($ControllerMap->getControllerMap());
+
+        if (isset($map[$className])) {
+            $controllerId = $map[$className];
+        } else {
+            throw new \Exception(sprintf('No controllerId defined for class name %s', $className));
+        }
+
+        return $controllerId;
+    }
+
+    /**
+     * Returns which controller should be loaded at shop start.
+     * Check whether we have to display mall start screen or not.
+     *
+     * @return string
+     */
+    protected function _getFrontendStartControllerId()
+    {
+        // Todo replace this by a call to $this->getControllerIdByClassName($this->_getFrontendStartController())
+        return 'start';
     }
 
     /**
@@ -223,7 +324,7 @@ class ShopControl extends \oxSuperCfg
      */
     protected function _getFrontendStartController()
     {
-        return 'start';
+        return \OxidEsales\Eshop\Application\Controller\StartController::class;
     }
 
     /**
@@ -236,12 +337,13 @@ class ShopControl extends \oxSuperCfg
      * (oxOutput::Process()), fixed links according search engines optimization
      * rules (configurable in Admin area). Finally echoes the output.
      *
-     * @param string $class      Name of class
-     * @param string $function   Name of function
-     * @param array  $parameters Parameters array
-     * @param array  $viewsChain Array of views names that should be initialized also
+     * @param string $controllerId Id of the controller class to be processed
+     * @param string $class        Name of class
+     * @param string $function     Name of function
+     * @param array  $parameters   Parameters array
+     * @param array  $viewsChain   Array of views names that should be initialized also
      */
-    protected function _process($class, $function, $parameters = null, $viewsChain = null)
+    protected function _process($controllerId, $class, $function, $parameters = null, $viewsChain = null)
     {
         startProfile('process');
         $config = $this->getConfig();
@@ -253,7 +355,8 @@ class ShopControl extends \oxSuperCfg
         $this->_startMonitor();
 
         // Initialize view object and it's components.
-        $view = $this->_initializeViewObject($class, $function, $parameters, $viewsChain);
+        $view = $this->_initializeViewObject($controllerId, $class, $function, $parameters, $viewsChain);
+
 
         $this->executeAction($view, $view->getFncName());
 
@@ -277,7 +380,7 @@ class ShopControl extends \oxSuperCfg
 
         stopProfile('process');
 
-        $this->_stopMonitor($view->getIsCallForCache(), false, $view->getViewId(), $view->getViewData(), $view);
+        $this->stopMonitoring($view);
 
         $outputManager->flushOutput();
     }
@@ -340,6 +443,7 @@ class ShopControl extends \oxSuperCfg
     /**
      * Initialize and return view object.
      *
+     * @param        $controllerId
      * @param string $class      View name
      * @param string $function   Function name
      * @param array  $parameters Parameters array
@@ -347,12 +451,12 @@ class ShopControl extends \oxSuperCfg
      *
      * @return FrontendController
      */
-    protected function _initializeViewObject($class, $function, $parameters = null, $viewsChain = null)
+    protected function _initializeViewObject($controllerId, $class, $function, $parameters = null, $viewsChain = null)
     {
         /** @var FrontendController $view */
         $view = oxNew($class);
 
-        $view->setClassName($class);
+        $view->setClassName($controllerId);
         $view->setFncName($function);
         $view->setViewParameters($parameters);
 
@@ -364,6 +468,13 @@ class ShopControl extends \oxSuperCfg
 
         return $view;
     }
+
+    public function getControllerId()
+    {
+        return 'start';
+    }
+
+
 
     /**
      * Event for any actions during view creation.
@@ -688,7 +799,8 @@ class ShopControl extends \oxSuperCfg
 
         if ($this->_isDebugMode()) {
             oxRegistry::get("oxUtilsView")->addErrorToDisplay($exception);
-            $this->_process('exceptionError', 'displayExceptionError');
+            // Todo Check, if this can ever be executed successfully, maybe this very exception is thrown by self::_process
+            $this->_process('exceptionError', ExceptionErrorController::class, 'displayExceptionError', null, null);
         } else {
             oxRegistry::getUtils()->redirect($this->getConfig()->getShopHomeUrl() . 'cl=start', true, 302);
         }
@@ -759,7 +871,8 @@ class ShopControl extends \oxSuperCfg
 
         if ($this->_isDebugMode()) {
             oxRegistry::get("oxUtilsView")->addErrorToDisplay($exception);
-            $this->_process('exceptionError', 'displayExceptionError');
+            // Todo Check, if this can ever be executed successfully, maybe this very exception is thrown by self::_process
+            $this->_process('exceptionError', ExceptionErrorController::class, 'displayExceptionError', null, null);
         }
     }
 

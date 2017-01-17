@@ -100,6 +100,8 @@ class ModuleInstaller extends \oxSuperCfg
             $this->_addModuleVersion($oModule->getInfo("version"), $sModuleId);
             $this->_addModuleExtensions($oModule->getExtensions(), $sModuleId);
             $this->_addModuleEvents($oModule->getInfo("events"), $sModuleId);
+            // if metaDataVersion >= 1.3 (or 2.0)
+            $this->_addModuleControllers($oModule->getControllers(), $sModuleId);
 
             $this->resetCache();
 
@@ -503,6 +505,22 @@ class ModuleInstaller extends \oxSuperCfg
         }
 
         $this->_saveToConfig('aModuleExtensions', $extensions);
+    }
+
+    protected function _addModuleControllers($moduleControllers, $moduleId) {
+        // TODO Validation Assure that keys and values are unique allover the modules and the shops controllerMap !!
+        $controllerMap = (array) $this->getConfig()->getConfigParam('aModuleControllers');
+        $controllerMap[$moduleId] = $moduleControllers;
+
+        $this->_saveToConfig('aModuleControllers', $controllerMap);
+    }
+
+    protected function _deleteModuleControllers($sModuleId)
+    {
+        $controllerMap = (array) $this->getConfig()->getConfigParam('aModuleControllers');
+        unset($controllerMap[$sModuleId]);
+
+        $this->_saveToConfig('aModuleControllers', $controllerMap);
     }
 
     /**

@@ -27,9 +27,6 @@ namespace OxidEsales\EshopCommunity\Core;
  * Each edition has its own map file. The map files will be merged like this: CE <- PE <- EE
  * So the mapping to a concrete class will be overwritten, if a class exists in a different edition.
  *
- * NOTE: exceptions aren't working at the moment with the virtual namespaces (throwing them is the problem).
- *       Use the OxidEsales\EshopCommunity namespace instead!
- *
  * @inheritdoc
  */
 class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\ClassMap
@@ -443,6 +440,7 @@ class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\C
             'OxidEsales\Eshop\Core\Contract\IModuleValidator' => \OxidEsales\EshopCommunity\Core\Contract\IModuleValidator::class,
             'OxidEsales\Eshop\Core\Contract\ISelectList' => \OxidEsales\EshopCommunity\Core\Contract\ISelectList::class,
             'OxidEsales\Eshop\Core\Contract\IUrl' => \OxidEsales\EshopCommunity\Core\Contract\IUrl::class,
+            'OxidEsales\Eshop\Core\ControllerMap' => \OxidEsales\EshopCommunity\Core\ControllerMap::class,
             'OxidEsales\Eshop\Core\Controller\BaseController' => \OxidEsales\EshopCommunity\Core\Controller\BaseController::class,
             'OxidEsales\Eshop\Core\Counter' => \OxidEsales\EshopCommunity\Core\Counter::class,
             'OxidEsales\Eshop\Core\CreditCardValidator' => \OxidEsales\EshopCommunity\Core\CreditCardValidator::class,

@@ -367,6 +367,8 @@ class Config extends Base
 
     /**
      * Parse SEO url parameters.
+     *
+     * @deprecated since v.6.0 (2017-01-20); This method will be removed in the future
      */
     protected function _processSeoCall()
     {
@@ -461,11 +463,12 @@ class Config extends Base
     }
 
     /**
-     * Initializes main shop tasks - processing of SEO calls, starting of session.
+     * Initializes main shop tasks - starting of session.
      */
     protected function initializeShop()
     {
-        $this->_processSeoCall();
+        // SEO decoding is done at a different place now
+        // $this->_processSeoCall();
         $this->getSession()->start();
     }
 
@@ -2203,7 +2206,8 @@ class Config extends Base
      */
     protected function _handleCookieException($ex)
     {
-        $this->_processSeoCall();
+        // Why do we need to decode the SEO URL here?
+        // $this->_processSeoCall();
 
         //starting up the session
         $this->getSession()->start();

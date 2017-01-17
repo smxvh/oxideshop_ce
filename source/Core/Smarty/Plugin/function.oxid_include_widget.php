@@ -35,6 +35,7 @@
 function smarty_function_oxid_include_widget($params, &$oSmarty)
 {
     $class = isset($params['cl']) ? strtolower($params['cl']) : '';
+    $controllerId =
     unset($params['cl']);
 
     $parentViews = null;
@@ -44,5 +45,6 @@ function smarty_function_oxid_include_widget($params, &$oSmarty)
     }
 
     $widgetControl = oxRegistry::get('oxWidgetControl');
+    // $class has to be namespaced class
     return $widgetControl->start($class, null, $params, $parentViews);
 }

@@ -160,6 +160,16 @@ class Module extends \oxSuperCfg
     }
 
     /**
+     * Returns array of module controllers.
+     *
+     * @return array
+     */
+    public function getControllers()
+    {
+        return isset($this->_aModule['controllers']) ? $this->_aModule['controllers'] : array();
+    }
+
+    /**
      * Returns array of module PHP files.
      *
      * @return array

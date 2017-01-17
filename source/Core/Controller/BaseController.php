@@ -176,6 +176,8 @@ class BaseController extends \oxSuperCfg
      */
     protected $_oViewConf = null;
 
+    protected $controllerId = null;
+
     /**
      * Initiates all components stored, executes oxView::addGlobalParams.
      */
@@ -344,21 +346,32 @@ class BaseController extends \oxSuperCfg
     /**
      * Current view class name setter.
      *
+     * @deprecated This function will set real (namespaced) class names in future
      * @param string $sClassName current view class name
      */
-    public function setClassName($sClassName)
+    public function setClassName($controllerId)
     {
-        $this->_sClass = $sClassName;
+        $this->controllerId = $controllerId;
     }
 
     /**
      * Returns class name of current class
      *
+     * @deprecated Use getControllerId() instead.
      * @return string
      */
     public function getClassName()
     {
-        return $this->_sClass;
+        //return $this->_sClass;
+        return $this->getControllerId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getControllerId()
+    {
+        return $this->controllerId;
     }
 
     /**
