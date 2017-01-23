@@ -28,13 +28,13 @@
     "autoload": {
         "psr-4": {
             "OxidEsales\\EshopCommunity\\": "./source"
-
         }
     },
     "autoload-dev": {
         "psr-4": {
             "OxidEsales\\EshopCommunity\\Tests\\": "./tests",
-            "OxidEsales\\EshopCommunityTestModule\\": "./tests/Integration/Modules/TestDataInheritance/modules"
+            "OxidEsales\\EshopTestModule\\": "./tests/Integration/Modules/TestDataInheritance/modules",
+            "OxidEsales\\EshopAcceptanceTestModule\\": "./source/modules/with_own_module_namespace"
         }
     },
     "minimum-stability": "dev",
