@@ -45,7 +45,7 @@ class BCModuleInheritanceTest extends BaseModuleTestCase
      * This test covers PHP inheritance between one module class and one shop class.
      *
      * The module class extends the PHP class directly like '<module class> extends <shop class>'
-     * In this case the parent class of the module class must be the shop class as instantiated with oxNew
+     * In this case the module class must be an instance of the shop class
      *
      * @dataProvider dataProviderTestModuleInheritanceTestPhpInheritance
      */
@@ -55,10 +55,7 @@ class BCModuleInheritanceTest extends BaseModuleTestCase
 
         $modelClass = oxNew($moduleClassName);
 
-        $shopClass = oxNew($shopClassName);
-        $modelClassParent = get_parent_class($modelClass);
-
-        $this->assertEquals($modelClassParent, $shopClass);
+        $this->assertInstanceOf($shopClassName, $modelClass);
     }
 
     public function dataProviderTestModuleInheritanceTestPhpInheritance() {
