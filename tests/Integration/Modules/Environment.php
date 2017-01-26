@@ -66,9 +66,7 @@ class Environment
     public function prepare($modules = null)
     {
         $this->clean();
-        $oConfig = oxRegistry::getConfig();
-        $oConfig->setShopId($this->getShopId());
-        $oConfig->setConfigParam('sShopDir', $this->getPathToTestDataDirectory());
+        $this->setShopConfigParameters();
 
         if (is_null($modules)) {
             $modules = $this->getAllModules();
@@ -94,6 +92,16 @@ class Environment
         $database->execute("DELETE FROM `oxconfig` WHERE `oxmodule` LIKE 'module:%' OR `oxvarname` LIKE '%Module%'");
         $database->execute('TRUNCATE `oxconfigdisplay`');
         $database->execute('TRUNCATE `oxtplblocks`');
+    }
+
+    /**
+     * Set the shop config parameters shopId and sShopDir
+     */
+    public function setShopConfigParameters()
+    {
+        $oConfig = oxRegistry::getConfig();
+        $oConfig->setShopId($this->getShopId());
+        $oConfig->setConfigParam('sShopDir', $this->getPathToTestDataDirectory());
     }
 
     /**

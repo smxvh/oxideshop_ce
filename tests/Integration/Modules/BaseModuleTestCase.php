@@ -34,14 +34,15 @@ require_once __DIR__ . '/Environment.php';
  */
 abstract class BaseModuleTestCase extends \OxidTestCase
 {
+
     /**
-     * Tear down the fixture.
+     * Ensure a clean environment before each test
      */
-    protected function tearDown()
-    {
+    protected function setUp() {
+        parent::setUp();
+
         $oEnvironment = new Environment();
         $oEnvironment->clean();
-        parent::tearDown();
     }
 
     /**

@@ -50,10 +50,10 @@ class ControllerClassNameResolver implements ClassNameResolverInterface
      *
      * @return OxidEsales\Eshop\Core\ShopControllerProvider
      */
-    public function getShopControllerProvider()
+    protected function getShopControllerProvider()
     {
         if (is_null($this->shopControllerProvider)) {
-            $this->shopControllerProvider = oxNew('OxidEsales\Eshop\Core\Routing\ShopControllerProvider');
+            $this->shopControllerProvider = oxNew(\OxidEsales\Eshop\Core\Routing\ShopControllerProvider::class);
         }
 
         return $this->shopControllerProvider;
@@ -64,10 +64,10 @@ class ControllerClassNameResolver implements ClassNameResolverInterface
      *
      * @return OxidEsales\Eshop\Core\ModuleControllerProvider
      */
-    public function getModuleControllerProvider()
+    protected function getModuleControllerProvider()
     {
         if (is_null($this->moduleControllerProvider)) {
-            $this->moduleControllerProvider = oxNew('OxidEsales\Eshop\Core\Routing\ModuleControllerProvider');
+            $this->moduleControllerProvider = oxNew(\OxidEsales\Eshop\Core\Routing\ModuleControllerProvider::class);
         }
 
         return $this->moduleControllerProvider;

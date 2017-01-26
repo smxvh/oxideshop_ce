@@ -32,24 +32,6 @@ class ControllerClassNameResolverTest extends UnitTestCase
 {
 
     /**
-     * Test getter for ShopControllerProvider
-     */
-    public function testGetShopControllerProvider()
-    {
-        $resolver = oxNew('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver');
-        $this->assertTrue(is_a($resolver->getShopControllerProvider(), 'OxidEsales\EshopCommunity\Core\Routing\ShopControllerProvider'));
-    }
-
-    /**
-     * Test getter for ModuleControllerProvider
-     */
-    public function testGetModuleControllerProvider()
-    {
-        $resolver = oxNew('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver');
-        $this->assertTrue(is_a($resolver->getModuleControllerProvider(), 'OxidEsales\EshopCommunity\Core\Routing\ModuleControllerProvider'));
-    }
-
-    /**
      * Test mapping class name to id, result found in shop controller map.
      */
     public function testGetClassNameByIdFromShop()

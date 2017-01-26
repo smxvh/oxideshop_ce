@@ -19,7 +19,6 @@
  * @copyright (C) OXID eSales AG 2003-2017
  * @version   OXID eShop CE
  */
-
 namespace OxidEsales\EshopCommunity\Core\Routing;
 
 use OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface;

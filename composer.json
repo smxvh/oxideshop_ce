@@ -32,7 +32,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "OxidEsales\\EshopCommunity\\Tests\\": "./tests"
+            "OxidEsales\\EshopCommunity\\Tests\\": "./tests",
+            "OxidEsales\\Development\\Testmodules\\": "./source/modules/testmodules"
         }
     },
     "minimum-stability": "dev",
