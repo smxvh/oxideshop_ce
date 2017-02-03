@@ -44,5 +44,4 @@ interface ClassNameResolverInterface
      * @return string|null
      */
     public function getIdByClassName($className);
-
 }
