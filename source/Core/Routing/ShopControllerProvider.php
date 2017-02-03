@@ -20,7 +20,7 @@
  * @version   OXID eShop CE
  */
 
-namespace OxidEsales\EshopCommunity\Core;
+namespace OxidEsales\EshopCommunity\Core\Routing;
 
 use OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface;
 
@@ -32,7 +32,7 @@ use OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface;
  * @internal Do not make a module extension for this class.
  * @see      http://oxidforge.org/en/core-oxid-eshop-classes-must-not-be-extended.html
  */
-class ControllerProvider implements ControllerProviderInterface
+class ShopControllerProvider implements ControllerProviderInterface
 {
 
     private $controllerMap = [
