@@ -500,6 +500,25 @@ class ConfigTest extends \OxidTestCase
     }
 
     /**
+     * Test method ActiveViewsIds
+     */
+    public function testGetActiveViewsIds()
+    {
+        $config = oxNew('oxConfig');
+
+        $view1 = $this->getMock('oxView', array('getClassKey'));
+        $view1->expects($this->once())->method('getClassKey')->will($this->returnValue('testViewId1'));
+
+        $view2 = $this->getMock('oxView', array('getClassKey'));
+        $view2->expects($this->once())->method('getClassKey')->will($this->returnValue('testViewId2'));
+
+        $config->setActiveView($view1);
+        $config->setActiveView($view2);
+
+        $this->assertEquals(array('testViewId1', 'testViewId2'), $config->getActiveViewsIds());
+    }
+
+    /**
      * Testing base shop id getter
      */
     public function testGetBaseShopId()
