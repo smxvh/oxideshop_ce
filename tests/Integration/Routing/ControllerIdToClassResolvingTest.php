@@ -16,37 +16,32 @@
  * along with OXID eShop Community Edition.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2017
+ * @copyright (C) OXID eSales AG 2003-2016
  * @version   OXID eShop CE
  */
+namespace OxidEsales\EshopCommunity\Tests\Integration\Routing;
 
-namespace OxidEsales\EshopCommunity\Core\Exception;
+use OxidEsales\TestingLibrary\UnitTestCase;
+use OxidEsales\EshopCommunity\Core\Registry;
 
-/**
- * e.g.:
- * - no match for requested controller id
- *
- */
-class RoutingException extends \oxException
+class ControllerIdToClassResolvingTest extends UnitTestCase
 {
     /**
-     * Exception type
-     *
-     * @var string
+     * Test controller classid to class mapping.
      */
-    protected $type = 'RoutingException';
+    public function testIdToClassMapping()
+    {
+        $classId = 'start';
+        $resolvedClass = Registry::getControllerClassNameResolver()->getClassNameById($classId);
+        $this->assertEquals(\OxidEsales\Eshop\Application\Controller\StartController::class, $resolvedClass);
+    }
 
     /**
-     * DatabaseException constructor.
-     *
-     * Use this exception to catch and rethrow exceptions of the underlying DBAL.
-     * Provide the caught exception as the third parameter of the constructor to enable exception chaining.
-     *
-     * @param string $controllerId
+     * Test controller class to classId mapping.
      */
-    public function __construct($controllerId)
+    public function testClassToIdMapping()
     {
-        $message = sprintf('No controller defined for id %s', $controllerId);
-        parent::__construct($message);
+        $class = \OxidEsales\Eshop\Application\Controller\StartController::class;
+        $this->assertEquals('start', Registry::getControllerClassNameResolver()->getIdByClassName($class));
     }
 }
