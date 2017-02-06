@@ -114,7 +114,7 @@ class ModuleInstaller extends \oxSuperCfg
                 } catch (\Exception $exception) {
                     $this->deactivate($module);
                     $lang = Registry::getLang();
-                    $message = sprintf($lang->translateString('ERROR_CONTROLLER_NOT_UNIQUE', null,true), $exception->getMessage());
+                    $message = sprintf($lang->translateString('ERROR_CONTROLLER_NOT_UNIQUE', null, true), $exception->getMessage());
 
                     $standardException = oxNew(StandardException::class);
                     $standardException->setMessage($message);
@@ -641,7 +641,7 @@ class ModuleInstaller extends \oxSuperCfg
     }
 
     /**
-     * @param $moduleControllers
+     * @param array $moduleControllers
      *
      * @throws \Exception
      */
