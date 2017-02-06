@@ -1432,22 +1432,22 @@ class Utils extends \oxSuperCfg
      *
      * @deprecated since v5.3 (2016-06-17); Logging mechanism will be changed in 6.0.
      *
-     * @param string $sLogMessage  log message
-     * @param string $sLogFileName log file name
+     * @param string $logMessage  log message
+     * @param string $logFileName log file name
      *
      * @return bool
      */
-    public function writeToLog($sLogMessage, $sLogFileName)
+    public function writeToLog($logMessage, $logFileName)
     {
-        $sLogDist = $this->getConfig()->getLogsDir() . $sLogFileName;
-        $blOk = false;
+        $logFilePath = $this->getConfig()->getLogsDir() . $logFileName;
+        $writeSucceed = false;
 
-        if (($oHandle = fopen($sLogDist, 'a')) !== false) {
-            fwrite($oHandle, $sLogMessage);
-            $blOk = fclose($oHandle);
+        if (($logFileResource = fopen($logFilePath, 'a')) !== false) {
+            fwrite($logFileResource, $logMessage);
+            $writeSucceed = fclose($logFileResource);
         }
 
-        return $blOk;
+        return $writeSucceed;
     }
 
     /**

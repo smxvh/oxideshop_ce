@@ -19,7 +19,7 @@
  * @copyright (C) OXID eSales AG 2003-2016
  * @version   OXID eShop CE
  */
-namespace Integration\Modules;
+namespace OxidEsales\EshopCommunity\Tests\Integration\Modules;
 
 use oxModule;
 use oxRegistry;
@@ -29,6 +29,8 @@ require_once __DIR__ . '/Environment.php';
 
 /**
  * Base class for module integration tests.
+ *
+ * @group module
  */
 abstract class BaseModuleTestCase extends \OxidTestCase
 {

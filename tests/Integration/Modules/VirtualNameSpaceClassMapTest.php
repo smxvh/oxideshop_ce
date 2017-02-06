@@ -19,15 +19,14 @@
  * @copyright (C) OXID eSales AG 2003-2016
  * @version   OXID eShop CE
  */
-namespace Integration\Modules;
+namespace OxidEsales\EshopCommunity\Tests\Integration\Modules;
 
 use OxidEsales\EshopCommunity\Core\Registry;
-
-require_once __DIR__ . '/BaseModuleTestCase.php';
 
 /**
  * Class VirtualNameSpaceClassMapTest
  *
+ * @group module
  * @package Integration\Modules
  */
 class VirtualNameSpaceClassMapTest extends BaseModuleTestCase
