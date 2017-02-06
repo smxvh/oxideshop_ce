@@ -22,7 +22,7 @@
 namespace Unit\Core\Routing\Module;
 
 use OxidEsales\TestingLibrary\UnitTestCase;
-use OxidEsales\EshopCommunity\Core\Routing\Module\ModuleControllerMapProvider;
+use OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider;
 
 /**
  * Test the module ControllerProvider.

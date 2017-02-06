@@ -45,19 +45,7 @@ class ModuleControllerMapProvider implements ControllerMapProviderInterface
      */
     public function getControllerMap()
     {
-        return $this->combineAllModules();
-    }
-
-    /**
-     * Combine the module controller arrays to one array.
-     *
-     * @return array An array with all module controller mappings.
-     */
-    private function combineAllModules()
-    {
-        $result = [];
-
-        return $result;
+        return $this->getCache()->get();
     }
 
     /**
