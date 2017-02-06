@@ -22,6 +22,7 @@
 namespace OxidEsales\EshopCommunity\Core\Module;
 
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
 use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 use oxModuleCache;
 use oxDb;
@@ -535,30 +536,12 @@ class ModuleInstaller extends \oxSuperCfg
      */
     protected function addModuleControllers($moduleControllers, $moduleId)
     {
-        $moduleControllerProvider = $this->getModuleControllerProviderStorage();
-        $shopControllerProvider = $this->getShopControllerProvider();
 
-        $moduleControllerMap = $moduleControllerProvider->getControllerMap();
-        $shopControllerMap = $shopControllerProvider->getControllerMap();
+        $this->validateModuleControllers($moduleControllers);
 
-        $existingMaps = array_merge($moduleControllerMap, $shopControllerMap);
+        $classProviderStorage = $this->getClassProviderStorage();
 
-        /** Ensure, that controller keys are unique */
-        $duplicatedKeys = array_intersect_key($moduleControllers, $existingMaps);
-
-        if (!empty($duplicatedKeys)) {
-            /** Duplicated key exception */
-            throw new \Exception(implode(',', $duplicatedKeys));
-        }
-
-        /** Ensure, that controller values are unique */
-        $duplicatedValues = array_intersect($moduleControllers, $existingMaps);
-        if ($duplicatedValues) {
-            /** Duplicated value exception */
-            throw new \Exception(implode(',', $duplicatedValues));
-        }
-
-        $moduleControllerProvider->add($moduleId, $moduleControllers);
+        $classProviderStorage->add($moduleId, $moduleControllers);
     }
 
     /**
@@ -568,7 +551,7 @@ class ModuleInstaller extends \oxSuperCfg
      */
     protected function deleteModuleControllers($moduleId)
     {
-        $moduleControllerProvider = $this->getModuleControllerProviderStorage();
+        $moduleControllerProvider = $this->getClassProviderStorage();
 
         $moduleControllerProvider->remove($moduleId);
     }
@@ -632,18 +615,59 @@ class ModuleInstaller extends \oxSuperCfg
     }
 
     /**
-     * @return \OxidEsales\EshopCommunity\Core\Routing\Module\ClassProviderStorage
+     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
      */
-    protected function getModuleControllerProviderStorage()
+    protected function getModuleControllerMapProvider()
     {
-        return oxNew(\OxidEsales\EshopCommunity\Core\Routing\Module\ClassProviderStorage::class);
+        return oxNew(\OxidEsales\Eshop\Core\Routing\ModuleControllerMapProvider::class);
     }
 
     /**
-     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface
+     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
      */
     protected function getShopControllerProvider()
     {
-        return oxNew(\OxidEsales\EshopCommunity\Core\Routing\ShopControllerProvider::class);
+        return oxNew(\OxidEsales\Eshop\Core\Routing\ShopControllerMapProvider::class);
+    }
+
+    /**
+     * @return object
+     */
+    protected function getClassProviderStorage()
+    {
+        $classProviderStorage = oxNew(ClassProviderStorage::class);
+
+        return $classProviderStorage;
+    }
+
+    /**
+     * @param $moduleControllers
+     *
+     * @throws \Exception
+     */
+    protected function validateModuleControllers($moduleControllers)
+    {
+        $moduleControllerMapProvider = $this->getModuleControllerMapProvider();
+        $shopControllerProvider = $this->getShopControllerProvider();
+
+        $moduleControllerMap = $moduleControllerMapProvider->getControllerMap();
+        $shopControllerMap = $shopControllerProvider->getControllerMap();
+
+        $existingMaps = array_merge($moduleControllerMap, $shopControllerMap);
+
+        /** Ensure, that controller keys are unique */
+        $duplicatedKeys = array_intersect_key($moduleControllers, $existingMaps);
+
+        if (!empty($duplicatedKeys)) {
+            /** Duplicated key exception */
+            throw new \Exception(implode(',', $duplicatedKeys));
+        }
+
+        /** Ensure, that controller values are unique */
+        $duplicatedValues = array_intersect($moduleControllers, $existingMaps);
+        if ($duplicatedValues) {
+            /** Duplicated value exception */
+            throw new \Exception(implode(',', $duplicatedValues));
+        }
     }
 }

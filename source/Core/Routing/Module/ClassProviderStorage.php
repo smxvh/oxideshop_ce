@@ -40,20 +40,24 @@ class ClassProviderStorage implements ClassProviderStorageInterface
     /**
      * Get the stored controller value from the oxconfig.
      *
-     * @return array The controllers field of the modules metadata.
+     * @return null|array The controllers field of the modules metadata.
      */
     public function get()
     {
-        return $this->getConfig()->getShopConfVar(self::CACHE_KEY);
+        return (array) $this->getConfig()->getShopConfVar(self::CACHE_KEY);
     }
 
     /**
-     * Get the stored controller value from the oxconfig.
+     * Set the stored controller value from the oxconfig.
      *
      * @param array $value The controllers field of the modules metadata.
      */
     public function set($value)
     {
+        /**
+         * @todo see Implementation of \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::_saveToConfig
+         *       setConfigParam and saveShopConfVar is called there. Ask someone (Vilma) why ;-)
+         */
         $this->getConfig()->saveShopConfVar('aarr', self::CACHE_KEY, $value);
     }
 
@@ -65,8 +69,7 @@ class ClassProviderStorage implements ClassProviderStorageInterface
      */
     public function add($moduleId, $controllers)
     {
-        // @todo Validation Assure that keys and values are unique allover the modules and the shops controllerMap !!
-        $controllerMap = (array) $this->getConfig()->getConfigParam('aModuleControllers');
+        $controllerMap = $this->get();
         $controllerMap[$moduleId] = $controllers;
 
         $this->set($controllerMap);
@@ -79,28 +82,10 @@ class ClassProviderStorage implements ClassProviderStorageInterface
      */
     public function remove($moduleId)
     {
-        $controllerMap = (array) $this->getConfig()->getConfigParam('aModuleControllers');
+        $controllerMap = $this->get();
         unset($controllerMap[$moduleId]);
 
         $this->set($controllerMap);
-    }
-
-    /**
-     * Unset the cached value.
-     */
-    public function reset()
-    {
-        $this->set(null);
-    }
-
-    /**
-     * Check, if the value is cached at the moment.
-     *
-     * @return bool Is the cached value absent?
-     */
-    public function isEmpty()
-    {
-        return is_null($this->get());
     }
 
     /**

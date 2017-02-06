@@ -37,7 +37,7 @@ interface ClassProviderStorageInterface
     public function get();
 
     /**
-     * Get the stored controller value from the storage.
+     * Set the stored controller value from the storage.
      *
      * @param array $value The controllers field of the modules metadata.
      */

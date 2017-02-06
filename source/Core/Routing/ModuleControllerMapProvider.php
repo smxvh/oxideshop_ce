@@ -19,9 +19,10 @@
  * @copyright (C) OXID eSales AG 2003-2017
  * @version   OXID eShop CE
  */
-namespace OxidEsales\EshopCommunity\Core\Routing\Module;
+namespace OxidEsales\EshopCommunity\Core\Routing;
 
-use OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface;
+use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
+use OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface;
 
 /**
  * Provide the controller mappings from the metadata of all active modules.
@@ -29,7 +30,7 @@ use OxidEsales\EshopCommunity\Core\Contract\ControllerProviderInterface;
  * @internal Do not make a module extension for this class.
  * @see      http://wiki.oxidforge.org/Tutorials/Core_OXID_eShop_classes:_must_not_be_extended
  */
-class ModuleControllerMapProvider implements ControllerProviderInterface
+class ModuleControllerMapProvider implements ControllerMapProviderInterface
 {
     private $cache = null;
 
@@ -44,50 +45,7 @@ class ModuleControllerMapProvider implements ControllerProviderInterface
      */
     public function getControllerMap()
     {
-        $cache = $this->getCache();
-
-        if ($cache->isEmpty()) {
-            $result = $this->collectControllers();
-
-            $cache->set($result);
-        }
-
         return $this->combineAllModules();
-    }
-
-    /**
-     * Add the given module controllers for module, given by its ID, to the cache.
-     *
-     * @param array $moduleId    The ID of the module controllers to add.
-     * @param array $controllers The controllers to add to the cache.
-     */
-    public function addToCache($moduleId, $controllers)
-    {
-        $this->getCache()->add($moduleId, $controllers);
-    }
-
-    /**
-     * Delete the controllers for the module, given by its ID, from the cache.
-     *
-     * @param string $moduleId The ID of the module, for which we want to delete the controllers from the cache.
-     */
-    public function removeFromCache($moduleId)
-    {
-        $this->getCache()->remove($moduleId);
-    }
-
-    /**
-     * Collect the controller mappings from all activated modules.
-     *
-     * @return array All controller mappings of the activated modules, accessible by the moduleId.
-     */
-    private function collectControllers()
-    {
-        $result = [];
-
-        // @todo: implement, walk over all active modules, and combine their controllers under their moduleId
-
-        return $result;
     }
 
     /**
