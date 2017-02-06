@@ -30,34 +30,12 @@ use OxidEsales\TestingLibrary\UnitTestCase;
  */
 class ControllerClassNameResolverTest extends UnitTestCase
 {
-
-    /**
-     * Test getter for ShopControllerMapProvider
-     */
-    public function testGetShopControllerMapProvider()
-    {
-        $resolver = oxNew('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver');
-        $this->assertTrue(is_a($resolver->getShopControllerMapProvider(), 'OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider'));
-    }
-
-    /**
-     * Test getter for ModuleControllerMapProvider
-     */
-    public function testGetModuleControllerMapProvider()
-    {
-        $resolver = oxNew('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver');
-        $this->assertTrue(is_a($resolver->getModuleControllerMapProvider(), 'OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider'));
-    }
-
     /**
      * Test mapping class name to id, result found in shop controller map.
      */
     public function testGetClassNameByIdFromShop()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->never())->method('getModuleControllerMapProvider');
-
+        $resolver = $this->getResolver();
         $this->assertEquals('OxidEsales\EshopCommunity\Application\SomeOtherController', $resolver->getClassNameById('bbb'));
     }
 
@@ -66,10 +44,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetClassNameByIdFromModule()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->once())->method('getModuleControllerMapProvider')->will($this->returnValue($this->getModuleControllerMapProviderMock()));
-
+        $resolver = $this->getResolver();
         $this->assertEquals('Vendor2\OtherTestModule\SomeDifferentController', $resolver->getClassNameById('eee'));
     }
 
@@ -78,10 +53,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetClassNameByIdNoMatch()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->once())->method('getModuleControllerMapProvider')->will($this->returnValue($this->getModuleControllerMapProviderMock()));
-
+        $resolver = $this->getResolver();
         $this->assertNull($resolver->getClassNameById('zzz'));
     }
 
@@ -90,10 +62,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetClassNameByIdNotTypeSensitive()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->never())->method('getModuleControllerMapProvider');
-
+        $resolver = $this->getResolver();
         $this->assertEquals('OxidEsales\EshopCommunity\Application\SomeDifferentController', $resolver->getClassNameById('ccc'));
     }
 
@@ -102,10 +71,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetIdByClassNameFromShop()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->never())->method('getModuleControllerMapProvider');
-
+        $resolver = $this->getResolver();
         $this->assertEquals('bbb', $resolver->getIdByClassName('OxidEsales\EshopCommunity\Application\SomeOtherController'));
     }
 
@@ -114,10 +80,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetIdByClassNameFromModule()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->once())->method('getModuleControllerMapProvider')->will($this->returnValue($this->getModuleControllerMapProviderMock()));
-
+        $resolver = $this->getResolver();
         $this->assertEquals('eee', $resolver->getIdByClassName('Vendor2\OtherTestModule\SomeDifferentController'));
     }
 
@@ -126,10 +89,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetIdByClassNameNoMatch()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->once())->method('getModuleControllerMapProvider')->will($this->returnValue($this->getModuleControllerMapProviderMock()));
-
+        $resolver = $this->getResolver();
         $this->assertNull($resolver->getIdByClassName('novendor\noclass'));
     }
 
@@ -138,10 +98,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
      */
     public function testGetIdByClassNameNotTypeSensitive()
     {
-        $resolver = $this->getMock('OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver', array('getModuleControllerMapProvider', 'getShopControllerMapProvider'));
-        $resolver->expects($this->once())->method('getShopControllerMapProvider')->will($this->returnValue($this->getShopControllerMapProviderMock()));
-        $resolver->expects($this->once())->method('getModuleControllerMapProvider')->will($this->returnValue($this->getModuleControllerMapProviderMock()));
-
+        $resolver = $this->getResolver();
         $this->assertEquals('eee', $resolver->getIdByClassName(strtolower('Vendor2\OtherTestModule\SomeDifferentController')));
     }
 
@@ -156,7 +113,7 @@ class ControllerClassNameResolverTest extends UnitTestCase
                      'bbb' => 'OxidEsales\EshopCommunity\Application\SomeOtherController',
                      'CCC' => 'OxidEsales\EshopCommunity\Application\SomeDifferentController');
 
-        $mock = $this->getMock('OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider', ['getControllerMap'], [], '', false);
+        $mock = $this->getMock(\OxidEsales\Eshop\Core\Routing\ShopControllerMapProvider::class, ['getControllerMap'], [], '', false);
         $mock->expects($this->any())->method('getControllerMap')->will($this->returnValue($map));
 
         return $mock;
@@ -173,10 +130,21 @@ class ControllerClassNameResolverTest extends UnitTestCase
                      'DDD' => 'Vendor1\OtherTestModule\SomeOtherController',
                      'eee' => 'Vendor2\OtherTestModule\SomeDifferentController');
 
-        $mock = $this->getMock('OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider', ['getControllerMap'], [], '', false);
+        $mock = $this->getMock(\OxidEsales\Eshop\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap'], [], '', false);
         $mock->expects($this->any())->method('getControllerMap')->will($this->returnValue($map));
 
         return $mock;
+    }
+
+    /**
+     * Test helper to create resolver object.
+     *
+     * @return ControllerClassNameResolver resolver
+     */
+    private function getResolver()
+    {
+        $resolver = oxNew(\OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver::class, $this->getShopControllerMapProviderMock(), $this->getModuleControllerMapProviderMock());
+        return $resolver;
     }
 }
 
