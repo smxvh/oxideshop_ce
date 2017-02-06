@@ -41,7 +41,7 @@ class ControllerProviderCacheTest extends UnitTestCase
         parent::setUp();
 
         $controllerProviderCache = oxNew(ClassProviderStorage::class);
-        $controllerProviderCache->reset();
+        $controllerProviderCache->set(null);
     }
 
     /**
@@ -67,7 +67,7 @@ class ControllerProviderCacheTest extends UnitTestCase
 
         $result = $cache->get();
 
-        $this->assertNull($result);
+        $this->assertEmpty($result);
 
         return $cache;
     }
@@ -94,7 +94,7 @@ class ControllerProviderCacheTest extends UnitTestCase
     {
         $cache = $this->testCreation();
 
-        $this->assertTrue($cache->isEmpty());
+        $this->assertEmpty($cache->get());
     }
 
     /**
@@ -104,7 +104,7 @@ class ControllerProviderCacheTest extends UnitTestCase
     {
         $cache = $this->testGetWithSetValueBefore();
 
-        $this->assertFalse($cache->isEmpty());
+        $this->assertNotEmpty($cache->get());
     }
 
     /**
@@ -114,8 +114,8 @@ class ControllerProviderCacheTest extends UnitTestCase
     {
         $cache = $this->testGetWithSetValueBefore();
 
-        $this->assertFalse($cache->isEmpty());
-        $cache->reset();
-        $this->assertTrue($cache->isEmpty());
+        $this->assertNotEmpty($cache->get());
+        $cache->set(null);
+        $this->assertEmpty($cache->get());
     }
 }
