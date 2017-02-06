@@ -50,7 +50,7 @@ class ControllerClassNameResolver implements ClassNameResolverInterface
      *
      * @return \OxidEsales\Eshop\Core\Routing\ShopControllerMapProvider
      */
-    protected function getShopControllerMapProvider()
+    public function getShopControllerMapProvider()
     {
         if (is_null($this->shopControllerMapProvider)) {
             $this->shopControllerMapProvider = oxNew(\OxidEsales\Eshop\Core\Routing\ShopControllerMapProvider::class);
@@ -64,7 +64,7 @@ class ControllerClassNameResolver implements ClassNameResolverInterface
      *
      * @return \OxidEsales\Eshop\Core\Routing\ModuleControllerMapProvider
      */
-    protected function getModuleControllerMapProvider()
+    public function getModuleControllerMapProvider()
     {
         if (is_null($this->moduleControllerMapProvider)) {
             $this->moduleControllerMapProvider = oxNew(\OxidEsales\Eshop\Core\Routing\ModuleControllerMapProvider::class);
