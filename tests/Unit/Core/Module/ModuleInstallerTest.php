@@ -257,17 +257,17 @@ class ModuleInstallerTest extends \OxidTestCase
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleMetadataControllersOnActivation()
      */
     public function testValidateModuleControllersOnActivationIsCalledOnActivate() {
         $moduleMock = $this->getMock(Module::class, ['getId','getMetaDataVersion']);
         $moduleMock->expects($this->any())->method('getId')->will($this->returnValue('test'));
         $moduleMock->expects($this->any())->method('getMetaDataVersion')->will($this->returnValue('2.0'));
 
-        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['validateModuleControllersOnActivation']);
-        $moduleInstaller->expects($this->once())->method('validateModuleControllersOnActivation');
+        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['validateModuleMetadataControllersOnActivation']);
+        $moduleInstaller->expects($this->once())->method('validateModuleMetadataControllersOnActivation');
 
-        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleControllersOnActivation */
+        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleMetadataControllersOnActivation */
         $moduleInstaller->activate($moduleMock);
     }
 
@@ -296,12 +296,12 @@ class ModuleInstallerTest extends \OxidTestCase
         $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
         $moduleInstaller->expects($this->once())->method('deactivate');
 
-        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleControllersOnActivation */
+        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleMetadataControllersOnActivation */
         $moduleInstaller->activate($moduleMock);
     }
 
     /**
-     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleMetadataControllersOnActivation()
      *
      * @dataProvider dataProviderTestValidateModuleInstallerOnActivationThrowsExpectedException()
      */
@@ -319,7 +319,7 @@ class ModuleInstallerTest extends \OxidTestCase
         $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
         $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
 
-        $moduleInstaller->validateModuleControllersOnActivation($metaDataControllerMap);
+        $moduleInstaller->validateModuleMetadataControllersOnActivation($metaDataControllerMap);
     }
 
     public function dataProviderTestValidateModuleInstallerOnActivationThrowsExpectedException() {
@@ -373,7 +373,7 @@ class ModuleInstallerTest extends \OxidTestCase
      * Controller values are stored and treated case sensitive, thus 'existingvalue' != 'ExistingValue' and an exception
      * MUST NOT be thrown
      *
-     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleMetadataControllersOnActivation()
      */
     public function testValidateModuleInstallerOnActivationCaseSensitiveValue() {
         $moduleControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap']);
@@ -387,6 +387,6 @@ class ModuleInstallerTest extends \OxidTestCase
         $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
         $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
 
-        $moduleInstaller->validateModuleControllersOnActivation(['someKey' => 'ExistingValue']);
+        $moduleInstaller->validateModuleMetadataControllersOnActivation(['someKey' => 'ExistingValue']);
     }
 }

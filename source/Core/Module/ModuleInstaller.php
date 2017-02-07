@@ -537,7 +537,7 @@ class ModuleInstaller extends \oxSuperCfg
      */
     protected function addModuleControllers($moduleControllers, $moduleId)
     {
-        $this->validateModuleControllersOnActivation($moduleControllers);
+        $this->validateModuleMetadataControllersOnActivation($moduleControllers);
 
         $classProviderStorage = $this->getClassProviderStorage();
 
@@ -649,7 +649,7 @@ class ModuleInstaller extends \oxSuperCfg
      *
      * @throws \Exception
      */
-    protected function validateModuleControllersOnActivation($moduleControllers)
+    protected function validateModuleMetadataControllersOnActivation($moduleControllers)
     {
         $moduleControllerMapProvider = $this->getModuleControllerMapProvider();
         $shopControllerProvider = $this->getShopControllerProvider();
