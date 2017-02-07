@@ -23,6 +23,7 @@ namespace OxidEsales\EshopCommunity\Core\Module;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
+use OxidEsales\EshopCommunity\Core\Exception\ModuleValidationException;
 use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 use oxModuleCache;
 use oxDb;
@@ -537,7 +538,7 @@ class ModuleInstaller extends \oxSuperCfg
     protected function addModuleControllers($moduleControllers, $moduleId)
     {
 
-        $this->validateModuleControllers($moduleControllers);
+        $this->validateModuleControllersOnActivation($moduleControllers);
 
         $classProviderStorage = $this->getClassProviderStorage();
 
@@ -641,11 +642,15 @@ class ModuleInstaller extends \oxSuperCfg
     }
 
     /**
+     * Ensure integrity of the controllerMap before storing it.
+     * Both keys and values must be unique with in the same shop or sub-shop.
+     *
+     * @param $moduleControllers
      * @param array $moduleControllers
      *
      * @throws \Exception
      */
-    protected function validateModuleControllers($moduleControllers)
+    protected function validateModuleControllersOnActivation($moduleControllers)
     {
         $moduleControllerMapProvider = $this->getModuleControllerMapProvider();
         $shopControllerProvider = $this->getShopControllerProvider();
@@ -655,19 +660,22 @@ class ModuleInstaller extends \oxSuperCfg
 
         $existingMaps = array_merge($moduleControllerMap, $shopControllerMap);
 
-        /** Ensure, that controller keys are unique */
-        $duplicatedKeys = array_intersect_key($moduleControllers, $existingMaps);
-
+        /**
+         * Ensure, that controller keys are unique.
+         * As keys are always stored in lower case, we must test against lower case keys here as well
+         */
+        $duplicatedKeys = array_intersect_key(array_change_key_case($moduleControllers, CASE_LOWER), $existingMaps);
         if (!empty($duplicatedKeys)) {
-            /** Duplicated key exception */
-            throw new \Exception(implode(',', $duplicatedKeys));
+
+            throw new ModuleValidationException(implode(',', $duplicatedKeys));
         }
 
-        /** Ensure, that controller values are unique */
+        /**
+         * Ensure, that controller values are unique.
+         */
         $duplicatedValues = array_intersect($moduleControllers, $existingMaps);
-        if ($duplicatedValues) {
-            /** Duplicated value exception */
-            throw new \Exception(implode(',', $duplicatedValues));
+        if (!empty($duplicatedValues)) {
+            throw new ModuleValidationException(implode(',', $duplicatedValues));
         }
     }
 }
