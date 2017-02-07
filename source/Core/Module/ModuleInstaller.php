@@ -112,10 +112,10 @@ class ModuleInstaller extends \oxSuperCfg
             if (version_compare($module->getMetaDataVersion(), '2.0', '>=')) {
                 try {
                     $this->addModuleControllers($module->getControllers(), $moduleId);
-                } catch (\Exception $exception) {
+                } catch (ModuleValidationException $exception) {
                     $this->deactivate($module);
                     $lang = Registry::getLang();
-                    $message = sprintf($lang->translateString('ERROR_CONTROLLER_NOT_UNIQUE', null, true), $exception->getMessage());
+                    $message = sprintf($lang->translateString('ERROR_METADATA_CONTROLLERS_NOT_UNIQUE', null,true), $exception->getMessage());
 
                     $standardException = oxNew(StandardException::class);
                     $standardException->setMessage($message);
@@ -537,7 +537,6 @@ class ModuleInstaller extends \oxSuperCfg
      */
     protected function addModuleControllers($moduleControllers, $moduleId)
     {
-
         $this->validateModuleControllersOnActivation($moduleControllers);
 
         $classProviderStorage = $this->getClassProviderStorage();

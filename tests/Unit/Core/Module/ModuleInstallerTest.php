@@ -24,6 +24,7 @@ namespace Unit\Core;
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Module\ModuleInstaller;
 use OxidEsales\EshopCommunity\Core\Exception\ModuleValidationException;
+use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 
 /**
  * @group module
@@ -257,6 +258,50 @@ class ModuleInstallerTest extends \OxidTestCase
 
     /**
      * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     */
+    public function testValidateModuleControllersOnActivationIsCalledOnActivate() {
+        $moduleMock = $this->getMock(Module::class, ['getId','getMetaDataVersion']);
+        $moduleMock->expects($this->any())->method('getId')->will($this->returnValue('test'));
+        $moduleMock->expects($this->any())->method('getMetaDataVersion')->will($this->returnValue('2.0'));
+
+        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['validateModuleControllersOnActivation']);
+        $moduleInstaller->expects($this->once())->method('validateModuleControllersOnActivation');
+
+        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleControllersOnActivation */
+        $moduleInstaller->activate($moduleMock);
+    }
+
+    public function testModuleControllersValidationFailureTriggersModuleDeactivationAndThrowsExpectedException() {
+        $this->setExpectedException(StandardException::class);
+
+        $moduleControllerMap = ['existingkey' => 'existingvalue'];
+        $shopControllerMap = ['existingkey' => 'existingvalue'];
+        $metaDataControllerMap = ['existingkey' => 'existingvalue'];
+
+        $moduleMock = $this->getMock(Module::class, ['getId','getMetaDataVersion','getControllers']);
+        $moduleMock->expects($this->any())->method('getId')->will($this->returnValue('test'));
+        $moduleMock->expects($this->any())->method('getMetaDataVersion')->will($this->returnValue('2.0'));
+        $moduleMock->expects($this->any())->method('getControllers')->will($this->returnValue($metaDataControllerMap));
+
+        $moduleControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap']);
+        $moduleControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue($moduleControllerMap));
+
+        $shopControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider::class, ['getControllerMap']);
+        $shopControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue($shopControllerMap));
+
+        /** @var ModuleInstaller|\PHPUnit_Framework_MockObject_MockObject $moduleInstaller */
+        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['getModuleControllerMapProvider','getShopControllerProvider','deactivate']);
+
+        $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
+        $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
+        $moduleInstaller->expects($this->once())->method('deactivate');
+
+        /** moduleInstaller->activate calls addModuleControllers and this calls validateModuleControllersOnActivation */
+        $moduleInstaller->activate($moduleMock);
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
      *
      * @dataProvider dataProviderTestValidateModuleInstallerOnActivationThrowsExpectedException()
      */
@@ -285,19 +330,25 @@ class ModuleInstallerTest extends \OxidTestCase
                 'moduleControllerMap' => [],
                 'metaDataControllerMap' => ['existingkey' => 'value'],
             ],
-            // throw an exception, if a controller key existing already in the shopControllerMap is found in metadata.php - case sensitive
+            /**
+             * throw an exception, if a controller key existing already in the shopControllerMap is found in metadata.php
+             * test must be case insensitive
+             */
             [
                 'shopControllerMap' => ['existingkey' => 'existingvalue'],
                 'moduleControllerMap' => [],
                 'metaDataControllerMap' => ['ExistingKey' => 'value'],
             ],
-            // throw exception, if an existing controller key is found in metadata.php
+            // throw an exception, if a controller key existing already in the moduleControllerMap is found in metadata.php
             [
                 'shopControllerMap' => [],
                 'moduleControllerMap' => ['existingkey' => 'existingvalue'],
                 'metaDataControllerMap' => ['existingkey' => 'value'],
             ],
-            // throw exception, if an existing controller key is found in metadata.php Test for case sensitivity
+            /**
+             * throw an exception, if a controller key existing already in the moduleControllerMap is found in metadata.php
+             * test must be case insensitive
+             */
             [
                 'shopControllerMap' => [],
                 'moduleControllerMap' => ['existingkey' => 'existingvalue'],
@@ -309,24 +360,24 @@ class ModuleInstallerTest extends \OxidTestCase
                 'moduleControllerMap' => [],
                 'metaDataControllerMap' => ['key' => 'existingvalue'],
             ],
-            /** Todo this test fails and it SHOULD fail -> move it to different test */
-            // throw an exception, if a controller value existing already in the shopControllerMap is found in metadata.php - case sensitive
+            // throw an exception, if a controller value existing already in the moduleControllerMap is found in metadata.php
             [
-                'shopControllerMap' => ['existingkey' => 'existingvalue'],
-                'moduleControllerMap' => [],
-                'metaDataControllerMap' => ['key' => 'existingValue'],
+                'shopControllerMap' => [],
+                'moduleControllerMap' => ['existingkey' => 'existingvalue'],
+                'metaDataControllerMap' => ['key' => 'existingvalue'],
             ],
         ];
     }
 
     /**
+     * Controller values are stored and treated case sensitive, thus 'existingvalue' != 'ExistingValue' and an exception
+     * MUST NOT be thrown
+     *
      * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
      */
-    public function testValidateModuleInstallerOnActivationThrowsExpectedExceptionForDuplicateValue() {
-        $this->setExpectedException(ModuleValidationException::class);
-
+    public function testValidateModuleInstallerOnActivationCaseSensitiveValue() {
         $moduleControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap']);
-        $moduleControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue(['existingKey' => 'existingValue']));
+        $moduleControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue(['existingKey' => 'existingvalue']));
 
         $shopControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider::class, ['getControllerMap']);
         $shopControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue([]));
@@ -336,6 +387,6 @@ class ModuleInstallerTest extends \OxidTestCase
         $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
         $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
 
-        $moduleInstaller->validateModuleControllersOnActivation(['someKey' => 'existingValue']);
+        $moduleInstaller->validateModuleControllersOnActivation(['someKey' => 'ExistingValue']);
     }
 }

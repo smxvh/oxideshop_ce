@@ -2000,7 +2000,7 @@ $aLang = array(
 
     'VERSION_UPDATE_LINK' => 'http://www.oxid-esales.com/de/support-services/dokumentation-und-hilfe/oxid-eshop/installation/oxid-eshop-aktualisieren/update-vorbereiten.html',
 
-    'ERROR_CONTROLLER_NOT_UNIQUE' => 'DE Controller key and values must be unique throughout a shop or a sub-shop.<br /> The following controller keys or values are not unique:<br /> %s'
+    'ERROR_METADATA_CONTROLLERS_NOT_UNIQUE' => '[TRANSLATE] Error: Module not activated.<br />All controller keys and values must be unique throughout a shop or a sub-shop.<br />The following controller keys or values defined in metadata.php of this module are not unique:<br /> %s'
 );
 
 /*
