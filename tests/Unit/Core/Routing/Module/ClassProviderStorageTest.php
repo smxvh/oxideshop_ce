@@ -86,36 +86,4 @@ class ControllerProviderCacheTest extends UnitTestCase
 
         return $cache;
     }
-
-    /**
-     * Test, that the method isEmpty gives back true, if the value isn't set.
-     */
-    public function testIsEmptyNotSetBefore()
-    {
-        $cache = $this->testCreation();
-
-        $this->assertEmpty($cache->get());
-    }
-
-    /**
-     * Test, that the method isEmpty gives back false, if the value is set.
-     */
-    public function testIsEmptySetBefore()
-    {
-        $cache = $this->testGetWithSetValueBefore();
-
-        $this->assertNotEmpty($cache->get());
-    }
-
-    /**
-     * Test, that the method reset removes the value of the cache.
-     */
-    public function testResetSetValueBefore()
-    {
-        $cache = $this->testGetWithSetValueBefore();
-
-        $this->assertNotEmpty($cache->get());
-        $cache->set(null);
-        $this->assertEmpty($cache->get());
-    }
 }
