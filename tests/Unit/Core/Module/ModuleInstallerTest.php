@@ -23,6 +23,7 @@ namespace Unit\Core;
 
 use OxidEsales\Eshop\Core\Module\Module;
 use OxidEsales\Eshop\Core\Module\ModuleInstaller;
+use OxidEsales\EshopCommunity\Core\Exception\ModuleValidationException;
 
 /**
  * @group module
@@ -206,7 +207,7 @@ class ModuleInstallerTest extends \OxidTestCase
     /**
      * Ensure that addModuleControllers is called on module activation
      *
-     * @covers ModuleInstaller::addModuleControllers()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::addModuleControllers()
      */
     public function testModuleInstallerActivateCallsAddModuleControllers () {
         $moduleMock = $this->getMock(Module::class, ['getId','getMetaDataVersion']);
@@ -222,13 +223,15 @@ class ModuleInstallerTest extends \OxidTestCase
     /**
      * Ensure that addModuleControllers is not called, if metaDataVersion is too low
      *
-     * @covers ModuleInstaller::addModuleControllers()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::addModuleControllers()
      */
     public function testModuleInstallerActivateCallsAddModuleControllersChecksMetaDataVersion () {
+        /** @var Module|\PHPUnit_Framework_MockObject_MockObject $moduleMock */
         $moduleMock = $this->getMock(Module::class, ['getId','getMetaDataVersion']);
         $moduleMock->expects($this->any())->method('getId')->will($this->returnValue('test'));
         $moduleMock->expects($this->any())->method('getMetaDataVersion')->will($this->returnValue('1.1'));
 
+        /** @var ModuleInstaller|\PHPUnit_Framework_MockObject_MockObject $moduleInstaller */
         $moduleInstaller = $this->getMock(ModuleInstaller::class, ['addModuleControllers']);
         $moduleInstaller->expects($this->never())->method('addModuleControllers');
 
@@ -238,15 +241,101 @@ class ModuleInstallerTest extends \OxidTestCase
     /**
      * Ensure that deleteModuleControllers is called on module deactivation
      *
-     * @covers @covers ModuleInstaller::deleteModuleControllers()
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::deleteModuleControllers()
      */
     public function testModuleInstallerDeActivateCallsDeleteModuleControllers () {
-        $module = $this->getMock(Module::class, array('getId'));
-        $module->expects($this->any())->method('getId')->will($this->returnValue('test'));
+        /** @var Module|\PHPUnit_Framework_MockObject_MockObject $moduleMock */
+        $moduleMock = $this->getMock(Module::class, array('getId'));
+        $moduleMock->expects($this->any())->method('getId')->will($this->returnValue('test'));
 
+        /** @var ModuleInstaller|\PHPUnit_Framework_MockObject_MockObject $moduleInstaller */
         $moduleInstaller = $this->getMock(ModuleInstaller::class, ['deleteModuleControllers']);
         $moduleInstaller->expects($this->once())->method('deleteModuleControllers');
 
-        $moduleInstaller->deactivate($module);
+        $moduleInstaller->deactivate($moduleMock);
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     *
+     * @dataProvider dataProviderTestValidateModuleInstallerOnActivationThrowsExpectedException()
+     */
+    public function testValidateModuleInstallerOnActivationThrowsExpectedException($shopControllerMap, $moduleControllerMap, $metaDataControllerMap) {
+        $this->setExpectedException(ModuleValidationException::class);
+
+        $moduleControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap']);
+        $moduleControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue($moduleControllerMap));
+
+        $shopControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider::class, ['getControllerMap']);
+        $shopControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue($shopControllerMap));
+
+        /** @var ModuleInstaller|\PHPUnit_Framework_MockObject_MockObject $moduleInstaller */
+        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['getModuleControllerMapProvider','getShopControllerProvider']);
+        $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
+        $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
+
+        $moduleInstaller->validateModuleControllersOnActivation($metaDataControllerMap);
+    }
+
+    public function dataProviderTestValidateModuleInstallerOnActivationThrowsExpectedException() {
+        return [
+            // throw an exception, if a controller key existing already in the shopControllerMap is found in metadata.php
+            [
+                'shopControllerMap' => ['existingkey' => 'existingvalue'],
+                'moduleControllerMap' => [],
+                'metaDataControllerMap' => ['existingkey' => 'value'],
+            ],
+            // throw an exception, if a controller key existing already in the shopControllerMap is found in metadata.php - case sensitive
+            [
+                'shopControllerMap' => ['existingkey' => 'existingvalue'],
+                'moduleControllerMap' => [],
+                'metaDataControllerMap' => ['ExistingKey' => 'value'],
+            ],
+            // throw exception, if an existing controller key is found in metadata.php
+            [
+                'shopControllerMap' => [],
+                'moduleControllerMap' => ['existingkey' => 'existingvalue'],
+                'metaDataControllerMap' => ['existingkey' => 'value'],
+            ],
+            // throw exception, if an existing controller key is found in metadata.php Test for case sensitivity
+            [
+                'shopControllerMap' => [],
+                'moduleControllerMap' => ['existingkey' => 'existingvalue'],
+                'metaDataControllerMap' => ['ExistingKey' => 'value'],
+            ],
+            // throw an exception, if a controller value existing already in the shopControllerMap is found in metadata.php
+            [
+                'shopControllerMap' => ['existingkey' => 'existingvalue'],
+                'moduleControllerMap' => [],
+                'metaDataControllerMap' => ['key' => 'existingvalue'],
+            ],
+            /** Todo this test fails and it SHOULD fail -> move it to different test */
+            // throw an exception, if a controller value existing already in the shopControllerMap is found in metadata.php - case sensitive
+            [
+                'shopControllerMap' => ['existingkey' => 'existingvalue'],
+                'moduleControllerMap' => [],
+                'metaDataControllerMap' => ['key' => 'existingValue'],
+            ],
+        ];
+    }
+
+    /**
+     * @covers \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::validateModuleControllersOnActivation()
+     */
+    public function testValidateModuleInstallerOnActivationThrowsExpectedExceptionForDuplicateValue() {
+        $this->setExpectedException(ModuleValidationException::class);
+
+        $moduleControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider::class, ['getControllerMap']);
+        $moduleControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue(['existingKey' => 'existingValue']));
+
+        $shopControllerMapProviderMock = $this->getMock(\OxidEsales\EshopCommunity\Core\Routing\ShopControllerMapProvider::class, ['getControllerMap']);
+        $shopControllerMapProviderMock->expects($this->any())->method('getControllerMap')->will($this->returnValue([]));
+
+        /** @var ModuleInstaller|\PHPUnit_Framework_MockObject_MockObject $moduleInstaller */
+        $moduleInstaller = $this->getMock(ModuleInstaller::class, ['getModuleControllerMapProvider','getShopControllerProvider']);
+        $moduleInstaller->expects($this->any())->method('getModuleControllerMapProvider')->will($this->returnValue($moduleControllerMapProviderMock));
+        $moduleInstaller->expects($this->any())->method('getShopControllerProvider')->will($this->returnValue($shopControllerMapProviderMock));
+
+        $moduleInstaller->validateModuleControllersOnActivation(['someKey' => 'existingValue']);
     }
 }
