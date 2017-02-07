@@ -31,6 +31,14 @@ use OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider;
  */
 class ModuleControllerMapProviderTest extends UnitTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $storage = oxNew(ClassProviderStorage::class);
+        $storage->set(null);
+    }
+
     /**
      * Test, that the creation works properly.
      *
