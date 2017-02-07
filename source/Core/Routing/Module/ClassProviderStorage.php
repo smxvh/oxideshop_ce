@@ -35,7 +35,7 @@ class ClassProviderStorage implements ClassProviderStorageInterface
     /**
      * @var string The key under which the value will be stored.
      */
-    const CACHE_KEY = 'aModuleControllers';
+    const STORAGE_KEY = 'aModuleControllers';
 
     /**
      * Get the stored controller value from the oxconfig.
@@ -44,7 +44,7 @@ class ClassProviderStorage implements ClassProviderStorageInterface
      */
     public function get()
     {
-        return (array) $this->getConfig()->getShopConfVar(self::CACHE_KEY);
+        return (array) $this->getConfig()->getShopConfVar(self::STORAGE_KEY);
     }
 
     /**
@@ -58,7 +58,7 @@ class ClassProviderStorage implements ClassProviderStorageInterface
          * @todo see Implementation of \OxidEsales\EshopCommunity\Core\Module\ModuleInstaller::_saveToConfig
          *       setConfigParam and saveShopConfVar is called there. Ask someone (Vilma) why ;-)
          */
-        $this->getConfig()->saveShopConfVar('aarr', self::CACHE_KEY, $value);
+        $this->getConfig()->saveShopConfVar('aarr', self::STORAGE_KEY, $value);
     }
 
     /**
