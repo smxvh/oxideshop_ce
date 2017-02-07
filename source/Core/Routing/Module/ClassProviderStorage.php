@@ -25,7 +25,7 @@ use OxidEsales\EshopCommunity\Core\Contract\ClassProviderStorageInterface;
 use OxidEsales\Eshop\Core\Registry;
 
 /**
- * Handler class for the caching of the metadata controller field of the modules.
+ * Handler class for the storing of the metadata controller field of the modules.
  *
  * @internal Do not make a module extension for this class.
  * @see      http://wiki.oxidforge.org/Tutorials/Core_OXID_eShop_classes:_must_not_be_extended
@@ -33,7 +33,7 @@ use OxidEsales\Eshop\Core\Registry;
 class ClassProviderStorage implements ClassProviderStorageInterface
 {
     /**
-     * @var string The key under which the value will be cached.
+     * @var string The key under which the value will be stored.
      */
     const CACHE_KEY = 'aModuleControllers';
 
@@ -62,10 +62,10 @@ class ClassProviderStorage implements ClassProviderStorageInterface
     }
 
     /**
-     * Add the controllers for the module, given by its ID, to the cache.
+     * Add the controllers for the module, given by its ID, to the storage.
      *
      * @param string $moduleId    The ID of the module controllers to add.
-     * @param array  $controllers The controllers to add to the cache.
+     * @param array  $controllers The controllers to add to the storage.
      */
     public function add($moduleId, $controllers)
     {
@@ -76,9 +76,9 @@ class ClassProviderStorage implements ClassProviderStorageInterface
     }
 
     /**
-     * Delete the controllers for the module, given by its ID, from the cache.
+     * Delete the controllers for the module, given by its ID, from the storage.
      *
-     * @param string $moduleId The ID of the module, for which we want to delete the controllers from the cache.
+     * @param string $moduleId The ID of the module, for which we want to delete the controllers from the storage.
      */
     public function remove($moduleId)
     {
