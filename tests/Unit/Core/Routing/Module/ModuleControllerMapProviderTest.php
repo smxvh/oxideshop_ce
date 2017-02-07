@@ -21,6 +21,7 @@
  */
 namespace Unit\Core\Routing\Module;
 
+use OxidEsales\EshopCommunity\Core\Routing\Module\ClassProviderStorage;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use OxidEsales\EshopCommunity\Core\Routing\ModuleControllerMapProvider;
 
