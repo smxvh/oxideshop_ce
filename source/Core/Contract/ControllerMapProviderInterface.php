@@ -31,6 +31,8 @@ namespace OxidEsales\EshopCommunity\Core\Contract;
 interface ControllerMapProviderInterface
 {
     /**
+     * Get all controller keys and their assigned classes
+     *
      * @return array
      */
     public function getControllerMap();
