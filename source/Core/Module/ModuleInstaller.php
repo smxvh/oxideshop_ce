@@ -115,7 +115,7 @@ class ModuleInstaller extends \oxSuperCfg
                 } catch (ModuleValidationException $exception) {
                     $this->deactivate($module);
                     $lang = Registry::getLang();
-                    $message = sprintf($lang->translateString('ERROR_METADATA_CONTROLLERS_NOT_UNIQUE', null,true), $exception->getMessage());
+                    $message = sprintf($lang->translateString('ERROR_METADATA_CONTROLLERS_NOT_UNIQUE', null, true), $exception->getMessage());
 
                     $standardException = oxNew(StandardException::class);
                     $standardException->setMessage($message);
@@ -644,10 +644,9 @@ class ModuleInstaller extends \oxSuperCfg
      * Ensure integrity of the controllerMap before storing it.
      * Both keys and values must be unique with in the same shop or sub-shop.
      *
-     * @param $moduleControllers
      * @param array $moduleControllers
      *
-     * @throws \Exception
+     * @throws ModuleValidationException
      */
     protected function validateModuleMetadataControllersOnActivation($moduleControllers)
     {
@@ -665,7 +664,6 @@ class ModuleInstaller extends \oxSuperCfg
          */
         $duplicatedKeys = array_intersect_key(array_change_key_case($moduleControllers, CASE_LOWER), $existingMaps);
         if (!empty($duplicatedKeys)) {
-
             throw new ModuleValidationException(implode(',', $duplicatedKeys));
         }
 
