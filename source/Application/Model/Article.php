@@ -27,6 +27,8 @@ use oxDb;
 use oxField;
 use OxidEsales\Eshop\Application\Model\Contract\ArticleInterface;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Core\Contract\IUrl;
+use OxidEsales\EshopCommunity\Core\Model\MultiLanguageModel;
 use oxList;
 use oxPrice;
 use oxRegistry;
@@ -47,7 +49,7 @@ define('OXARTICLE_LINKTYPE_RECOMM', 5);
  * discounts, etc.
  *
  */
-class Article extends \oxI18n implements ArticleInterface, \oxIUrl
+class Article extends MultiLanguageModel implements ArticleInterface, IUrl
 {
 
     /**

@@ -50,9 +50,13 @@ class NotOverridableClassAutoload
      */
     public function autoload($sClass)
     {
+        echo __CLASS__ . '::' . __FUNCTION__ . ' ' . $sClass . PHP_EOL;
+
         $sClass = strtolower($sClass);
         if (array_key_exists($sClass, $this->getClassMap())) {
             class_alias($this->map[$sClass], $sClass);
+
+            return true;
         }
     }
 

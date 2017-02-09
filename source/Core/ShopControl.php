@@ -28,7 +28,6 @@ use OxidEsales\EshopCommunity\Core\Exception\RoutingException;
 use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 use OxidEsales\EshopEnterprise\Core\Cache\DynamicContent\ContentCache;
 use oxOutput;
-use oxRegistry;
 use oxSystemComponentException;
 use PHPMailer;
 use ReflectionMethod;
@@ -38,7 +37,7 @@ use ReflectionMethod;
  * them (if needed), controls output, redirects according to
  * processed methods logic. This class is initialized from index.php
  */
-class ShopControl extends \oxSuperCfg
+class ShopControl extends \OxidEsales\Eshop\Core\Base
 {
     /**
      * Used to force handling, it allows other place like widget controller to skip it.
@@ -147,7 +146,7 @@ class ShopControl extends \oxSuperCfg
         try {
             $this->_runOnce();
 
-            $function = !is_null($function) ? $function : oxRegistry::getConfig()->getRequestParameter('fnc');
+            $function = !is_null($function) ? $function : Registry::getConfig()->getRequestParameter('fnc');
             $controllerKey = !is_null($controllerKey) ? $controllerKey : $this->getStartControllerKey();
             $controllerClass = $this->getControllerClass($controllerKey);
 
@@ -232,7 +231,7 @@ class ShopControl extends \oxSuperCfg
 
         // Use default route in case no controller id is given
         if (!$controllerKey) {
-            $session = oxRegistry::getSession();
+            $session = Registry::getSession();
             if ($this->isAdmin()) {
                 $controllerKey = $session->getVariable("auth") ? 'admin_start' : 'login';
             } else {
@@ -312,7 +311,7 @@ class ShopControl extends \oxSuperCfg
         $outputManager->setCharset($view->getCharSet());
 
         if ($config->getRequestParameter('renderPartial')) {
-            $outputManager->setOutputFormat(oxOutput::OUTPUT_FORMAT_JSON);
+            $outputManager->setOutputFormat(Output::OUTPUT_FORMAT_JSON);
             $outputManager->output('errors', $this->_getFormattedErrors($view->getClassName()));
         }
 
@@ -480,7 +479,7 @@ class ShopControl extends \oxSuperCfg
     protected function _render($view)
     {
         // get Smarty is important here as it sets template directory correct
-        $smarty = oxRegistry::get("oxUtilsView")->getSmarty();
+        $smarty = Registry::get("oxUtilsView")->getSmarty();
 
         // render it
         $templateName = $view->render();
@@ -495,7 +494,7 @@ class ShopControl extends \oxSuperCfg
             $templateName = "message/exception.tpl";
 
             if ($this->_isDebugMode()) {
-                oxRegistry::get("oxUtilsView")->addErrorToDisplay($ex);
+                Registry::get("oxUtilsView")->addErrorToDisplay($ex);
             }
             $ex->debugOut();
         }
@@ -508,7 +507,7 @@ class ShopControl extends \oxSuperCfg
         //add all exceptions to display
         $errors = $this->_getErrors($view->getClassName());
         if (is_array($errors) && count($errors)) {
-            oxRegistry::get("oxUtilsView")->passAllErrorsToView($viewData, $errors);
+            Registry::get("oxUtilsView")->passAllErrorsToView($viewData, $errors);
         }
 
         foreach (array_keys($viewData) as $viewName) {
@@ -550,8 +549,8 @@ class ShopControl extends \oxSuperCfg
     protected function _getErrors($currentControllerName)
     {
         if (null === $this->_aErrors) {
-            $this->_aErrors = oxRegistry::getSession()->getVariable('Errors');
-            $this->_aControllerErrors = oxRegistry::getSession()->getVariable('ErrorController');
+            $this->_aErrors = Registry::getSession()->getVariable('Errors');
+            $this->_aControllerErrors = Registry::getSession()->getVariable('ErrorController');
             if (null === $this->_aErrors) {
                 $this->_aErrors = array();
             }
@@ -568,8 +567,8 @@ class ShopControl extends \oxSuperCfg
         } else {
             $this->_aAllErrors = array();
         }
-        oxRegistry::getSession()->setVariable('ErrorController', $this->_aControllerErrors);
-        oxRegistry::getSession()->setVariable('Errors', $this->_aAllErrors);
+        Registry::getSession()->setVariable('ErrorController', $this->_aControllerErrors);
+        Registry::getSession()->setVariable('Errors', $this->_aAllErrors);
 
         return $this->_aErrors;
     }
@@ -588,19 +587,19 @@ class ShopControl extends \oxSuperCfg
 
         error_reporting($this->_getErrorReportingLevel());
 
-        $runOnceExecuted = oxRegistry::getSession()->getVariable('blRunOnceExecuted');
+        $runOnceExecuted = Registry::getSession()->getVariable('blRunOnceExecuted');
         if (!$runOnceExecuted && !$this->isAdmin() && $config->isProductiveMode()) {
             // check if setup is still there
             if (file_exists($config->getConfigParam('sShopDir') . '/Setup/index.php')) {
                 $tpl = 'message/err_setup.tpl';
                 $activeView = oxNew('oxUBase');
-                $smarty = oxRegistry::get("oxUtilsView")->getSmarty();
+                $smarty = Registry::get("oxUtilsView")->getSmarty();
                 $smarty->assign('oView', $activeView);
                 $smarty->assign('oViewConf', $activeView->getViewConfig());
-                oxRegistry::getUtils()->showMessageAndExit($smarty->fetch($tpl));
+                Registry::getUtils()->showMessageAndExit($smarty->fetch($tpl));
             }
 
-            oxRegistry::getSession()->setVariable('blRunOnceExecuted', true);
+            Registry::getSession()->setVariable('blRunOnceExecuted', true);
         }
     }
 
@@ -633,7 +632,7 @@ class ShopControl extends \oxSuperCfg
      */
     protected function _isDebugMode()
     {
-        return (bool) oxRegistry::get("OxConfigFile")->getVar('iDebug');
+        return (bool) Registry::get("OxConfigFile")->getVar('iDebug');
     }
 
     /**
@@ -744,10 +743,10 @@ class ShopControl extends \oxSuperCfg
         $exception->debugOut();
 
         if ($this->_isDebugMode()) {
-            oxRegistry::get("oxUtilsView")->addErrorToDisplay($exception);
+            Registry::get("oxUtilsView")->addErrorToDisplay($exception);
             $this->_process('exceptionError', 'displayExceptionError');
         } else {
-            oxRegistry::getUtils()->redirect($this->getConfig()->getShopHomeUrl() . 'cl=start', true, 302);
+            Registry::getUtils()->redirect($this->getConfig()->getShopHomeUrl() . 'cl=start', true, 302);
         }
     }
 
@@ -772,9 +771,9 @@ class ShopControl extends \oxSuperCfg
     protected function _handleCookieException($exception)
     {
         if ($this->_isDebugMode()) {
-            oxRegistry::get("oxUtilsView")->addErrorToDisplay($exception);
+            Registry::get("oxUtilsView")->addErrorToDisplay($exception);
         }
-        oxRegistry::getUtils()->redirect($this->getConfig()->getShopHomeUrl() . 'cl=start', true, 302);
+        Registry::getUtils()->redirect($this->getConfig()->getShopHomeUrl() . 'cl=start', true, 302);
     }
 
     /**
@@ -828,7 +827,7 @@ class ShopControl extends \oxSuperCfg
         $exception->debugOut();
 
         if ($this->_isDebugMode()) {
-            oxRegistry::get("oxUtilsView")->addErrorToDisplay($exception);
+            Registry::get("oxUtilsView")->addErrorToDisplay($exception);
             $this->_process('exceptionError', 'displayExceptionError');
         }
     }

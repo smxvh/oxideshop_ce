@@ -42,12 +42,16 @@ class ShopAutoload
      */
     public function autoload($class)
     {
+        echo __CLASS__ . '::' . __FUNCTION__ . ' ' . $class . PHP_EOL;
+
         startProfile("ShopAutoload");
 
         $class = strtolower(basename($class));
 
         if ($classPath = $this->getClassPath($class)) {
             include $classPath;
+
+            return true;
         }
 
         stopProfile("ShopAutoload");

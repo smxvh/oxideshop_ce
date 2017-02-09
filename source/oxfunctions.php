@@ -314,7 +314,7 @@ function oxNew($className)
 {
     startProfile('oxNew');
     $arguments = func_get_args();
-    $object = call_user_func_array(array(oxUtilsObject::getInstance(), "oxNew"), $arguments);
+    $object = call_user_func_array(array(OxidEsales\EshopCommunity\Core\UtilsObject::getInstance(), "oxNew"), $arguments);
     stopProfile('oxNew');
 
     return $object;

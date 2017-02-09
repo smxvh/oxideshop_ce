@@ -54,8 +54,12 @@ class VirtualNamespaceClassAutoload
      */
     public function autoload($class)
     {
+        echo __CLASS__ . '::' . __FUNCTION__ . ' ' . $class . PHP_EOL;
+
         if (array_key_exists($class, $this->getClassMap())) {
             class_alias($this->map[$class], $class);
+
+            return true;
         }
     }
 

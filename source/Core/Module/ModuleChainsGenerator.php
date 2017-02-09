@@ -23,7 +23,7 @@
 namespace OxidEsales\EshopCommunity\Core\Module;
 
 use oxConfig;
-use oxRegistry;
+use OxidEsales\EshopCommunity\Core\Registry;
 
 /**
  * Generates class chains for extended classes by modules.
@@ -194,7 +194,7 @@ class ModuleChainsGenerator
             }
 
             if (!$this->isNamespacedClass($extensionPath)) {
-                $modulesDirectory = oxRegistry::get("oxConfigFile")->getVar("sShopDir");
+                $modulesDirectory = Registry::get("oxConfigFile")->getVar("sShopDir");
                 $extensionParentPath = "$modulesDirectory/modules/$extensionPath.php";
 
                 //including original file
@@ -233,7 +233,7 @@ class ModuleChainsGenerator
     {
         if ($requestedClass == "oxconfig") {
             $config = new oxConfig();
-            oxRegistry::set("oxConfig", $config);
+            Registry::set("oxConfig", $config);
         }
     }
 
@@ -248,7 +248,7 @@ class ModuleChainsGenerator
      */
     protected function onModuleExtensionCreationError($classExtension, $moduleClass)
     {
-        $disableModuleOnError = !oxRegistry::get("oxConfigFile")->getVar("blDoNotDisableModuleOnError");
+        $disableModuleOnError = !Registry::get("oxConfigFile")->getVar("blDoNotDisableModuleOnError");
         if ($disableModuleOnError) {
             $this->disableModule($classExtension);
         } else {

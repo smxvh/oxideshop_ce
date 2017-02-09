@@ -22,8 +22,7 @@
 
 namespace OxidEsales\EshopCommunity\Core;
 
-use oxBase;
-use OxidEsales\Eshop\Core\Edition\EditionSelector;
+use OxidEsales\EshopCommunity\Core\Edition\EditionSelector;
 use OxidEsales\EshopCommunity\Core\Module\ModuleChainsGenerator;
 use OxidEsales\EshopCommunity\Core\Module\ModuleVariablesLocator;
 use oxSystemComponentException;
@@ -136,15 +135,15 @@ class UtilsObject
             // null for classNameProvider because it is generated in the constructor
             $classNameProvider = null;
 
-            $moduleVariablesCache = $oUtilsObject->oxNew('oxFileCache');
-            $shopIdCalculator = $oUtilsObject->oxNew('oxShopIdCalculator', $moduleVariablesCache);
+            $moduleVariablesCache = $oUtilsObject->oxNew(FileCache::class);
+            $shopIdCalculator = $oUtilsObject->oxNew(ShopIdCalculator::class, $moduleVariablesCache);
 
-            $subShopSpecific = $oUtilsObject->oxNew('oxSubShopSpecificFileCache', $shopIdCalculator);
-            $moduleVariablesLocator = $oUtilsObject->oxNew('oxModuleVariablesLocator', $subShopSpecific, $shopIdCalculator);
-            $moduleChainsGenerator = $oUtilsObject->oxNew('oxModuleChainsGenerator', $moduleVariablesLocator);
+            $subShopSpecific = $oUtilsObject->oxNew(SubShopSpecificFileCache::class, $shopIdCalculator);
+            $moduleVariablesLocator = $oUtilsObject->oxNew(ModuleVariablesLocator::class, $subShopSpecific, $shopIdCalculator);
+            $moduleChainsGenerator = $oUtilsObject->oxNew(ModuleChainsGenerator::class, $moduleVariablesLocator);
 
             //generate UtilsObject again by oxnew to allow overloading by modules
-            self::$_instance = $oUtilsObject->oxNew('oxUtilsObject', $classNameProvider, $moduleChainsGenerator, $shopIdCalculator);
+            self::$_instance = $oUtilsObject->oxNew(UtilsObject::class, $classNameProvider, $moduleChainsGenerator, $shopIdCalculator);
         }
 
         return self::$_instance;

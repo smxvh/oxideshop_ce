@@ -42,12 +42,16 @@ class ModuleAutoload
      */
     public function autoload($class)
     {
+        echo __CLASS__ . '::' . __FUNCTION__ . ' ' . $class . PHP_EOL;
+
         startProfile("oxModuleAutoload");
 
         $class = strtolower(basename($class));
 
         if ($classPath = $this->getFilePath($class)) {
             include $classPath;
+
+            return true;
         } else {
             $class = preg_replace('/_parent$/i', '', $class);
 
