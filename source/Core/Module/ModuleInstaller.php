@@ -96,11 +96,12 @@ class ModuleInstaller extends \oxSuperCfg
             $this->_addExtensions($module);
             $this->_removeFromDisabledList($moduleId);
 
-            $this->_addTemplateBlocks($module->getInfo("blocks"), $moduleId);
             if (version_compare($module->getMetaDataVersion(), '2.0', '<')) {
                 /** Support for the key 'files' was removed in MetaData version 2.0 */
                 $this->_addModuleFiles($module->getInfo("files"), $moduleId);
             }
+
+            $this->_addTemplateBlocks($module->getInfo("blocks"), $moduleId);
             $this->_addTemplateFiles($module->getInfo("templates"), $moduleId);
             $settingsHandler = oxNew(SettingsHandler::class);
             $settingsHandler->setModuleType('module')->run($module);
