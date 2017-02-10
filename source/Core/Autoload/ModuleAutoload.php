@@ -42,14 +42,13 @@ class ModuleAutoload
      */
     public function autoload($class)
     {
-        echo __CLASS__ . '::' . __FUNCTION__ . ' ' . $class . PHP_EOL;
-
         startProfile("oxModuleAutoload");
 
         $class = strtolower(basename($class));
 
         if ($classPath = $this->getFilePath($class)) {
             include $classPath;
+            echo __CLASS__ . '::' . __FUNCTION__ . ' FOUND ' . $class . PHP_EOL;
 
             return true;
         } else {
@@ -60,6 +59,7 @@ class ModuleAutoload
                 $this->createExtensionClassChain($class);
             }
         }
+        echo __CLASS__ . '::' . __FUNCTION__ . ' NOT FOUND ' . $class . PHP_EOL;
 
         stopProfile("oxModuleAutoload");
     }
