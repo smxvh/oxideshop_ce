@@ -179,20 +179,47 @@ class Content extends \oxI18n implements \oxIUrl
     /**
      * Loads Content by using field oxloadid instead of oxid.
      *
-     * @param string $sLoadId content load ID
+     * @param string $loadId     content load ID
+     * @param string $onlyActive selection state - active/inactive
      *
      * @return bool
      */
-    public function loadByIdent($sLoadId)
+    public function loadByIdent($loadId, $onlyActive = false)
     {
-        $aData = $this->_loadFromDb($sLoadId);
+        return $this->assignContentData($this->_loadFromDb($loadId), $onlyActive);
+    }
 
-        if ($aData) {
-            $this->assign($aData);
+    /**
+     * Assign content data, filter inactive if needed.
+     *
+     * @param array $fetchedContent Item data to assign
+     * @param bool  $onlyActive     Only assign if item is active
+     *
+     * @return bool
+     */
+    protected function assignContentData($fetchedContent, $onlyActive = false)
+    {
+        $filteredContent = $this->filterInactive($fetchedContent, $onlyActive);
+
+        if (!is_null($filteredContent)) {
+            $this->assign($filteredContent);
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Decide if content item can be loaded by checking item activity if needed
+     *
+     * @param array $data
+     * @param bool  $checkIfActive
+     *
+     * @return array | null
+     */
+    protected function filterInactive($data, $checkIfActive = false)
+    {
+        return $data && (!$checkIfActive || ($checkIfActive && $data['OXACTIVE']) == '1') ? $data : null;
     }
 
     /**
