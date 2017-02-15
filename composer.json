@@ -17,13 +17,16 @@
         "oxid-esales/eshop-db-views-regenerator": "^v1.0.0",
         "doctrine/dbal": "v2.5.4",
         "oxid-esales/eshop-demodata-installer": "^v1.0.0",
-        "oxid-esales/oxideshop-composer-plugin": "^v1.0.0"
+        "oxid-esales/oxideshop-composer-plugin": "^v1.0.0",
+        "oxid-esales/oxideshop-pe": "dev-master",
+        "oxid-esales/oxideshop-ee": "dev-master"
     },
     "require-dev": {
         "oxid-esales/testing-library": "dev-master",
         "oxid-esales/coding-standards": "^v3.0.1",
         "oxid-esales/coding-standards-wrapper": "dev-master",
-        "incenteev/composer-parameter-handler": "~v2.0"
+        "incenteev/composer-parameter-handler": "~v2.0",
+        "oxid-esales/eshop-virtual-namespace-generator": "dev-adjust_vns_generator_exceptions-ESDEV-4300"
     },
     "autoload": {
         "psr-4": {
@@ -59,6 +62,16 @@
                 "shop_tests_path": "SHOP_TESTS_PATH",
                 "partial_module_paths": "PARTIAL_MODULE_PATHS"
             }
+        }
+    },
+    "repositories": {
+        "oxid-esales/oxideshop-pe": {
+            "type": "vcs",
+            "url": "https://github.com/OXID-eSales/oxideshop_pe"
+        },
+        "oxid-esales/oxideshop-ee": {
+            "type": "vcs",
+            "url": "https://github.com/OXID-eSales/oxideshop_ee"
         }
     }
 }
