@@ -37,6 +37,9 @@ class BcAliasAutoloader
     private $virtualClassMap; // virtual class name => real class name
 
 
+    /**
+     * BcAliasAutoloader constructor.
+     */
     public function __construct()
     {
         $classMap = include_once __DIR__ . DIRECTORY_SEPARATOR . 'BackwardsCompatibilityClassMap.php';
@@ -50,8 +53,6 @@ class BcAliasAutoloader
      */
     public function autoload($class)
     {
-        // Uncomment to debug:  echo __CLASS__ . '::' . __FUNCTION__  . ' TRYING TO LOAD ' . $class . PHP_EOL;
-
         $bcAlias = null;
         $virtualAlias = null;
         $realClass = null;
@@ -101,6 +102,11 @@ class BcAliasAutoloader
         return in_array(strtolower($class), $classMap);
     }
 
+    /**
+     * @param string $class
+     *
+     * @return mixed
+     */
     private function getVirtualAliasForBcAlias($class)
     {
         $classMap = array_flip($this->getBackwardsCompatibilityClassMap());
@@ -118,6 +124,11 @@ class BcAliasAutoloader
         return strpos($class, 'OxidEsales\\Eshop\\') === 0;
     }
 
+    /**
+     * @param string $class
+     *
+     * @return mixed
+     */
     private function getBcAliasForVirtualAlias($class)
     {
         $classMap = $this->getBackwardsCompatibilityClassMap();
@@ -133,19 +144,6 @@ class BcAliasAutoloader
      */
     private function getRealClassForVirtualAlias($class)
     {
-        /*$eeName = str_replace('\\Eshop\\', '\\EshopEnterprise\\', $class);
-        if (class_exists($eeName) || interface_exists($eeName)) {
-            return $eeName;
-        }
-        $peName = str_replace('\\Eshop\\', '\\EshopProfessional\\', $class);
-        if (class_exists($peName) || interface_exists($peName)) {
-            return $peName;
-        }
-        $ceName = str_replace('\\Eshop\\', '\\EshopCommunity\\', $class);
-        if (class_exists($ceName) || interface_exists($ceName)) {
-            return $ceName;
-        }
-        throw  new \Exception("No class found for virtual class name " . $class . "!");*/
         $virtualClassMap = $this->getVirtualClassMap();
 
         if (key_exists($class, $virtualClassMap)) {
@@ -209,7 +207,7 @@ class BcAliasAutoloader
 
         return $this->virtualClassMap;
     }
-
 }
+
 // Uncomment to debug:  echo __CLASS__ . '::' . __FUNCTION__  . ' TRYING TO LOAD ' . $class . PHP_EOL;
 spl_autoload_register([new BcAliasAutoloader(), 'autoload']);

@@ -50,13 +50,14 @@ class VirtualNamespaceClassAutoload
     /**
      * Creates class alias from class which is defined in class map.
      *
-     * @param string $class Class name.
+     * @param string $classVirtualName
+     *
+     * @return bool
      */
     public function autoload($classVirtualName)
     {
         if (array_key_exists($classVirtualName, $this->getClassMap())) {
             $realClassName = $this->map[$classVirtualName];
-            // Uncomment to debug:  echo __CLASS__ . '::' . __FUNCTION__ . ' CREATE ALIAS ' . $realClassName .' - '. $classVirtualName . PHP_EOL;
             class_alias($realClassName, $classVirtualName);
 
             return true;
