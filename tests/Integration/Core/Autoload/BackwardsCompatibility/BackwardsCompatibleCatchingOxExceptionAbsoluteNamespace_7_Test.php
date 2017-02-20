@@ -27,6 +27,8 @@ class BackwardsCompatibleCatchingOxExceptionAbsoluteNamespace_7_Test extends \PH
 
     /**
      * Try to catch an \oxException when a given Exception is thrown
+     * Creating and instance using \OxidEsales\EshopCommunity\Core\Exception\StandardException::class will return an
+     * object, which is not an instance of oxException
      *
      * @throws \Exception $exception
      */
@@ -36,11 +38,11 @@ class BackwardsCompatibleCatchingOxExceptionAbsoluteNamespace_7_Test extends \PH
         try {
             throw $exception;
         } catch (\oxException $exception) {
-            /** If the exception got caught, the test has passed */
-            $this->assertTrue(true, 'The given exception (new \OxidEsales\EshopCommunity\Core\Exception\StandardException()) was caught');
+            /** If the exception got caught, the test has failed */
+            $this->fail('The given exception (new \OxidEsales\EshopCommunity\Core\Exception\StandardException()) was caught');
         } catch (\Exception $exception) {
             /** If the exception got not caught before, the test has failed */
-            $this->fail('The given exception (new \OxidEsales\EshopCommunity\Core\Exception\StandardException()) was not caught');
+            $this->assertTrue(true, 'The given exception (new \OxidEsales\EshopCommunity\Core\Exception\StandardException()) was not caught');
         }
     }
 }

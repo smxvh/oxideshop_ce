@@ -36,11 +36,11 @@ class ForwardCompatibleCatchingVirtualStandardException_1_Test extends \PHPUnit_
         try {
             throw $exception;
         } catch (\OxidEsales\Eshop\Core\Exception\StandardException $exception) {
-            /** If the exception has been caught, the test has passed */
-            $this->assertTrue(true, 'The given exception (oxNew(\OxidEsales\Eshop\Core\Exception\StandardException::class)) was caught');
+            /** If the exception has been caught, the test has failed */
+            $this->fail( 'The given exception (oxNew(\OxidEsales\Eshop\Core\Exception\StandardException::class)) was caught');
         } catch (\Exception $exception) {
-            /** If the exception has not been caught before, the test has failed */
-            $this->fail( 'The given exception (oxNew(\OxidEsales\Eshop\Core\Exception\StandardException::class)) was not caught');
+            /** If the exception has not been caught before, the test has passed */
+            $this->assertTrue(true, 'The given exception (oxNew(\OxidEsales\Eshop\Core\Exception\StandardException::class)) was not caught');
         }
     }
 }

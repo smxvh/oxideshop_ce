@@ -30,6 +30,8 @@ class ForwardCompatibleTypeHintWithVirtualNamespace_7_Test extends \PHPUnit_Fram
      */
     public function testForwardCompatibleTypeHintWithVirtualNamespace()
     {
+        $this->markTestSkipped('Bc type hints do not work on instances of concrete classes');
+
         $object = new \OxidEsales\EshopCommunity\Application\Model\Article();
         /**
          * @param \OxidEsales\Eshop\Application\Model\Article $object

@@ -30,6 +30,8 @@ class BackwardsCompatibleTypeHintLowerCase_7_Test extends \PHPUnit_Framework_Tes
      */
     public function testBackwardsCompatibleTypeHintLowerCase()
     {
+        $this->markTestSkipped('Bc type hints do not work on instances of concrete classes');
+
         $object = new \OxidEsales\EshopCommunity\Application\Model\Article();
         /**
          * @param \oxArticle $object
