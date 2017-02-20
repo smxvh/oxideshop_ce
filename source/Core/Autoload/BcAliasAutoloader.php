@@ -56,18 +56,6 @@ class BcAliasAutoloader
         $virtualAlias = null;
         $realClass = null;
 
-        if ($this->isRealClassRequest($class)) {
-            $search = ['OxidEsales\\EshopCommunity\\', 'OxidEsales\\EshopProfessional\\', 'OxidEsales\\EshopEnterprise\\',];
-            $replace = ['OxidEsales\\Eshop\\'];
-            $virtualClass = str_replace($search, $replace, $class);
-            if (array_key_exists($virtualClass, $this->backwardsCompatibilityClassMap)) {
-                $backwardsCompatibleClassName = $this->backwardsCompatibilityClassMap[$virtualClass];
-                class_alias('\\' . $class, $backwardsCompatibleClassName, false);
-            }
-
-            return false;
-        }
-
         if ($this->isBcAliasRequest($class)) {
             $bcAlias = $class;
             $virtualAlias = $this->getVirtualAliasForBcAlias($class);
@@ -99,19 +87,6 @@ class BcAliasAutoloader
         }
 
         return false;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return bool
-     */
-    public function isRealClassRequest($class)
-    {
-        $pattern = '/^(?i:oxidesales\\eshopcommunity|oxidesales\\eshopprofessional|oxidesales\\eshopenterprise)/';
-        $result = preg_match($pattern, $class) === 1 ? true : false;
-
-        return $result;
     }
 
     /**
@@ -237,4 +212,4 @@ class BcAliasAutoloader
 
 }
 // Uncomment to debug:  echo __CLASS__ . '::' . __FUNCTION__  . ' TRYING TO LOAD ' . $class . PHP_EOL;
-spl_autoload_register([new BcAliasAutoloader(), 'autoload'], true, true);
+spl_autoload_register([new BcAliasAutoloader(), 'autoload']);
