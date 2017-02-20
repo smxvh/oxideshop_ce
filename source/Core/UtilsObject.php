@@ -27,7 +27,6 @@ use OxidEsales\EshopCommunity\Core\Edition\EditionSelector;
 use OxidEsales\EshopCommunity\Core\Exception\SystemComponentException;
 use OxidEsales\EshopCommunity\Core\Module\ModuleChainsGenerator;
 use OxidEsales\EshopCommunity\Core\Module\ModuleVariablesLocator;
-use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use ReflectionClass;
 use ReflectionException;
 
