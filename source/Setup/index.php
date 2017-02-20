@@ -20,25 +20,11 @@
  * @version   OXID eShop CE
  */
 
+namespace OxidEsales\EshopCommunity\Setup;
+
+require_once '../bootstrap.php';
+
 error_reporting((E_ALL ^ E_NOTICE) | E_STRICT);
-
-//setting basic configuration parameters
-ini_set('session.name', 'sid');
-ini_set('session.use_cookies', 0);
-ini_set('session.use_trans_sid', 0);
-ini_set('url_rewriter.tags', '');
-
-use OxidEsales\EshopCommunity\Setup\Dispatcher;
-
-if (!defined('OX_BASE_PATH')) {
-    define('OX_BASE_PATH', __DIR__ . DIRECTORY_SEPARATOR . '/../');
-}
-
-require_once '../oxfunctions.php';
-
-registerComposerAutoload();
-registerVirtualNamespaceAutoLoad();
-registerShopAutoLoad();
 
 require_once 'functions.php';
 

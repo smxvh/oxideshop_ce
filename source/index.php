@@ -22,5 +22,12 @@
 
 require_once dirname(__FILE__) . "/bootstrap.php";
 
+/**
+ * Redirect to Setup, if shop is not configured
+ */
+redirectIfShopNotConfigured();
+
+registerModuleAutoload();
+
 //Starts the shop
 OxidEsales\EshopCommunity\Core\Oxid::run();

@@ -46,15 +46,12 @@ require_once OX_BASE_PATH . 'oxfunctions.php';
 
 // Make actions if there are eShop configuration problems
 showErrorIfConfigIsMissing();
-redirectIfShopNotConfigured();
 
 //init config.inc.php file reader
 $oConfigFile = new ConfigFile(OX_BASE_PATH . "config.inc.php");
 Registry::set("oxConfigFile", $oConfigFile);
 
 registerVirtualNamespaceAutoLoad();
-registerModuleAutoload();
-
 
 //sets default PHP ini params
 ini_set('session.name', 'sid');

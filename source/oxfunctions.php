@@ -84,21 +84,6 @@ if (!function_exists('registerVirtualNamespaceAutoLoad')) {
     }
 }
 
-if (!function_exists('registerShopAutoLoad')) {
-    /**
-     * Registers auto-loader for shop legacy (non-namespaced) classes.
-     */
-    function registerShopAutoLoad()
-    {
-        $classMapProvider = new \OxidEsales\EshopCommunity\Core\ClassMapProvider(new \OxidEsales\EshopCommunity\Core\Edition\EditionSelector());
-        $notOverridableClassAutoloader = new \OxidEsales\EshopCommunity\Core\Autoload\NotOverridableClassAutoload($classMapProvider->getNotOverridableClassMap());
-        spl_autoload_register(array($notOverridableClassAutoloader, 'autoload'));
-
-        $shopAutoloader = new \OxidEsales\EshopCommunity\Core\Autoload\ShopAutoload();
-        spl_autoload_register(array($shopAutoloader, 'autoload'));
-    }
-}
-
 if (!function_exists('registerModuleAutoload')) {
     /**
      * Registers auto-loader for module files and extensions.
