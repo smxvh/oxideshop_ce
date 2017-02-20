@@ -431,7 +431,7 @@ class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\C
             'OxidEsales\Eshop\Core\Base' => \OxidEsales\EshopCommunity\Core\Base::class,
             'OxidEsales\Eshop\Core\ClassMap' => \OxidEsales\EshopCommunity\Core\ClassMap::class,
             'OxidEsales\Eshop\Core\ClassMapProvider' => \OxidEsales\EshopCommunity\Core\ClassMapProvider::class,
-            'OxidEsales\Eshop\Core\ClassNameProvider' => \OxidEsales\EshopCommunity\Core\ClassNameProvider::class,
+            'OxidEsales\Eshop\Core\ClassNameProvider' => \OxidEsales\EshopCommunity\Core\BackwardsCompatibleClassNameProvider::class,
             'OxidEsales\Eshop\Core\CompanyVatInChecker' => \OxidEsales\EshopCommunity\Core\CompanyVatInChecker::class,
             'OxidEsales\Eshop\Core\CompanyVatInCountryChecker' => \OxidEsales\EshopCommunity\Core\CompanyVatInCountryChecker::class,
             'OxidEsales\Eshop\Core\CompanyVatInValidator' => \OxidEsales\EshopCommunity\Core\CompanyVatInValidator::class,

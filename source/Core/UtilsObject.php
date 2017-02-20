@@ -73,7 +73,7 @@ class UtilsObject
      */
     private static $_instance = null;
 
-    /** @var ClassNameProvider */
+    /** @var BackwardsCompatibleClassNameProvider */
     private $classNameProvider;
 
     /** @var ModuleChainsGenerator */
@@ -83,15 +83,15 @@ class UtilsObject
     private $shopIdCalculator;
 
     /**
-     * @param ClassNameProvider     $classNameProvider
-     * @param ModuleChainsGenerator $moduleChainsGenerator
-     * @param ShopIdCalculator      $shopIdCalculator
+     * @param BackwardsCompatibleClassNameProvider $classNameProvider
+     * @param ModuleChainsGenerator                $moduleChainsGenerator
+     * @param ShopIdCalculator                     $shopIdCalculator
      */
     public function __construct($classNameProvider = null, $moduleChainsGenerator = null, $shopIdCalculator = null)
     {
         if (!$classNameProvider) {
-            $classMapProvider = new ClassMapProvider(new EditionSelector());
-            $classNameProvider = new ClassNameProvider($classMapProvider->getOverridableClassMap());
+            $backwardsCompatibleClassMap = include  'Autoload/BackwardsCompatibilityClassMap.php';
+            $classNameProvider = new BackwardsCompatibleClassNameProvider($backwardsCompatibleClassMap);
         }
         $this->classNameProvider = $classNameProvider;
 
@@ -406,7 +406,7 @@ class UtilsObject
     }
 
     /**
-     * @return ClassNameProvider
+     * @return BackwardsCompatibleClassNameProvider
      */
     protected function getClassNameProvider()
     {

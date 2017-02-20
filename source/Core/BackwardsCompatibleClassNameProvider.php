@@ -28,7 +28,7 @@ namespace OxidEsales\EshopCommunity\Core;
  * @internal Do not make a module extension for this class.
  * @see      http://oxidforge.org/en/core-oxid-eshop-classes-must-not-be-extended.html
  */
-class ClassNameProvider
+class BackwardsCompatibleClassNameProvider
 {
     /** @var array */
     private $classMap;
@@ -38,7 +38,7 @@ class ClassNameProvider
      */
     public function __construct($classMap)
     {
-        $this->classMap = $classMap;
+        $this->classMap = array_flip($classMap);
     }
 
     /**
@@ -51,11 +51,9 @@ class ClassNameProvider
      */
     public function getClassName($classAlias)
     {
-        $classMap = $this->getExtendedClassMap();
-
         $className = $classAlias;
-        if (array_key_exists($classAlias, $classMap)) {
-            $className = $classMap[$classAlias];
+        if (array_key_exists($classAlias, $this->classMap)) {
+            $className = $this->classMap[$classAlias];
         }
 
         return $className;
@@ -70,28 +68,16 @@ class ClassNameProvider
      */
     public function getClassAliasName($className)
     {
+        /*
+         * Sanitize input: class names in namespaces should not, but may include a leading backslash
+         */
         $className = ltrim($className, '\\');
-        $classAlias = array_search($className, $this->getExtendedClassMap());
+        $classAlias = array_search($className, $this->classMap);
 
-        if (false === $classAlias) {
-            $className = '\\' . $className;
-            $classAlias = array_search($className, $this->getExtendedClassMap());
-        }
-        //still not found?
         if ($classAlias === false) {
             $classAlias = null;
         }
 
         return $classAlias;
-    }
-
-    /**
-     * Returns extended classes map
-     *
-     * @return array
-     */
-    protected function getExtendedClassMap()
-    {
-        return $this->classMap;
     }
 }

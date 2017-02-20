@@ -52,10 +52,10 @@ $oConfigFile = new ConfigFile(OX_BASE_PATH . "config.inc.php");
 Registry::set("oxConfigFile", $oConfigFile);
 
 registerVirtualNamespaceAutoLoad();
+registerModuleAutoload();
 
 //sets default PHP ini params
 ini_set('session.name', 'sid');
 ini_set('session.use_cookies', 0);
 ini_set('session.use_trans_sid', 0);
 ini_set('url_rewriter.tags', '');
-

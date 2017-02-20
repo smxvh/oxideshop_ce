@@ -23,9 +23,6 @@
 namespace OxidEsales\EshopCommunity\Core;
 
 use OxidEsales\EshopCommunity\Core\Edition\EditionSelector;
-use OxidEsales\EshopEnterprise\ClassMap as EnterpriseClassMap;
-use OxidEsales\EshopProfessional\ClassMap as ProfessionalClassMap;
-use OxidEsales\EshopCommunity\Core\ClassMap as CommunityClassMap;
 
 /**
  * Class responsible for returning class map by edition.
@@ -35,21 +32,6 @@ use OxidEsales\EshopCommunity\Core\ClassMap as CommunityClassMap;
  */
 class ClassMapProvider
 {
-    /** @var array */
-    private $notOverridableClassMap = array();
-
-    /** @var array */
-    private $overridableClassMap = array();
-
-    /** @var CommunityClassMap */
-    private $communityClassMap;
-
-    /** @var ProfessionalClassMap */
-    private $professionalClassMap;
-
-    /** @var EnterpriseClassMap */
-    private $enterpriseClassMap;
-
     /**
      * Sets edition selector object.
      *
@@ -61,58 +43,6 @@ class ClassMapProvider
     }
 
     /**
-     * @param CommunityClassMap $classMap
-     */
-    public function setClassMapCommunity($classMap)
-    {
-        $this->communityClassMap = $classMap;
-    }
-
-    /**
-     * @param ProfessionalClassMap $classMap
-     */
-    public function setClassMapProfessional($classMap)
-    {
-        $this->professionalClassMap = $classMap;
-    }
-
-    /**
-     * @param EnterpriseClassMap $classMap
-     */
-    public function setClassMapEnterprise($classMap)
-    {
-        $this->enterpriseClassMap = $classMap;
-    }
-
-    /**
-     * Method returns overridable classes class map according edition.
-     *
-     * @return array
-     */
-    public function getOverridableClassMap()
-    {
-        if (empty($this->overridableClassMap)) {
-            $this->formClassMaps();
-        }
-
-        return $this->overridableClassMap;
-    }
-
-    /**
-     * Method returns not overridable classes class map according edition.
-     *
-     * @return array
-     */
-    public function getNotOverridableClassMap()
-    {
-        if (empty($this->notOverridableClassMap)) {
-            $this->formClassMaps();
-        }
-
-        return $this->notOverridableClassMap;
-    }
-
-    /**
      * Return a map of concrete classes to virtual namespaced classes depending on the shop edition.
      * All available class maps will be merged together like this: CE <- PE <- EE
      *
@@ -120,7 +50,6 @@ class ClassMapProvider
      */
     public function getOverridableVirtualNamespaceClassMap()
     {
-
         $editionSelector = $this->getEditionSelector();
         switch ($editionSelector->getEdition()) {
             case EditionSelector::ENTERPRISE:
@@ -149,76 +78,6 @@ class ClassMapProvider
         }
 
         return $virtualNameSpaceClassMap;
-    }
-
-    /**
-     * Method forms overridable and not overridable class maps and sets them.
-     */
-    protected function formClassMaps()
-    {
-        $editionSelector = $this->getEditionSelector();
-        $classMapCommunity = $this->getClassMapCommunity();
-        $overridableMap = $classMapCommunity->getOverridableMap();
-        $notOverridableMap = $classMapCommunity->getNotOverridableMap();
-
-        if ($editionSelector->getEdition() === EditionSelector::ENTERPRISE
-            || $editionSelector->getEdition() === EditionSelector::PROFESSIONAL
-        ) {
-            $classMapProfessional = $this->getClassMapProfessional();
-            $overridableMap = array_merge($overridableMap, $classMapProfessional->getOverridableMap());
-            $notOverridableMap = array_merge($notOverridableMap, $classMapProfessional->getNotOverridableMap());
-        }
-
-        if ($editionSelector->getEdition() === EditionSelector::ENTERPRISE) {
-            $classMapEnterprise = $this->getClassMapEnterprise();
-            $overridableMap = array_merge($overridableMap, $classMapEnterprise->getOverridableMap());
-            $notOverridableMap = array_merge($notOverridableMap, $classMapEnterprise->getNotOverridableMap());
-        }
-
-        $this->overridableClassMap = $overridableMap;
-        $this->notOverridableClassMap = $notOverridableMap;
-    }
-
-    /**
-     * Method is responsible for providing class map object.
-     *
-     * @return CommunityClassMap
-     */
-    protected function getClassMapCommunity()
-    {
-        if (is_null($this->communityClassMap)) {
-            $this->communityClassMap = new CommunityClassMap();
-        }
-
-        return $this->communityClassMap;
-    }
-
-    /**
-     * Method is responsible for providing class map object.
-     *
-     * @return ProfessionalClassMap
-     */
-    protected function getClassMapProfessional()
-    {
-        if (is_null($this->professionalClassMap)) {
-            $this->professionalClassMap = new ProfessionalClassMap();
-        }
-
-        return $this->professionalClassMap;
-    }
-
-    /**
-     * Method is responsible for providing class map object.
-     *
-     * @return EnterpriseClassMap
-     */
-    protected function getClassMapEnterprise()
-    {
-        if (is_null($this->enterpriseClassMap)) {
-            $this->enterpriseClassMap = new EnterpriseClassMap();
-        }
-
-        return $this->enterpriseClassMap;
     }
 
     /**
