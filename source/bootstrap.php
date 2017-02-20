@@ -62,4 +62,3 @@ ini_set('session.use_cookies', 0);
 ini_set('session.use_trans_sid', 0);
 ini_set('url_rewriter.tags', '');
 
-// oxNew('oxxxx');
