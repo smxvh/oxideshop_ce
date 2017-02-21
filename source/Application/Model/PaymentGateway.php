@@ -75,11 +75,11 @@ class PaymentGateway extends \OxidEsales\Eshop\Core\Base
      * Executes payment, returns true on success.
      *
      * @param double $dAmount Goods amount
-     * @param object &$oOrder User ordering object
+     * @param object $oOrder  User ordering object
      *
      * @return bool
      */
-    public function executePayment($dAmount, & $oOrder)
+    public function executePayment($dAmount, &$oOrder)
     {
         $this->_iLastErrorNo = null;
         $this->_sLastError = null;
