@@ -42,8 +42,6 @@ class ModuleAutoload
      */
     public function autoload($class)
     {
-        startProfile("oxModuleAutoload");
-
         $class = strtolower(basename($class));
 
         if ($classPath = $this->getFilePath($class)) {
@@ -56,8 +54,6 @@ class ModuleAutoload
                 $this->createExtensionClassChain($class);
             }
         }
-
-        stopProfile("oxModuleAutoload");
     }
 
     /**
@@ -110,3 +106,6 @@ class ModuleAutoload
         }
     }
 }
+
+$moduleAutoload = new \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload();
+spl_autoload_register(array($moduleAutoload, 'autoload'));

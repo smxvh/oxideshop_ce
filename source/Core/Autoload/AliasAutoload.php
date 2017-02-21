@@ -28,13 +28,12 @@ namespace OxidEsales\EshopCommunity\Core\Autoload;
  * The aliases are provided by a class map provider. But it is not sufficient
  * to
  */
-class BcAliasAutoloader
+class AliasAutoload
 {
 
     private $classMapProvider;
     private $backwardsCompatibilityClassMap;
     private $reverseBackwardsCompatibilityClassMap; // real class name => lowercase(old class name)
-    private $virtualClassMap; // virtual class name => real class name
 
 
     /**
@@ -158,22 +157,8 @@ class BcAliasAutoloader
      */
     private function forceClassLoading($class)
     {
-        // Calling class_exists or interface_exists will trigger the autoloader
+        // Calling class_exists will trigger the autoloader
         class_exists($class);
-        interface_exists($class);
-    }
-
-    /**
-     * @return \OxidEsales\EshopCommunity\Core\ClassMapProvider
-     */
-    private function getClassMapProvider()
-    {
-        if (!$this->classMapProvider) {
-            $editionSelector = new \OxidEsales\EshopCommunity\Core\Edition\EditionSelector();
-            $this->classMapProvider = new \OxidEsales\EshopCommunity\Core\ClassMapProvider($editionSelector);
-        }
-
-        return $this->classMapProvider;
     }
 
     /**
@@ -201,13 +186,34 @@ class BcAliasAutoloader
      */
     private function getVirtualClassMap()
     {
-        if (!$this->virtualClassMap) {
-            $this->virtualClassMap = $this->getClassMapProvider()->getOverridableVirtualNamespaceClassMap();
+        /** The properties defined in the config file will dynamically loaded into this class */
+        include OX_BASE_PATH . DIRECTORY_SEPARATOR . 'config.inc.php';
+        $edition = $this->edition;
+        $virtualClassMap = [];
+
+        if ($edition == 'EE' &&
+            file_exists(VENDOR_PATH . 'oxid-esales/oxideshop-ee/Core/Autoload/VirtualNameSpaceClassMap.php')
+        ) {
+            include_once VENDOR_PATH . 'oxid-esales/oxideshop-ee/Core/Autoload/VirtualNameSpaceClassMap.php';
+            $virtualNameSpaceClassMap = new \OxidEsales\EshopEnterprise\Core\Autoload\VirtualNameSpaceClassMap();
+            $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
+        } elseif ($edition == 'PE' &&
+            file_exists(VENDOR_PATH . 'oxid-esales/oxideshop-pe/Core/Autoload/VirtualNameSpaceClassMap.php')
+        ) {
+            include_once VENDOR_PATH . 'oxid-esales/oxideshop-pe/Core/Autoload/VirtualNameSpaceClassMap.php';
+            $virtualNameSpaceClassMap = new \OxidEsales\EshopProfessional\Core\Autoload\VirtualNameSpaceClassMap();
+            $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
+        } elseif ($edition == 'CE' &&
+            file_exists(OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php')
+        ) {
+            include_once OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php';
+            $virtualNameSpaceClassMap = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
+            $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
+        } else {
+            trigger_error('The corresponding classmap for edition "' . $edition . '" was not found', E_USER_ERROR);
         }
 
-        return $this->virtualClassMap;
+        return $virtualClassMap;
     }
 }
-
-// Uncomment to debug:  echo __CLASS__ . '::' . __FUNCTION__  . ' TRYING TO LOAD ' . $class . PHP_EOL;
-spl_autoload_register([new BcAliasAutoloader(), 'autoload']);
+spl_autoload_register([new AliasAutoload(), 'autoload']);

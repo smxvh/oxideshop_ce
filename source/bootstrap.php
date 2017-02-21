@@ -20,39 +20,115 @@
  * @version       OXID eShop CE
  */
 
-use OxidEsales\EshopCommunity\Core\ConfigFile;
-use OxidEsales\EshopCommunity\Core\Registry;
-
-//E_DEPRECATED is disabled particularly for PHP 5.3 as some 3rd party modules still uses deprecated functionality
 error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+ini_set('display_errors', 0);
 
 define('INSTALLATION_ROOT_PATH', dirname(__DIR__));
 define('OX_BASE_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR);
 define('VENDOR_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR);
+define('OX_LOG_FILE', OX_BASE_PATH . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'EXCEPTION_LOG.txt');
 
-// Require and register backwards compatible autoloader
-require_once OX_BASE_PATH . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Autoload' . DIRECTORY_SEPARATOR . 'BcAliasAutoloader.php';
+/**
+ * Provide a handler for cachable fatal errors, like failed requirement of files.
+ * No information about paths or filenames must be disclosed to the frontend,
+ * as this would be a security problem on productive systems.
+ *
+ * As this is the last resort no further errors must happen.
+ */
+function shutDownHandler()
+{
+    $error = error_get_last();
+    if (in_array($error['type'], [E_COMPILE_ERROR, E_USER_ERROR])) {
+        $displayMessage = 'No details are available in log file as it does not exist or is not writable';
 
-// Require and register composer autoloader
-require_once VENDOR_PATH . 'autoload.php';
+        $time = microtime(true);
+        $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
+        $date = new DateTime(date('Y-m-d H:i:s.' . $micro, $time));
+        $timestamp = $date->format('D M H:i:s.u Y');
 
-// custom functions file
-if (file_exists(OX_BASE_PATH . 'modules/functions.php')) {
-    include_once OX_BASE_PATH . 'modules/functions.php';
+        $logMessage = "[$timestamp] [:error] [type {$error['type']}] " . $error['message'] . PHP_EOL;
+        if (file_put_contents(OX_LOG_FILE, $logMessage, FILE_APPEND)) {
+            $displayMessage = 'See log file for details';
+        }
+        echo <<<EOT
+        <p>
+        <strong>
+          <font color="red">An error was captured</font>
+        </strong>
+        </p>
+        <p>$displayMessage</p>
+EOT;
+    }
 }
 
-// Generic utility method file including autoloading definition
+register_shutdown_function('shutDownHandler');
+
+/**
+ * First of all ensure, that the shop config file is available.
+ */
+if (!file_exists(OX_BASE_PATH . "config.inc.php") ||
+    !is_readable(OX_BASE_PATH . "config.inc.php")
+) {
+    $message = sprintf(
+        "Config file '%s' could not be found! Please use '%s.dist' to make a copy.",
+        OX_BASE_PATH . "config.inc.php",
+        OX_BASE_PATH . "config.inc.php"
+    );
+    trigger_error($message, E_USER_ERROR);
+}
+
+/**
+ * Register basic the autoloaders. In this phase we still do not want to use other shop classes to make autoloading
+ * as decoupled as possible.
+ */
+
+/*
+ * Require and register composer autoloader.
+ * This autoloader will load classes in the real existing namespace like '\OxidEsales\EshopCommunity\Core\UtilsObject'
+ * It will always come first, even if you move it after the other autoloaders as it reisters itself with prepend = true
+ */
+require_once VENDOR_PATH . 'autoload.php';
+
+/*
+ * Require and register the alias autoloader.
+ * This autoloader will load classes in the virtual namespace like '\OxidEsales\Eshop\Core\UtilsObject' or
+ * for reasons of backwards compatibility classes like 'oxArticle'.
+ *
+ * Past this point you should use only create instances of classes from the virtual namespace
+ */
+require_once OX_BASE_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoload' . DIRECTORY_SEPARATOR . 'AliasAutoload.php';
+
+/**
+ * Register the module autoload.
+ * It will load classes like YourModule_parent or classes defined in the metadata key 'extends'
+ * When this autoloader is called a database connection will be triggered
+ */
+require_once OX_BASE_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoload' . DIRECTORY_SEPARATOR . 'ModuleAutoload.php';
+
+/**
+ * Store the shop configuration in the Registry prior including the custom bootstrap functionality.
+ * Like this the shop configuration is available there.
+ */
+$configFile = new \OxidEsales\Eshop\Core\ConfigFile(OX_BASE_PATH . "config.inc.php");
+\OxidEsales\Eshop\Core\Registry::set("oxConfigFile", $configFile);
+
+/**
+ * Custom bootstrap functionality.
+ * Registry is a
+ */
+if (file_exists(OX_BASE_PATH . 'modules/functions.php') &&
+    is_readable(OX_BASE_PATH . 'modules/functions.php')
+) {
+    include OX_BASE_PATH . 'modules/functions.php';
+}
+
+/**
+ * Generic utility method file.
+ * The global object factory function oxNew is defined here.
+ * The functions defined conditionally in this file may have been overwritten in 'modules/functions.php',
+ * so their functionality may have changed completely.
+ */
 require_once OX_BASE_PATH . 'oxfunctions.php';
-
-// Make actions if there are eShop configuration problems
-showErrorIfConfigIsMissing();
-
-//init config.inc.php file reader
-$oConfigFile = new ConfigFile(OX_BASE_PATH . "config.inc.php");
-Registry::set("oxConfigFile", $oConfigFile);
-
-registerVirtualNamespaceAutoLoad();
-registerModuleAutoload();
 
 //sets default PHP ini params
 ini_set('session.name', 'sid');

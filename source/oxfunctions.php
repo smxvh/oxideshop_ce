@@ -28,25 +28,6 @@ if (!defined('ESHOP_CONFIG_FILE')) {
     define('ESHOP_CONFIG_FILE', 'config.inc.php');
 }
 
-if (!function_exists('showErrorIfConfigIsMissing')) {
-    function showErrorIfConfigIsMissing()
-    {
-        $configFileName = __DIR__ . DIRECTORY_SEPARATOR . ESHOP_CONFIG_FILE;
-
-        if (file_exists($configFileName)) {
-            return;
-        }
-
-        $message = printf(
-            "Config file '%s' could not be found! Please use '%s.dist' to make a copy.",
-            ESHOP_CONFIG_FILE,
-            ESHOP_CONFIG_FILE
-        );
-
-        die($message);
-    }
-}
-
 if (!function_exists('redirectIfShopNotConfigured')) {
     function redirectIfShopNotConfigured()
     {
@@ -56,7 +37,7 @@ if (!function_exists('redirectIfShopNotConfigured')) {
             return;
         }
 
-        $message = printf(
+        $message = sprintf(
             "Config file '%s' is not updated! Please navigate to '/Setup' or update '%s' manually.",
             ESHOP_CONFIG_FILE,
             ESHOP_CONFIG_FILE
@@ -67,31 +48,6 @@ if (!function_exists('redirectIfShopNotConfigured')) {
         header("Connection: close");
 
         die($message);
-    }
-}
-
-if (!function_exists('registerVirtualNamespaceAutoLoad')) {
-    /**
-     * Registers auto-loader for classes of the virtual namespace
-     */
-    function registerVirtualNamespaceAutoLoad()
-    {
-        $classMapProvider = new \OxidEsales\EshopCommunity\Core\ClassMapProvider(new \OxidEsales\EshopCommunity\Core\Edition\EditionSelector());
-        $classMap = $classMapProvider->getOverridableVirtualNamespaceClassMap();
-        $virtualNamespaceAutoLoader = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNamespaceClassAutoload($classMap);
-
-        spl_autoload_register(array($virtualNamespaceAutoLoader, 'autoload'));
-    }
-}
-
-if (!function_exists('registerModuleAutoload')) {
-    /**
-     * Registers auto-loader for module files and extensions.
-     */
-    function registerModuleAutoload()
-    {
-        $moduleAutoloader = new \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload();
-        spl_autoload_register(array($moduleAutoloader, 'autoload'));
     }
 }
 
