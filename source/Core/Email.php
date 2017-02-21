@@ -22,7 +22,6 @@
 
 namespace OxidEsales\EshopCommunity\Core;
 
-use OxidEsales\Eshop\Core\UtilsObject;
 use oxSystemComponentException;
 use oxField;
 use oxRegistry;
@@ -2272,6 +2271,6 @@ class Email extends \PHPMailer
      */
     protected function getUtilsObjectInstance()
     {
-        return UtilsObject::getInstance();
+        return \OxidEsales\Eshop\Core\UtilsObject::getInstance();
     }
 }
