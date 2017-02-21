@@ -26,6 +26,7 @@ use oxAddress;
 use oxArticleInputException;
 use oxBasket;
 use oxBasketContentMarkGenerator;
+use OxidEsales\Eshop\Core\UtilsObject;
 use oxNoArticleException;
 use oxOrder;
 use oxOutOfStockException;
@@ -188,7 +189,7 @@ class OrderController extends \OxidEsales\Eshop\Application\Controller\FrontendC
 
         // reload blocker
         if (!oxRegistry::getSession()->getVariable('sess_challenge')) {
-            oxRegistry::getSession()->setVariable('sess_challenge', oxUtilsObject::getInstance()->generateUID());
+            oxRegistry::getSession()->setVariable('sess_challenge', $this->getUtilsObjectInstance()->generateUID());
         }
 
         return $this->_sThisTemplate;
@@ -578,5 +579,13 @@ class OrderController extends \OxidEsales\Eshop\Application\Controller\FrontendC
         }
 
         return $blValid;
+    }
+
+    /**
+     * @return UtilsObject
+     */
+    protected function getUtilsObjectInstance()
+    {
+        return UtilsObject::getInstance();
     }
 }
