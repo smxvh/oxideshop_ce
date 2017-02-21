@@ -23,8 +23,9 @@
 namespace OxidEsales\EshopCommunity\Application\Model;
 
 use Exception;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsObject;
 use oxRegistry;
-use oxUtilsObject;
 use oxField;
 use oxDb;
 use oxuserbasket;
@@ -59,7 +60,8 @@ class BasketReservation extends \OxidEsales\Eshop\Core\Base
     {
         $sId = oxRegistry::getSession()->getVariable('basketReservationToken');
         if (!$sId) {
-            $sId = oxUtilsObject::getInstance()->generateUId();
+            $utilsObject = $this->getUtilsObjectInstance();
+            $sId = $utilsObject->generateUId();
             oxRegistry::getSession()->setVariable('basketReservationToken', $sId);
         }
 
@@ -361,5 +363,13 @@ class BasketReservation extends \OxidEsales\Eshop\Core\Base
 
             oxRegistry::getSession()->deleteVariable("iBasketReservationTimeout");
         }
+    }
+
+    /**
+     * @return \OxidEsales\Eshop\Core\UtilsObject
+     */
+    protected function getUtilsObjectInstance()
+    {
+        return Registry::get(UtilsObject::class);
     }
 }
