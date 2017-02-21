@@ -408,7 +408,7 @@ class UtilsObject
     /**
      * @return BackwardsCompatibleClassNameProvider
      */
-    public function getClassNameProvider()
+    protected function getClassNameProvider()
     {
         return $this->classNameProvider;
     }
@@ -416,7 +416,7 @@ class UtilsObject
     /**
      * @return ModuleChainsGenerator
      */
-    public function getModuleChainsGenerator()
+    protected function getModuleChainsGenerator()
     {
         return $this->moduleChainsGenerator;
     }
@@ -424,7 +424,7 @@ class UtilsObject
     /**
      * @return ShopIdCalculator
      */
-    public function getShopIdCalculator()
+    protected function getShopIdCalculator()
     {
         return $this->shopIdCalculator;
     }
