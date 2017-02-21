@@ -20,7 +20,7 @@
  * @version   OXID eShop CE
  */
 
-namespace OxidEsales\EshopCommunity\Core;
+namespace OxidEsales\EshopCommunity\Core\Autoload;
 
 /**
  * This file holds the mapping of classes from the virtual namespace to the concrete classes of each edition.
