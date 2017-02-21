@@ -30,6 +30,12 @@ class ForwardsCompatibleInstanceOfNewClassRealClassName_6_Test extends \PHPUnit_
      */
     public function testForwardsCompatibleInstanceOfNewClassRealClassName()
     {
+        if ('CE' !== $this->getConfig()->getEdition()) {
+            $this->markTestSkipped(
+                'This test will fail on Travis and CI as it MUST run in an own PHP process, which is not possible.'
+            );
+        }
+
         $realClassName = \OxidEsales\EshopCommunity\Application\Model\Article::class;
         $virtualClassName = \OxidEsales\Eshop\Application\Model\Article::class;
         $backwardsCompatibleClassAlias = 'oxArticle';
