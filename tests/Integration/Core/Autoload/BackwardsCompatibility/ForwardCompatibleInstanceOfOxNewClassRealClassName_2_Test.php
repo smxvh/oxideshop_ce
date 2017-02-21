@@ -22,7 +22,7 @@
 
 namespace OxidEsales\EshopCommunity\Tests\Integration\Core\Autoload\BackwardsCompatibility;
 
-class ForwardCompatibleInstanceOfOxNewClassRealClassName_2_Test extends \PHPUnit_Framework_TestCase
+class ForwardCompatibleInstanceOfOxNewClassRealClassName_2_Test extends \OxidEsales\TestingLibrary\UnitTestCase
 {
 
     /**
