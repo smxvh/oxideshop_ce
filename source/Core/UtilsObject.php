@@ -135,12 +135,12 @@ class UtilsObject
             // null for classNameProvider because it is generated in the constructor
             $classNameProvider = null;
 
-            $moduleVariablesCache = $oUtilsObject->oxNew(FileCache::class);
-            $shopIdCalculator = $oUtilsObject->oxNew(ShopIdCalculator::class, $moduleVariablesCache);
+            $moduleVariablesCache = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\FileCache::class);
+            $shopIdCalculator = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\ShopIdCalculator::class, $moduleVariablesCache);
 
-            $subShopSpecific = $oUtilsObject->oxNew(SubShopSpecificFileCache::class, $shopIdCalculator);
-            $moduleVariablesLocator = $oUtilsObject->oxNew(ModuleVariablesLocator::class, $subShopSpecific, $shopIdCalculator);
-            $moduleChainsGenerator = $oUtilsObject->oxNew(ModuleChainsGenerator::class, $moduleVariablesLocator);
+            $subShopSpecific = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\SubShopSpecificFileCache::class, $shopIdCalculator);
+            $moduleVariablesLocator = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\Module\ModuleVariablesLocator::class, $subShopSpecific, $shopIdCalculator);
+            $moduleChainsGenerator = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\Module\ModuleChainsGenerator::class, $moduleVariablesLocator);
 
             //generate UtilsObject again by oxnew to allow overloading by modules
             self::$_instance = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\UtilsObject::class, $classNameProvider, $moduleChainsGenerator, $shopIdCalculator);
@@ -408,7 +408,7 @@ class UtilsObject
     /**
      * @return BackwardsCompatibleClassNameProvider
      */
-    protected function getClassNameProvider()
+    public function getClassNameProvider()
     {
         return $this->classNameProvider;
     }
@@ -416,7 +416,7 @@ class UtilsObject
     /**
      * @return ModuleChainsGenerator
      */
-    protected function getModuleChainsGenerator()
+    public function getModuleChainsGenerator()
     {
         return $this->moduleChainsGenerator;
     }
@@ -424,7 +424,7 @@ class UtilsObject
     /**
      * @return ShopIdCalculator
      */
-    protected function getShopIdCalculator()
+    public function getShopIdCalculator()
     {
         return $this->shopIdCalculator;
     }
