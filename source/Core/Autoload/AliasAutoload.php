@@ -188,7 +188,7 @@ class AliasAutoload
     {
         /** The properties defined in the config file will dynamically loaded into this class */
         include OX_BASE_PATH . DIRECTORY_SEPARATOR . 'config.inc.php';
-        $edition = $this->edition;
+        $edition = strtoupper($this->edition);
         $virtualClassMap = [];
         $virtualNameSpaceClassMaps = [
             'CE' => OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php',
