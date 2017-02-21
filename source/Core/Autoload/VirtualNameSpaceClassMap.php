@@ -32,7 +32,7 @@ namespace OxidEsales\EshopCommunity\Core\Autoload;
  *
  * @inheritdoc
  */
-class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\ClassMap
+class VirtualNameSpaceClassMap
 {
 
     /**
@@ -40,7 +40,7 @@ class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\C
      *
      * @return array Map of classes in the virtual namespace to concrete classes
      */
-    public function getOverridableMap()
+    public function getClassMap()
     {
         return [
             'OxidEsales\Eshop\Application\Component\BasketComponent' => \OxidEsales\EshopCommunity\Application\Component\BasketComponent::class,
@@ -602,17 +602,5 @@ class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\C
             'OxidEsales\Eshop\Core\WidgetControl' => \OxidEsales\EshopCommunity\Core\WidgetControl::class,
 
         ];
-    }
-
-    /**
-     * Returns class map, of classes which can't be extended by modules.
-     * There are no use cases for virtual namespaces in not overridable classes at the moment.
-     * This function will return always an empty array.
-     *
-     * @return array  Maps a class from the virtual namespace to a concrete class
-     */
-    public function getNotOverridableMap()
-    {
-        return [];
     }
 }
