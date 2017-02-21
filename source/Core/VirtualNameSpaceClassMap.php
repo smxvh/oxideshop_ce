@@ -424,7 +424,7 @@ class VirtualNameSpaceClassMap extends \OxidEsales\EshopCommunity\Core\Edition\C
             'OxidEsales\Eshop\Application\Model\Wrapping' => \OxidEsales\EshopCommunity\Application\Model\Wrapping::class,
             'OxidEsales\Eshop\Core\AdminLogSqlDecorator' => \OxidEsales\EshopCommunity\Core\AdminLogSqlDecorator::class,
             'OxidEsales\Eshop\Core\ApplicationServer' => \OxidEsales\EshopCommunity\Core\ApplicationServer::class,
-            'OxidEsales\Eshop\Core\Autoload\BcAliasAutoloader' => \OxidEsales\EshopCommunity\Core\Autoload\BcAliasAutoloader::class,
+            'OxidEsales\Eshop\Core\Autoload\AliasAutoload' => \OxidEsales\EshopCommunity\Core\Autoload\AliasAutoload::class,
             'OxidEsales\Eshop\Core\Autoload\ModuleAutoload' => \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload::class,
             'OxidEsales\Eshop\Core\Autoload\NotOverridableClassAutoload' => \OxidEsales\EshopCommunity\Core\Autoload\NotOverridableClassAutoload::class,
             'OxidEsales\Eshop\Core\Autoload\VirtualNamespaceClassAutoload' => \OxidEsales\EshopCommunity\Core\Autoload\VirtualNamespaceClassAutoload::class,
