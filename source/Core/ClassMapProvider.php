@@ -53,7 +53,7 @@ class ClassMapProvider
         $editionSelector = $this->getEditionSelector();
         switch ($editionSelector->getEdition()) {
             case EditionSelector::ENTERPRISE:
-                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\VirtualNameSpaceClassMap();
+                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
                 $classMapProfessional = new \OxidEsales\EshopProfessional\Core\VirtualNameSpaceClassMap();
                 $classMapEnterprise = new \OxidEsales\EshopEnterprise\Core\VirtualNameSpaceClassMap();
                 $virtualNameSpaceClassMap = array_merge(
@@ -63,7 +63,7 @@ class ClassMapProvider
                 );
                 break;
             case EditionSelector::PROFESSIONAL:
-                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\VirtualNameSpaceClassMap();
+                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
                 $classMapProfessional = new \OxidEsales\EshopProfessional\Core\VirtualNameSpaceClassMap();
                 $virtualNameSpaceClassMap = array_merge(
                     $classMapCommunity->getOverridableMap(),
@@ -72,7 +72,7 @@ class ClassMapProvider
                 break;
             default:
             case EditionSelector::COMMUNITY:
-                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\VirtualNameSpaceClassMap();
+                $classMapCommunity = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
                 $virtualNameSpaceClassMap = $classMapCommunity->getOverridableMap();
                 break;
         }
