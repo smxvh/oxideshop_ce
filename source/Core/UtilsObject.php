@@ -129,8 +129,7 @@ class UtilsObject
         }
 
         if (!self::$_instance instanceof UtilsObject) {
-            $utilsObjectClass = \OxidEsales\Eshop\Core\UtilsObject::class;
-            $oUtilsObject = new $utilsObjectClass;
+            $oUtilsObject = new UtilsObject();
             // set the not overloaded(by modules) version early so oxnew can be used internally
             self::$_instance = $oUtilsObject;
             // null for classNameProvider because it is generated in the constructor
@@ -144,7 +143,7 @@ class UtilsObject
             $moduleChainsGenerator = $oUtilsObject->oxNew(ModuleChainsGenerator::class, $moduleVariablesLocator);
 
             //generate UtilsObject again by oxnew to allow overloading by modules
-            self::$_instance = $oUtilsObject->oxNew(UtilsObject::class, $classNameProvider, $moduleChainsGenerator, $shopIdCalculator);
+            self::$_instance = $oUtilsObject->oxNew(\OxidEsales\Eshop\Core\UtilsObject::class, $classNameProvider, $moduleChainsGenerator, $shopIdCalculator);
         }
 
         return self::$_instance;
