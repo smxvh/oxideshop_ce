@@ -1309,7 +1309,7 @@ class BaseModel extends \OxidEsales\Eshop\Core\Base
     protected function _getUpdateFieldValue($fieldName, $field)
     {
         $fieldValue = null;
-        if ($field instanceof \OxidEsales\EshopCommunity\Core\Field) {
+        if ($field instanceof \OxidEsales\Eshop\Core\Field) {
             $fieldValue = $field->getRawValue();
         } elseif (isset($field->value)) {
             $fieldValue = $field->value;

@@ -1995,7 +1995,7 @@ class Article extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements
      *
      * @param oxPrice $oPrice the new price object
      */
-    public function setPrice(\OxidEsales\EshopCommunity\Core\Price $oPrice)
+    public function setPrice(\OxidEsales\Eshop\Core\Price $oPrice)
     {
         $this->_oPrice = $oPrice;
     }
@@ -3079,7 +3079,7 @@ class Article extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements
      *
      * @param oxPrice $oPrice target price
      */
-    public function applyVats(\OxidEsales\EshopCommunity\Core\Price $oPrice)
+    public function applyVats(\OxidEsales\Eshop\Core\Price $oPrice)
     {
         $this->_applyVAT($oPrice, $this->getArticleVat());
     }
@@ -3686,7 +3686,7 @@ class Article extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements
 
                     if (isset($this->$sField)) {
                         $sLongDesc = null;
-                        if ($this->$sField instanceof \OxidEsales\EshopCommunity\Core\Field) {
+                        if ($this->$sField instanceof \OxidEsales\Eshop\Core\Field) {
                             $sLongDesc = $this->$sField->getRawValue();
                         } elseif (is_object($this->$sField)) {
                             $sLongDesc = $this->$sField->value;
@@ -3907,7 +3907,7 @@ class Article extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements
      * @param oxPrice $oPrice Price object
      * @param double  $dVat   VAT percent
      */
-    protected function _applyVAT(\OxidEsales\EshopCommunity\Core\Price $oPrice, $dVat)
+    protected function _applyVAT(\OxidEsales\Eshop\Core\Price $oPrice, $dVat)
     {
         startProfile(__FUNCTION__);
         $oPrice->setVAT($dVat);
@@ -3925,7 +3925,7 @@ class Article extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements
      * @param oxPrice $oPrice Price object
      * @param object  $oCur   Currency object
      */
-    protected function _applyCurrency(\OxidEsales\EshopCommunity\Core\Price $oPrice, $oCur = null)
+    protected function _applyCurrency(\OxidEsales\Eshop\Core\Price $oPrice, $oCur = null)
     {
         if (!$oCur) {
             $oCur = $this->getConfig()->getActShopCurrencyObject();

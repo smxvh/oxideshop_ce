@@ -162,7 +162,7 @@ class BasketReservation extends \OxidEsales\Eshop\Core\Base
      *
      * @return array
      */
-    protected function _basketDifference(\OxidEsales\EshopCommunity\Application\Model\Basket $oBasket)
+    protected function _basketDifference(\OxidEsales\Eshop\Application\Model\Basket $oBasket)
     {
         $aDiff = $this->_getReservedItems();
         // refreshing history

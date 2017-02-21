@@ -23,7 +23,7 @@
 namespace OxidEsales\EshopCommunity\Application\Model;
 
 use oxField;
-use OxidEsales\EshopCommunity\Core\Exception\DatabaseException;
+use OxidEsales\Eshop\Core\Exception\DatabaseException;
 use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
 
 /**
@@ -61,7 +61,7 @@ class Object2Group extends \OxidEsales\Eshop\Core\Model\BaseModel
     {
         try {
             return parent::save();
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\DatabaseException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\DatabaseException $exception) {
             if ($exception->getCode() !== Database::DUPLICATE_KEY_ERROR_CODE) {
                 throw $exception;
             }

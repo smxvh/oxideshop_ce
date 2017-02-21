@@ -495,7 +495,7 @@ class EmosAdapter extends \OxidEsales\Eshop\Core\Base
                 break;
             case 'content':
                 // backwards compatibility
-                $oContent = ($oCurrentView instanceof \OxidEsales\EshopCommunity\Application\Controller\ContentController) ? $oCurrentView->getContent() : null;
+                $oContent = ($oCurrentView instanceof \OxidEsales\Eshop\Application\Controller\ContentController) ? $oCurrentView->getContent() : null;
                 $sContentId = $oContent ? $oContent->oxcontents__oxloadid->value : null;
 
                 if (array_key_exists('content_' . $sContentId, $aContent)) {

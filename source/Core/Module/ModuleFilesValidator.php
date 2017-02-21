@@ -81,7 +81,7 @@ class ModuleFilesValidator implements \OxidEsales\Eshop\Core\Contract\IModuleVal
      *
      * @return bool
      */
-    public function validate(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
+    public function validate(\OxidEsales\Eshop\Core\Module\Module $oModule)
     {
         $this->_resetMissingFiles();
         $blModuleValid = $this->_allModuleExtensionsExists($oModule);

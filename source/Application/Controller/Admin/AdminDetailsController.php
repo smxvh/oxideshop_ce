@@ -89,7 +89,7 @@ class AdminDetailsController extends \OxidEsales\Eshop\Application\Controller\Ad
     {
         $sEditObjectValue = '';
         if ($oObject && $sField && isset($oObject->$sField)) {
-            if ($oObject->$sField instanceof \OxidEsales\EshopCommunity\Core\Field) {
+            if ($oObject->$sField instanceof \OxidEsales\Eshop\Core\Field) {
                 $sEditObjectValue = $oObject->$sField->getRawValue();
             } else {
                 $sEditObjectValue = $oObject->$sField->value;

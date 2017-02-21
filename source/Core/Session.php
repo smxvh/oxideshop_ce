@@ -562,7 +562,7 @@ class Session extends \OxidEsales\Eshop\Core\Base
      *
      * @return null
      */
-    protected function _validateBasket(\OxidEsales\EshopCommunity\Application\Model\Basket $oBasket)
+    protected function _validateBasket(\OxidEsales\Eshop\Application\Model\Basket $oBasket)
     {
         $aCurrContent = $oBasket->getContents();
         if (empty($aCurrContent)) {

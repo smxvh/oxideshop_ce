@@ -951,7 +951,7 @@ class DynamicExportBaseController extends \OxidEsales\Eshop\Application\Controll
     /**
      * Get the actual database.
      *
-     * @return \OxidEsales\EshopCommunity\Core\Database\Adapter\DatabaseInterface The database.
+     * @return \OxidEsales\Eshop\Core\Database\Adapter\DatabaseInterface The database.
      */
     protected function getDb()
     {

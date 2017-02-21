@@ -98,7 +98,7 @@ class GenericImportMain extends \OxidEsales\Eshop\Application\Controller\Admin\A
     {
         $config = $this->getConfig();
 
-        $genericImport = oxNew('OxidEsales\EshopCommunity\Core\GenericImport\GenericImport');
+        $genericImport = oxNew(\OxidEsales\Eshop\Core\GenericImport\GenericImport::class);
         $this->_sCsvFilePath = null;
 
         $navigationStep = $config->getRequestParameter('sNavStep');
@@ -147,7 +147,7 @@ class GenericImportMain extends \OxidEsales\Eshop\Application\Controller\Admin\A
             $csvFields = $config->getRequestParameter('aCsvFields');
             $type = $config->getRequestParameter('sType');
 
-            $genericImport = oxNew('OxidEsales\EshopCommunity\Core\GenericImport\GenericImport');
+            $genericImport = oxNew(\OxidEsales\Eshop\Core\GenericImport\GenericImport::class);
             $genericImport->setImportType($type);
             $genericImport->setCsvFileFieldsOrder($csvFields);
             $genericImport->setCsvContainsHeader(oxRegistry::getSession()->getVariable('blCsvContainsHeader'));

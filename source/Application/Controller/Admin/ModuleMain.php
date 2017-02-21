@@ -100,7 +100,7 @@ class ModuleMain extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDet
             if ($oModuleInstaller->activate($oModule)) {
                 $this->_aViewData["updatenav"] = "1";
             }
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\StandardException $oEx) {
+        } catch (\OxidEsales\Eshop\Core\Exception\StandardException $oEx) {
             oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
             $oEx->debugOut();
         }
@@ -136,7 +136,7 @@ class ModuleMain extends \OxidEsales\Eshop\Application\Controller\Admin\AdminDet
             if ($oModuleInstaller->deactivate($oModule)) {
                 $this->_aViewData["updatenav"] = "1";
             }
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\StandardException $oEx) {
+        } catch (\OxidEsales\Eshop\Core\Exception\StandardException $oEx) {
             oxRegistry::get("oxUtilsView")->addErrorToDisplay($oEx);
             $oEx->debugOut();
         }

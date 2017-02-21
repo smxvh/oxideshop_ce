@@ -23,8 +23,8 @@ namespace OxidEsales\EshopCommunity\Core\Module;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
-use OxidEsales\EshopCommunity\Core\Exception\ModuleValidationException;
-use OxidEsales\EshopCommunity\Core\Exception\StandardException;
+use OxidEsales\Eshop\Core\Exception\ModuleValidationException;
+use OxidEsales\Eshop\Core\Exception\StandardException;
 use oxModuleCache;
 use oxDb;
 use OxidEsales\Eshop\Core\Module\ModuleExtensionsCleaner;
@@ -89,7 +89,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
      *
      * @return bool
      */
-    public function activate(\OxidEsales\EshopCommunity\Core\Module\Module $module)
+    public function activate(\OxidEsales\Eshop\Core\Module\Module $module)
     {
         $result = false;
         if ($moduleId = $module->getId()) {
@@ -142,7 +142,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
      *
      * @return bool
      */
-    public function deactivate(\OxidEsales\EshopCommunity\Core\Module\Module $module)
+    public function deactivate(\OxidEsales\Eshop\Core\Module\Module $module)
     {
         $result = false;
         if ($moduleId = $module->getId()) {
@@ -346,7 +346,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
      *
      * @param Module $oModule
      */
-    protected function _addExtensions(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
+    protected function _addExtensions(\OxidEsales\Eshop\Core\Module\Module $oModule)
     {
         $aModules = $this->_removeNotUsedExtensions($this->getModulesWithExtendedClass(), $oModule);
 
@@ -616,7 +616,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     }
 
     /**
-     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
+     * @return \OxidEsales\Eshop\Core\Contract\ControllerMapProviderInterface
      */
     protected function getModuleControllerMapProvider()
     {
@@ -624,7 +624,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     }
 
     /**
-     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
+     * @return \OxidEsales\Eshop\Core\Contract\ControllerMapProviderInterface
      */
     protected function getShopControllerMapProvider()
     {

@@ -26,8 +26,8 @@ use Exception;
 use OxidEsales\Eshop\Core\Edition\EditionSelector;
 use OxidEsales\Eshop\Core\SystemRequirements;
 use OxidEsales\EshopCommunity\Setup\Controller\ModuleStateMapGenerator;
-use OxidEsales\EshopCommunity\Setup\Exception\CommandExecutionFailedException;
-use OxidEsales\EshopCommunity\Setup\Exception\SetupControllerExitException;
+use OxidEsales\Eshop\Setup\Exception\CommandExecutionFailedException;
+use OxidEsales\Eshop\Setup\Exception\SetupControllerExitException;
 
 /**
  * Class holds scripts (controllers) needed to perform shop setup steps

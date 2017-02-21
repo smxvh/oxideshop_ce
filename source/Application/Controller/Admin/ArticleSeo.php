@@ -128,7 +128,7 @@ class ArticleSeo extends \OxidEsales\Eshop\Application\Controller\Admin\ObjectSe
         if ($this->_aSelectionList === null) {
             $this->_aSelectionList = array();
 
-            $oProduct = oxNew('OxidEsales\EshopCommunity\Application\Model\Article');
+            $oProduct = oxNew(\OxidEsales\Eshop\Application\Model\Article::class);
             $oProduct->load($this->getEditObjectId());
 
             if ($oCatList = $this->_getCategoryList($oProduct)) {

@@ -23,10 +23,10 @@
 namespace OxidEsales\EshopCommunity\Core;
 
 use oxBase;
-use OxidEsales\EshopCommunity\Core\Edition\EditionSelector;
-use OxidEsales\EshopCommunity\Core\Exception\SystemComponentException;
-use OxidEsales\EshopCommunity\Core\Module\ModuleChainsGenerator;
-use OxidEsales\EshopCommunity\Core\Module\ModuleVariablesLocator;
+use OxidEsales\Eshop\Core\Edition\EditionSelector;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
+use OxidEsales\Eshop\Core\Module\ModuleChainsGenerator;
+use OxidEsales\Eshop\Core\Module\ModuleVariablesLocator;
 use ReflectionClass;
 use ReflectionException;
 
@@ -272,7 +272,7 @@ class UtilsObject
         }
 
         $object = $this->_getObject($realClassName, $argumentsCount, $arguments);
-        if ($shouldUseCache && $object instanceof \OxidEsales\EshopCommunity\Core\Model\BaseModel) {
+        if ($shouldUseCache && $object instanceof \OxidEsales\Eshop\Core\Model\BaseModel) {
             self::$_aInstanceCache[$cacheKey] = clone $object;
         }
 

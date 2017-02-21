@@ -82,7 +82,7 @@ class CategoryTree extends \OxidEsales\Eshop\Application\Component\Widget\Widget
      */
     public function getContentCategory()
     {
-        $request = oxNew('OxidEsales\EshopCommunity\Core\Request');
+        $request = oxNew(\OxidEsales\Eshop\Core\Request::class);
         return $request->getRequestParameter('oxcid', false);
     }
 }

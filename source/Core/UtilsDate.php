@@ -464,7 +464,7 @@ class UtilsDate extends \OxidEsales\Eshop\Core\Base
             $sReturn .= " " . $aTFormats[$sLocalTimeFormat][2];
         }
 
-        if ($oObject instanceof \OxidEsales\EshopCommunity\Core\Field) {
+        if ($oObject instanceof \OxidEsales\Eshop\Core\Field) {
             $oObject->setValue(trim($sReturn));
         } else {
             $oObject->value = trim($sReturn);
@@ -493,7 +493,7 @@ class UtilsDate extends \OxidEsales\Eshop\Core\Base
             $aDateMatches[$aDFields[2]]
         );
 
-        if ($oObject instanceof \OxidEsales\EshopCommunity\Core\Field) {
+        if ($oObject instanceof \OxidEsales\Eshop\Core\Field) {
             $oObject->setValue(@date($sDateFormat, $iTimestamp));
         } else {
             $oObject->value = @date($sDateFormat, $iTimestamp);
@@ -525,7 +525,7 @@ class UtilsDate extends \OxidEsales\Eshop\Core\Base
             (int) $aDateMatches[$aDFields[2]]
         );
 
-        if ($oObject instanceof \OxidEsales\EshopCommunity\Core\Field) {
+        if ($oObject instanceof \OxidEsales\Eshop\Core\Field) {
             $oObject->setValue(trim(@date($sDateFormat . " " . $sTimeFormat, $iTimestamp)));
         } else {
             $oObject->value = trim(@date($sDateFormat . " " . $sTimeFormat, $iTimestamp));

@@ -22,7 +22,7 @@
 namespace OxidEsales\EshopCommunity\Core\Routing;
 
 use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
-use OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface;
+use OxidEsales\Eshop\Core\Contract\ControllerMapProviderInterface;
 use OxidEsales\Eshop\Core\Registry;
 
 /**

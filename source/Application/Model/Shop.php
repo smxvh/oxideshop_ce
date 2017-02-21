@@ -374,7 +374,7 @@ class Shop extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel
         foreach ($aQueries as $sQuery) {
             try {
                 $oDb->execute($sQuery);
-            } catch (\OxidEsales\EshopCommunity\Core\Exception\StandardException $exception) {
+            } catch (\OxidEsales\Eshop\Core\Exception\StandardException $exception) {
                 $exception->debugOut();
                 $bSuccess = false;
             }

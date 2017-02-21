@@ -23,10 +23,10 @@ namespace OxidEsales\EshopCommunity\Core;
 
 use oxException;
 use OxidEsales\Eshop\Application\Controller\FrontendController;
-use OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException;
-use OxidEsales\EshopCommunity\Core\Exception\RoutingException;
-use OxidEsales\EshopCommunity\Core\Exception\StandardException;
-use OxidEsales\EshopEnterprise\Core\Cache\DynamicContent\ContentCache;
+use OxidEsales\Eshop\Core\Exception\DatabaseConnectionException;
+use OxidEsales\Eshop\Core\Exception\RoutingException;
+use OxidEsales\Eshop\Core\Exception\StandardException;
+use OxidEsales\Eshop\Core\Cache\DynamicContent\ContentCache;
 use oxOutput;
 use oxRegistry;
 use oxSystemComponentException;
@@ -152,16 +152,16 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
             $controllerClass = $this->getControllerClass($controllerKey);
 
             $this->_process($controllerClass, $function, $parameters, $viewsChain);
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\SystemComponentException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\SystemComponentException $exception) {
             $this->_handleSystemException($exception);
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\CookieException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\CookieException $exception) {
             $this->_handleCookieException($exception);
             //@todo: do not handle the same exception twice
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception) {
             $this->handleDbNotConfiguredException();
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\DatabaseConnectionException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception) {
             $this->handleDbConnectionException($exception);
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\StandardException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\StandardException $exception) {
             $this->_handleBaseException($exception);
         }
     }
@@ -842,7 +842,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
      */
     protected function logException(\Exception $exception)
     {
-        if (!$exception instanceof \OxidEsales\EshopCommunity\Core\Exception\StandardException) {
+        if (!$exception instanceof \OxidEsales\Eshop\Core\Exception\StandardException) {
             $exception = new oxException($exception->getMessage(), $exception->getCode(), $exception);
         }
         $exception->debugOut();
@@ -1008,7 +1008,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
     {
         try {
             $controllerClass = $this->resolveControllerClass($controllerKey);
-        } catch (\OxidEsales\EshopCommunity\Core\Exception\RoutingException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\RoutingException $exception) {
             $this->handleRoutingException($exception);
             $controllerClass = $controllerKey;
         }

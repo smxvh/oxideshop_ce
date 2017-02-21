@@ -43,7 +43,7 @@ class ModuleMetadataValidator implements \OxidEsales\Eshop\Core\Contract\IModule
      *
      * @return bool
      */
-    public function validate(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
+    public function validate(\OxidEsales\Eshop\Core\Module\Module $oModule)
     {
         return file_exists($oModule->getMetadataPath());
     }

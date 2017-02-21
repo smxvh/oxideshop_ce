@@ -48,7 +48,7 @@ class CompanyVatInCountryChecker extends \OxidEsales\Eshop\Core\CompanyVatInChec
      *
      * @param Country $country
      */
-    public function setCountry(\OxidEsales\EshopCommunity\Application\Model\Country $country)
+    public function setCountry(\OxidEsales\Eshop\Application\Model\Country $country)
     {
         $this->_oCountry = $country;
     }
@@ -70,7 +70,7 @@ class CompanyVatInCountryChecker extends \OxidEsales\Eshop\Core\CompanyVatInChec
      *
      * @return bool
      */
-    public function validate(\OxidEsales\EshopCommunity\Application\Model\CompanyVatIn $vatIn)
+    public function validate(\OxidEsales\Eshop\Application\Model\CompanyVatIn $vatIn)
     {
         $result = false;
         $country = $this->getCountry();

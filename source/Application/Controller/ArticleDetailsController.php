@@ -1233,7 +1233,7 @@ class ArticleDetailsController extends \OxidEsales\Eshop\Application\Controller\
         $sorting = parent::getDefaultSorting();
         $activeCategory = $this->getActiveCategory();
 
-        if ($this->getListType() != 'search' && $activeCategory && $activeCategory instanceof \OxidEsales\EshopCommunity\Application\Model\Category) {
+        if ($this->getListType() != 'search' && $activeCategory && $activeCategory instanceof \OxidEsales\Eshop\Application\Model\Category) {
             if ($categorySorting = $activeCategory->getDefaultSorting()) {
                 $sortingDirection = ($activeCategory->getDefaultSortingMode()) ? "desc" : "asc";
                 $sorting = array('sortby' => $categorySorting, 'sortdir' => $sortingDirection);
@@ -1276,7 +1276,7 @@ class ArticleDetailsController extends \OxidEsales\Eshop\Application\Controller\
         $paths[] = $vendorPath;
 
         $vendor = $this->getActVendor();
-        if ($vendor instanceof \OxidEsales\EshopCommunity\Application\Model\Vendor) {
+        if ($vendor instanceof \OxidEsales\Eshop\Application\Model\Vendor) {
             $vendorPath['link'] = $vendor->getLink();
             $vendorPath['title'] = $vendor->oxvendor__oxtitle->value;
             $paths[] = $vendorPath;

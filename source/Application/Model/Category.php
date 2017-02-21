@@ -712,7 +712,7 @@ class Category extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implement
     {
         if ($blHasVisibleSubcats && !$this->_blHasVisibleSubCats) {
             unset($this->_blIsVisible);
-            if ($this->_oParent instanceof \OxidEsales\EshopCommunity\Application\Model\Category) {
+            if ($this->_oParent instanceof \OxidEsales\Eshop\Application\Model\Category) {
                 $this->_oParent->setHasVisibleSubCats(true);
             }
         }
@@ -1106,7 +1106,7 @@ class Category extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implement
      */
     public function getLongDesc()
     {
-        if (isset($this->oxcategories__oxlongdesc) && $this->oxcategories__oxlongdesc instanceof \OxidEsales\EshopCommunity\Core\Field) {
+        if (isset($this->oxcategories__oxlongdesc) && $this->oxcategories__oxlongdesc instanceof \OxidEsales\Eshop\Core\Field) {
             /** @var oxUtilsView $oUtilsView */
             $oUtilsView = oxRegistry::get("oxUtilsView");
             return $oUtilsView->parseThroughSmarty($this->oxcategories__oxlongdesc->getRawValue(), $this->getId() . $this->getLanguage(), null, true);

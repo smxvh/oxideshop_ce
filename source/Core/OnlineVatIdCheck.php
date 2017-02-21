@@ -85,7 +85,7 @@ class OnlineVatIdCheck extends \OxidEsales\Eshop\Core\CompanyVatInChecker
      *
      * @return bool
      */
-    public function validate(\OxidEsales\EshopCommunity\Application\Model\CompanyVatIn $oVatIn)
+    public function validate(\OxidEsales\Eshop\Application\Model\CompanyVatIn $oVatIn)
     {
         $oCheckVat = new stdClass();
         $oCheckVat->countryCode = $oVatIn->getCountryCode();
