@@ -190,27 +190,32 @@ class AliasAutoload
         include OX_BASE_PATH . DIRECTORY_SEPARATOR . 'config.inc.php';
         $edition = $this->edition;
         $virtualClassMap = [];
+        $virtualNameSpaceClassMaps = [
+            'CE' => OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php',
+            'PE' => VENDOR_PATH . 'oxid-esales/oxideshop-pe/Core/Autoload/VirtualNameSpaceClassMap.php',
+            'EE' => VENDOR_PATH . 'oxid-esales/oxideshop-ee/Core/Autoload/VirtualNameSpaceClassMap.php'
+        ];
 
         if ($edition == 'EE' &&
-            file_exists(VENDOR_PATH . 'oxid-esales/oxideshop-ee/Core/Autoload/VirtualNameSpaceClassMap.php')
+            file_exists($virtualNameSpaceClassMaps['EE'])
         ) {
-            include_once VENDOR_PATH . 'oxid-esales/oxideshop-ee/Core/Autoload/VirtualNameSpaceClassMap.php';
+            include_once $virtualNameSpaceClassMaps['EE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopEnterprise\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
         } elseif ($edition == 'PE' &&
-            file_exists(VENDOR_PATH . 'oxid-esales/oxideshop-pe/Core/Autoload/VirtualNameSpaceClassMap.php')
+            file_exists($virtualNameSpaceClassMaps['PE'])
         ) {
-            include_once VENDOR_PATH . 'oxid-esales/oxideshop-pe/Core/Autoload/VirtualNameSpaceClassMap.php';
+            include_once $virtualNameSpaceClassMaps['PE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopProfessional\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
         } elseif ($edition == 'CE' &&
-            file_exists(OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php')
+            file_exists($virtualNameSpaceClassMaps['CE'])
         ) {
-            include_once OX_BASE_PATH . 'Core/Autoload/VirtualNameSpaceClassMap.php';
+            include_once $virtualNameSpaceClassMaps['CE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
         } else {
-            trigger_error('The corresponding classmap for edition "' . $edition . '" was not found', E_USER_ERROR);
+            trigger_error('The corresponding classmap for edition "' . $edition . '" was not found:  ' . $virtualNameSpaceClassMaps[$edition], E_USER_ERROR);
         }
 
         return $virtualClassMap;
