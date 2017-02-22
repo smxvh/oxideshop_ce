@@ -32,7 +32,39 @@ use OxidEsales\Eshop\Core\UtilsObject;
 class ModuleAutoload
 {
     /** @var array Classes, for which extension class chain was created. */
-    private $triedClasses = array();
+    public $triedClasses = array();
+
+    /**
+     * @var null|ModuleAutoload A singleton instance of this class or a sub class of this class
+     */
+    private static $instance = null;
+
+    /**
+     * ModuleAutoload constructor.
+     *
+     * Make constructor protected to ensure Singleton pattern
+     */
+    protected function __construct()
+    {
+    }
+
+    /**
+     * Magic clone method.
+     *
+     * Make method private to ensure Singleton pattern
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * Magic wakeup method.
+     *
+     * Make method private to ensure Singleton pattern
+     */
+    private function __wakeup()
+    {
+    }
 
     /**
      * Tries to autoload given class. If class was not found in module files array,
@@ -40,20 +72,36 @@ class ModuleAutoload
      *
      * @param string $class Class name.
      */
-    public function autoload($class)
+    public static function autoload($class)
     {
+        $instance = static::getInstance();
+
         $class = strtolower(basename($class));
 
-        if ($classPath = $this->getFilePath($class)) {
+        if ($classPath = $instance->getFilePath($class)) {
             include $classPath;
         } else {
             $class = preg_replace('/_parent$/i', '', $class);
 
-            if (!in_array($class, $this->triedClasses)) {
-                $this->triedClasses[] = $class;
-                $this->createExtensionClassChain($class);
+            if (!in_array($class, $instance->triedClasses)) {
+                $instance->triedClasses[] = $class;
+                $instance->createExtensionClassChain($class);
             }
         }
+    }
+
+    /**
+     * Returns the singleton instance of this class or of a sub class of this class.
+     *
+     * @return ModuleAutoload The singleton instance.
+     */
+    public static function getInstance()
+    {
+        if (null === static::$instance) {
+            static::$instance = new static();
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -107,5 +155,5 @@ class ModuleAutoload
     }
 }
 
-$moduleAutoload = new \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload();
-spl_autoload_register(array($moduleAutoload, 'autoload'));
+$moduleAutoload = \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload::class ;
+spl_autoload_register([$moduleAutoload, 'autoload']);
