@@ -24,44 +24,6 @@ use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Core\Request;
 use OxidEsales\EshopCommunity\Core\UtilsObject;
 
-if (!defined('ESHOP_CONFIG_FILE')) {
-    define('ESHOP_CONFIG_FILE', 'config.inc.php');
-}
-
-if (!function_exists('redirectIfShopNotConfigured')) {
-    function redirectIfShopNotConfigured()
-    {
-        $configFileName = __DIR__ . DIRECTORY_SEPARATOR . ESHOP_CONFIG_FILE;
-
-        if (file_exists($configFileName) && strpos(file_get_contents($configFileName), '<dbHost') === false) {
-            return;
-        }
-
-        $message = sprintf(
-            "Config file '%s' is not updated! Please navigate to '/Setup' or update '%s' manually.",
-            ESHOP_CONFIG_FILE,
-            ESHOP_CONFIG_FILE
-        );
-
-        header("HTTP/1.1 302 Found");
-        header("Location: Setup/index.php");
-        header("Connection: close");
-
-        die($message);
-    }
-}
-
-if (!function_exists('getShopBasePath')) {
-    /**
-     * Returns framework base path.
-     *
-     * @return string
-     */
-    function getShopBasePath()
-    {
-        return OX_BASE_PATH;
-    }
-}
 
 /**
  * Returns true in case framework is called from shop administrator environment.
@@ -71,20 +33,6 @@ if (!function_exists('getShopBasePath')) {
 function isAdmin()
 {
     return defined('OX_IS_ADMIN') ? OX_IS_ADMIN : false;
-}
-
-if (!function_exists('error_404_handler')) {
-    /**
-     * error_404_handler handler for 404 (page not found) error
-     *
-     * @param string $sUrl url wich was given, can be not specified in some cases
-     *
-     * @return void
-     */
-    function error_404_handler($sUrl = '')
-    {
-        Registry::getUtils()->handlePageNotFoundError($sUrl);
-    }
 }
 
 /**
@@ -122,19 +70,6 @@ function dumpVar($mVar, $blToFile = false)
     }
 }
 
-if (!function_exists('isSearchEngineUrl')) {
-
-    /**
-     * Returns search engine url status
-     *
-     * @return bool
-     */
-    function isSearchEngineUrl()
-    {
-        return false;
-    }
-}
-
 /**
  * prints anything given into a file, for debugging
  *
@@ -164,44 +99,6 @@ function cmpart($a, $b)
         return 0;
     }
     return ($a->cnt < $b->cnt) ? -1 : 1;
-}
-
-if (!function_exists('startProfile')) {
-    /**
-     * Start profiling
-     *
-     * @param string $sProfileName name of profile
-     */
-    function startProfile($sProfileName)
-    {
-        global $aStartTimes;
-        global $aExecutionCounts;
-        if (!isset($aExecutionCounts[$sProfileName])) {
-            $aExecutionCounts[$sProfileName] = 0;
-        }
-        if (!isset($aStartTimes[$sProfileName])) {
-            $aStartTimes[$sProfileName] = 0;
-        }
-        $aExecutionCounts[$sProfileName]++;
-        $aStartTimes[$sProfileName] = microtime(true);
-    }
-}
-
-if (!function_exists('stopProfile')) {
-    /**
-     * Stop profiling
-     *
-     * @param string $sProfileName name of profile
-     */
-    function stopProfile($sProfileName)
-    {
-        global $aProfileTimes;
-        global $aStartTimes;
-        if (!isset($aProfileTimes[$sProfileName])) {
-            $aProfileTimes[$sProfileName] = 0;
-        }
-        $aProfileTimes[$sProfileName] += microtime(true) - $aStartTimes[$sProfileName];
-    }
 }
 
 /**
@@ -316,6 +213,115 @@ function ox_get_trusted($sTplName, $oSmarty)
 {
 }
 
+/**
+ * All functions or constants passed this point are overridable
+ * by those defined in modules/functions.php
+ *
+ */
+
+if (!defined('ESHOP_CONFIG_FILE')) {
+    define('ESHOP_CONFIG_FILE', 'config.inc.php');
+}
+
+if (!function_exists('redirectIfShopNotConfigured')) {
+    function redirectIfShopNotConfigured()
+    {
+        $configFileName = __DIR__ . DIRECTORY_SEPARATOR . ESHOP_CONFIG_FILE;
+
+        if (file_exists($configFileName) && strpos(file_get_contents($configFileName), '<dbHost') === false) {
+            return;
+        }
+
+        $message = sprintf(
+            "Config file '%s' is not updated! Please navigate to '/Setup' or update '%s' manually.",
+            ESHOP_CONFIG_FILE,
+            ESHOP_CONFIG_FILE
+        );
+
+        header("HTTP/1.1 302 Found");
+        header("Location: Setup/index.php");
+        header("Connection: close");
+
+        die($message);
+    }
+}
+
+if (!function_exists('getShopBasePath')) {
+    /**
+     * Returns framework base path.
+     *
+     * @return string
+     */
+    function getShopBasePath()
+    {
+        return OX_BASE_PATH;
+    }
+}
+
+if (!function_exists('error_404_handler')) {
+    /**
+     * error_404_handler handler for 404 (page not found) error
+     *
+     * @param string $sUrl url wich was given, can be not specified in some cases
+     *
+     * @return void
+     */
+    function error_404_handler($sUrl = '')
+    {
+        Registry::getUtils()->handlePageNotFoundError($sUrl);
+    }
+}
+
+if (!function_exists('isSearchEngineUrl')) {
+
+    /**
+     * Returns search engine url status
+     *
+     * @return bool
+     */
+    function isSearchEngineUrl()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('startProfile')) {
+    /**
+     * Start profiling
+     *
+     * @param string $sProfileName name of profile
+     */
+    function startProfile($sProfileName)
+    {
+        global $aStartTimes;
+        global $aExecutionCounts;
+        if (!isset($aExecutionCounts[$sProfileName])) {
+            $aExecutionCounts[$sProfileName] = 0;
+        }
+        if (!isset($aStartTimes[$sProfileName])) {
+            $aStartTimes[$sProfileName] = 0;
+        }
+        $aExecutionCounts[$sProfileName]++;
+        $aStartTimes[$sProfileName] = microtime(true);
+    }
+}
+
+if (!function_exists('stopProfile')) {
+    /**
+     * Stop profiling
+     *
+     * @param string $sProfileName name of profile
+     */
+    function stopProfile($sProfileName)
+    {
+        global $aProfileTimes;
+        global $aStartTimes;
+        if (!isset($aProfileTimes[$sProfileName])) {
+            $aProfileTimes[$sProfileName] = 0;
+        }
+        $aProfileTimes[$sProfileName] += microtime(true) - $aStartTimes[$sProfileName];
+    }
+}
 
 if (!function_exists('getLangTableIdx')) {
 
