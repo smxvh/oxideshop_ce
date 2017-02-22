@@ -27,6 +27,8 @@ class ForwardCompatibleInstanceOfOxNewClassRealClassName_2_Test extends \OxidEsa
 
     /**
      * Test the backwards compatibility of class instances created with oxNew and the alias class name
+     *
+     * @runInSeparateProcess
      */
     public function testForwardCompatibleInstanceOfOxNewClassRealClassName()
     {

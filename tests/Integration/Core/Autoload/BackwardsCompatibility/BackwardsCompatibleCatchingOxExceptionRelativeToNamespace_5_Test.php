@@ -28,6 +28,8 @@ class BackwardsCompatibleCatchingOxExceptionRelativeToNamespace_5_Test extends \
     /**
      * Try to catch an \oxException when a given Exception is thrown
      *
+     * @runInSeparateProcess
+     *
      * @throws \Exception $exception
      */
     public function testBackwardsCompatibleCatchingOxExceptionRelativeToNamespace()

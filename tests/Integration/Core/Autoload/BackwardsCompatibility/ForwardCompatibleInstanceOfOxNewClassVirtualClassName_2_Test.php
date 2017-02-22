@@ -27,6 +27,8 @@ class ForwardCompatibleInstanceOfOxNewClassVirtualClassName_2_Test extends \PHPU
 
     /**
      * Test the backwards compatibility of class instances created with oxNew and the alias class name
+     *
+     * @runInSeparateProcess
      */
     public function testForwardCompatibleInstanceOfOxNewClassVirtualClassName()
     {

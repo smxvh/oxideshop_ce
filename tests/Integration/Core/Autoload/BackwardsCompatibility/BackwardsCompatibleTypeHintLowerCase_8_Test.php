@@ -27,6 +27,8 @@ class BackwardsCompatibleTypeHintLowerCase_8_Test extends \PHPUnit_Framework_Tes
 
     /**
      * Test the backwards compatibility with camel cased type hints
+     *
+     * @runInSeparateProcess
      */
     public function testBackwardsCompatibleTypeHintLowerCase()
     {
