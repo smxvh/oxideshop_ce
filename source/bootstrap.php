@@ -40,8 +40,6 @@ function shutDownHandler()
 {
     $error = error_get_last();
     if (in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, ])) {
-        $displayMessage = 'An error occurred. See log file for details';
-
         $time = microtime(true);
         $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
         $date = new DateTime(date('Y-m-d H:i:s.' . $micro, $time));
@@ -55,17 +53,19 @@ function shutDownHandler()
 
         /**
          * Render an error message.
-         * If offline.html exists a redirection is done.
+         * If offline.html exists its content is displayed.
          * Like this the error message is overridable within that file.
          */
+        $displayMessage = '';
         if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
-            header("HTTP/1.1 500 Internal Server Error");
-            header("Location: ". OX_OFFLINE_FILE);
-            header("Connection: close");
-            exit();
+            $displayMessage = file_get_contents(OX_OFFLINE_FILE);
         };
 
+        header("HTTP/1.1 500 Internal Server Error");
+        header("Connection: close");
         echo $displayMessage;
+
+        exit();
     }
 }
 

@@ -810,18 +810,20 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
             exit(1);
         } else {
             /**
-             * The shop standard redirect mechanism needs a working database connection.
-             * Use a special method here.
-             */
-            /**
              * Render an error message.
-             * If offline.html exists a redirection is done.
+             * If offline.html exists its content is displayed.
              * Like this the error message is overridable within that file.
              */
+            $displayMessage = ''; // Do not disclose any information
             if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
-                $this->redirectToMaintenancePageWithoutDbConnection();
+                $displayMessage = file_get_contents(OX_OFFLINE_FILE);
             };
-            exit(1);
+
+            header("HTTP/1.1 500 Internal Server Error");
+            header("Connection: close");
+            echo $displayMessage;
+
+            exit();
         }
     }
 

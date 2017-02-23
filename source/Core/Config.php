@@ -2236,15 +2236,19 @@ class Config extends \OxidEsales\Eshop\Core\Base
         } else {
             /**
              * Render an error message.
-             * If offline.html exists a redirection is done.
+             * If offline.html exists its content is displayed.
              * Like this the error message is overridable within that file.
              */
+            $displayMessage = ''; // Do not disclose any information
             if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
-                header("HTTP/1.1 500 Internal Server Error");
-                header("Location: ". OX_OFFLINE_FILE);
-                header("Connection: close");
+                $displayMessage = file_get_contents(OX_OFFLINE_FILE);
             };
-            exit(1);
+
+            header("HTTP/1.1 500 Internal Server Error");
+            header("Connection: close");
+            echo $displayMessage;
+
+            exit();
         }
     }
 
