@@ -27,8 +27,6 @@ class ForwardCompatibleTypeHintWithVirtualNamespace_4_Test extends \PHPUnit_Fram
 
     /**
      * Test the backwards compatibility with camel cased type hints
-     *
-     * @runInSeparateProcess
      */
     public function testForwardCompatibleTypeHintWithVirtualNamespace()
     {

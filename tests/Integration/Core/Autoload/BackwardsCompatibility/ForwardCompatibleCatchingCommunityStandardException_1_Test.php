@@ -28,8 +28,6 @@ class ForwardCompatibleCatchingCommunityStandardException_1_Test extends \PHPUni
     /**
      * Try to catch an \oxException when a given Exception is thrown
      *
-     * @runInSeparateProcess
-     *
      * @throws \Exception $exception
      */
     public function testForwardCompatibleCatchingCommunityStandardException()
