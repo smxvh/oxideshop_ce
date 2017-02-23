@@ -199,7 +199,7 @@ class Utilities extends Core
     {
         $sConfPath = $aParams['sShopDir'] . "/config.inc.php";
 
-        $oLang = $this->getInstance("Language");
+        $oLang = $this->getInstance(\OxidEsales\Eshop\Core\Language::class);
 
         $this->handleMissingConfigFileException($sConfPath);
 
@@ -258,7 +258,7 @@ class Utilities extends Core
     public function updateHtaccessFile($aParams, $sSubFolder = "")
     {
         /** @var Language $oLang */
-        $oLang = $this->getInstance("Language");
+        $oLang = $this->getInstance(\OxidEsales\Eshop\Core\Language::class);
 
         // preparing rewrite base param
         if (!isset($aParams["sBaseUrlPath"]) || !$aParams["sBaseUrlPath"]) {

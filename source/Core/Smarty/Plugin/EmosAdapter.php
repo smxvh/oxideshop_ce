@@ -194,7 +194,7 @@ class EmosAdapter extends \OxidEsales\Eshop\Core\Base
      */
     protected function _getNewEmosItem()
     {
-        return new EmosItem();
+        return new \OxidEsales\Eshop\Core\Smarty\Plugin\EmosItem();
     }
 
     /**

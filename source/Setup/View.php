@@ -153,7 +153,7 @@ class View extends Core
      */
     public function getText($sTextId, $blPrint = true)
     {
-        $sText = $this->getInstance("Language")->getText($sTextId);
+        $sText = $this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText($sTextId);
 
         return $blPrint ? print($sText) : $sText;
     }
@@ -167,7 +167,7 @@ class View extends Core
      */
     public function getSid($blPrint = true)
     {
-        $sSid = $this->getInstance("Session")->getSid();
+        $sSid = $this->getInstance(\OxidEsales\Eshop\Core\Session::class)->getSid();
 
         return $blPrint ? print($sSid) : $sSid;
     }
@@ -267,7 +267,7 @@ class View extends Core
         //finalizing installation
         $blDeleted = true;
         /** @var Session $oSession */
-        $oSession = $this->getInstance("Session");
+        $oSession = $this->getInstance(\OxidEsales\Eshop\Core\Session::class);
         /** @var Utilities $oUtils */
         $oUtils = $this->getInstance("Utilities");
         $sPath = getShopBasePath();

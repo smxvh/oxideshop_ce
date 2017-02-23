@@ -663,7 +663,7 @@ class Config extends Base
      */
     public function getRequestParameter($name, $raw = false)
     {
-        $request = Registry::get(Request::class);
+        $request = Registry::get(\OxidEsales\Eshop\Core\Request::class);
         return $raw ? $request->getRequestParameter($name) : $request->getRequestEscapedParameter($name);
     }
 
@@ -679,7 +679,7 @@ class Config extends Base
      */
     public function getRequestEscapedParameter($name, $defaultValue = null)
     {
-        return Registry::get(Request::class)->getRequestEscapedParameter($name, $defaultValue);
+        return Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestEscapedParameter($name, $defaultValue);
     }
 
     /**
@@ -694,7 +694,7 @@ class Config extends Base
      */
     public function getRequestRawParameter($name, $defaultValue = null)
     {
-        return Registry::get(Request::class)->getRequestParameter($name, $defaultValue);
+        return Registry::get(\OxidEsales\Eshop\Core\Request::class)->getRequestParameter($name, $defaultValue);
     }
 
     /**
@@ -770,7 +770,7 @@ class Config extends Base
      */
     public function checkParamSpecialChars(&$value, $raw = null)
     {
-        return Registry::get(Request::class)->checkParamSpecialChars($value, $raw);
+        return Registry::get(\OxidEsales\Eshop\Core\Request::class)->checkParamSpecialChars($value, $raw);
     }
 
     /**
@@ -1857,7 +1857,7 @@ class Config extends Base
         $varTypeQuoted = $db->quote($varType);
         $varValueQuoted = $db->quote($value);
         $configKeyQuoted = $db->quote($this->getConfigParam('sConfigKey'));
-        $newOXIDdQuoted = $db->quote(UtilsObject::getInstance()->generateUID());
+        $newOXIDdQuoted = $db->quote(\OxidEsales\Eshop\Core\UtilsObject::getInstance()->generateUID());
 
         $query = "delete from oxconfig where oxshopid = $shopIdQuoted and oxvarname = $varNameQuoted and oxmodule = $moduleQuoted";
         $db->execute($query);
@@ -1959,7 +1959,7 @@ class Config extends Base
      */
     public function getBaseShopId()
     {
-        return ShopIdCalculator::BASE_SHOP_ID;
+        return \OxidEsales\Eshop\Core\ShopIdCalculator::BASE_SHOP_ID;
     }
 
     /**

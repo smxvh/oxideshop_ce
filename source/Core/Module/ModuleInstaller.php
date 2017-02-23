@@ -50,10 +50,10 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     /**
      * Sets dependencies.
      *
-     * @param ModuleCache             $moduleCache
+     * @param \OxidEsales\Eshop\Core\Module\ModuleCache             $moduleCache
      * @param ModuleExtensionsCleaner $moduleCleaner
      */
-    public function __construct(ModuleCache $moduleCache = null, $moduleCleaner = null)
+    public function __construct(\OxidEsales\Eshop\Core\Module\ModuleCache $moduleCache = null, $moduleCleaner = null)
     {
         $this->setModuleCache($moduleCache);
         if (is_null($moduleCleaner)) {
@@ -344,7 +344,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     /**
      * Add extension to module
      *
-     * @param Module $oModule
+     * @param OxidEsales\Eshop\Core\Module\Module $oModule
      */
     protected function _addExtensions(\OxidEsales\Eshop\Core\Module\Module $oModule)
     {
@@ -580,13 +580,13 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
      * Removes garbage ( module not used extensions ) from all installed extensions list
      *
      * @param array  $installedExtensions Installed extensions
-     * @param Module $module              Module
+     * @param \OxidEsales\Eshop\Core\Module\Module $module              Module
      *
      * @deprecated on b-dev, ModuleExtensionsCleaner::cleanExtensions() should be used.
      *
      * @return array
      */
-    protected function _removeNotUsedExtensions($installedExtensions, Module $module)
+    protected function _removeNotUsedExtensions($installedExtensions, \OxidEsales\Eshop\Core\Module\Module $module)
     {
         return $this->getModuleCleaner()->cleanExtensions($installedExtensions, $module);
     }

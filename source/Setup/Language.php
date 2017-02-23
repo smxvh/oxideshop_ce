@@ -44,7 +44,7 @@ class Language extends Core
     public function getLanguage()
     {
         /** @var Session $oSession */
-        $oSession = $this->getInstance("Session");
+        $oSession = $this->getInstance(\OxidEsales\Eshop\Core\Session::class);
         /** @var Utilities $oUtils */
         $oUtils = $this->getInstance("Utilities");
 

@@ -90,7 +90,7 @@ class Theme extends \OxidEsales\Eshop\Core\Base
             $this->getConfig()->saveShopConfVar("str", 'sTheme', $this->getId());
             $this->getConfig()->saveShopConfVar("str", 'sCustomTheme', '');
         }
-        $settingsHandler = oxNew(SettingsHandler::class);
+        $settingsHandler = oxNew(\OxidEsales\Eshop\Core\SettingsHandler::class);
         $settingsHandler->setModuleType('theme')->run($this);
     }
 

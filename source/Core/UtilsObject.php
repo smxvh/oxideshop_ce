@@ -96,20 +96,13 @@ class UtilsObject
         $this->classNameProvider = $classNameProvider;
 
         if (!$shopIdCalculator) {
-            $moduleVariablesCache = new FileCache();
-
-            $editionSelector = new EditionSelector();
-
-            if ($editionSelector->getEdition() === $editionSelector::ENTERPRISE) {
-                $shopIdCalculator = new \OxidEsales\EshopEnterprise\Core\ShopIdCalculator($moduleVariablesCache);
-            } else {
-                $shopIdCalculator = new ShopIdCalculator($moduleVariablesCache);
-            }
+            $moduleVariablesCache = new \OxidEsales\Eshop\Core\FileCache\FileCache();
+            $shopIdCalculator = new \OxidEsales\Eshop\Core\ShopIdCalculator($moduleVariablesCache);
         }
         $this->shopIdCalculator = $shopIdCalculator;
 
         if (!$moduleChainsGenerator) {
-            $subShopSpecificCache = new SubShopSpecificFileCache($shopIdCalculator);
+            $subShopSpecificCache = new \OxidEsales\Eshop\Core\SubShopSpecificFileCache($shopIdCalculator);
             $moduleVariablesLocator = new ModuleVariablesLocator($subShopSpecificCache, $shopIdCalculator);
             $moduleChainsGenerator = new ModuleChainsGenerator($moduleVariablesLocator);
         }
@@ -128,7 +121,7 @@ class UtilsObject
             self::$_instance = null;
         }
 
-        if (!self::$_instance instanceof UtilsObject) {
+        if (!self::$_instance instanceof \OxidEsales\Eshop\Core\UtilsObject) {
             $oUtilsObject = new UtilsObject();
             // set the not overloaded(by modules) version early so oxnew can be used internally
             self::$_instance = $oUtilsObject;

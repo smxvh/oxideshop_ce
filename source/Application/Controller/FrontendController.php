@@ -903,7 +903,7 @@ class FrontendController extends \OxidEsales\Eshop\Core\Controller\BaseControlle
     {
         $sortDirections = array('desc', 'asc');
 
-        $request = Registry::get(Request::class);
+        $request = Registry::get(\OxidEsales\Eshop\Core\Request::class);
         $sortBy = $request->getRequestParameter($this->getSortOrderByParameterName());
         $sortOrder = $request->getRequestParameter($this->getSortOrderParameterName());
 
