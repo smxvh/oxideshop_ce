@@ -99,43 +99,47 @@ class WidgetControl extends \oxShopControl
     }
 
     /**
-     * Initialize and return widget view object
+     * Initialize and return widget view object.
      *
-     * @param string $sClass      view name
-     * @param string $sFunction   function name
-     * @param array  $aParams     Parameters array
-     * @param array  $aViewsChain Array of views names that should be initialized also
+     * @param string $class      View class
+     * @param string $function   Function name
+     * @param array  $parameters Parameters array
+     * @param array  $viewsChain Array of views keys that should be initialized as well
      *
      * @return oxView Current active view
      */
-    protected function _initializeViewObject($sClass, $sFunction, $aParams = null, $aViewsChain = null)
+    protected function _initializeViewObject($class, $function, $parameters = null, $viewsChain = null)
     {
-        $oConfig = $this->getConfig();
-        $aActiveViewsNames = $oConfig->getActiveViewsNames();
-        $aActiveViewsNames = array_map("strtolower", $aActiveViewsNames);
+        $config = $this->getConfig();
+        $activeViewsIds = $config->getActiveViewsIds();
+        $activeViewsIds = array_map("strtolower", $activeViewsIds);
+        $classKey = Registry::getControllerClassNameResolver()->getIdByClassName($class);
+        $classKey = !is_null($classKey) ? $classKey : $class; //fallback
 
         // if exists views chain, initializing these view at first
-        if (is_array($aViewsChain) && !empty($aViewsChain)) {
-            foreach ($aViewsChain as $sParentClassName) {
-                if ($sParentClassName != $sClass && !in_array(strtolower($sParentClassName), $aActiveViewsNames)) {
+        if (is_array($viewsChain) && !empty($viewsChain)) {
+            foreach ($viewsChain as $parentClassKey) {
+                $parentClass = Registry::getControllerClassNameResolver()->getClassNameById($parentClassKey);
+
+                if ($parentClassKey != $classKey && !in_array(strtolower($parentClassKey), $activeViewsIds) && $parentClass) {
                     // creating parent view object
-                    $oViewObject = oxNew($sParentClassName);
-                    if (strtolower($sParentClassName) != 'oxubase') {
-                        $oViewObject->setClassName($sParentClassName);
+                    $viewObject = oxNew($parentClass);
+                    if ('oxubase' != strtolower($parentClassKey)) {
+                        $viewObject->setClassKey($parentClassKey);
                     }
-                    $oConfig->setActiveView($oViewObject);
-                    $this->parentsAdded[] = $sParentClassName;
+                    $config->setActiveView($viewObject);
+                    $this->parentsAdded[] = $parentClassKey;
                 }
             }
         }
 
-        $oWidgetViewObject = parent::_initializeViewObject($sClass, $sFunction, $aParams);
+        $widgetViewObject = parent::_initializeViewObject($class, $function, $parameters, null);
 
         // Set template name for current widget.
-        if (!empty($aParams['oxwtemplate'])) {
-            $oWidgetViewObject->setTemplateName($aParams['oxwtemplate']);
+        if (!empty($parameters['oxwtemplate'])) {
+            $widgetViewObject->setTemplateName($parameters['oxwtemplate']);
         }
 
-        return $oWidgetViewObject;
+        return $widgetViewObject;
     }
 }

@@ -24,9 +24,6 @@ namespace OxidEsales\EshopCommunity\Tests\Integration\Modules;
 use oxModule;
 use oxRegistry;
 
-require_once __DIR__ . '/Validator.php';
-require_once __DIR__ . '/Environment.php';
-
 /**
  * Base class for module integration tests.
  *
@@ -34,14 +31,15 @@ require_once __DIR__ . '/Environment.php';
  */
 abstract class BaseModuleTestCase extends \OxidTestCase
 {
+
     /**
-     * Tear down the fixture.
+     * Ensure a clean environment before each test
      */
-    protected function tearDown()
-    {
+    protected function setUp() {
+        parent::setUp();
+
         $oEnvironment = new Environment();
         $oEnvironment->clean();
-        parent::tearDown();
     }
 
     /**
@@ -99,6 +97,10 @@ abstract class BaseModuleTestCase extends \OxidTestCase
 
         if (isset($aExpectedResult['files'])) {
             $this->assertTrue($oValidator->checkFiles($aExpectedResult['files']), 'Files do not match expectations');
+        }
+
+        if (isset($aExpectedResult['controllers'])) {
+            $this->assertTrue($oValidator->checkControllers($aExpectedResult['controllers']), 'Controllers do not match expectations');
         }
 
         if (isset($aExpectedResult['events'])) {

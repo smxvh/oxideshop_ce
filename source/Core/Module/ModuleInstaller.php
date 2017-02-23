@@ -21,10 +21,14 @@
  */
 namespace OxidEsales\EshopCommunity\Core\Module;
 
-use OxidEsales\Eshop\Core\SettingsHandler;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Routing\Module\ClassProviderStorage;
+use OxidEsales\EshopCommunity\Core\Exception\ModuleValidationException;
+use OxidEsales\EshopCommunity\Core\Exception\StandardException;
 use oxModuleCache;
-use oxModule;
 use oxDb;
+use OxidEsales\Eshop\Core\Module\ModuleExtensionsCleaner;
+use OxidEsales\Eshop\Core\SettingsHandler;
 use oxUtilsObject;
 
 /**
@@ -46,12 +50,12 @@ class ModuleInstaller extends \oxSuperCfg
     /**
      * Sets dependencies.
      *
-     * @param oxModuleCache           $oxModuleCache
+     * @param ModuleCache             $moduleCache
      * @param ModuleExtensionsCleaner $moduleCleaner
      */
-    public function __construct(ModuleCache $oxModuleCache = null, $moduleCleaner = null)
+    public function __construct(ModuleCache $moduleCache = null, $moduleCleaner = null)
     {
-        $this->setModuleCache($oxModuleCache);
+        $this->setModuleCache($moduleCache);
         if (is_null($moduleCleaner)) {
             $moduleCleaner = oxNew(ModuleExtensionsCleaner::class);
         }
@@ -81,64 +85,85 @@ class ModuleInstaller extends \oxSuperCfg
     /**
      * Activate extension by merging module class inheritance information with shop module array
      *
-     * @param oxModule $oModule
+     * @param Module $module
      *
      * @return bool
      */
-    public function activate(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
+    public function activate(\OxidEsales\EshopCommunity\Core\Module\Module $module)
     {
-        $blResult = false;
-        if ($sModuleId = $oModule->getId()) {
-            $this->_addExtensions($oModule);
-            $this->_removeFromDisabledList($sModuleId);
+        $result = false;
+        if ($moduleId = $module->getId()) {
+            $this->_addExtensions($module);
+            $this->_removeFromDisabledList($moduleId);
 
-            $this->_addTemplateBlocks($oModule->getInfo("blocks"), $sModuleId);
-            $this->_addModuleFiles($oModule->getInfo("files"), $sModuleId);
-            $this->_addTemplateFiles($oModule->getInfo("templates"), $sModuleId);
+            if (version_compare($module->getMetaDataVersion(), '2.0', '<')) {
+                /** Support for the key 'files' was removed in MetaData version 2.0 */
+                $this->_addModuleFiles($module->getInfo("files"), $moduleId);
+            }
+
+            $this->_addTemplateBlocks($module->getInfo("blocks"), $moduleId);
+            $this->_addTemplateFiles($module->getInfo("templates"), $moduleId);
             $settingsHandler = oxNew(SettingsHandler::class);
-            $settingsHandler->setModuleType('module')->run($oModule);
-            $this->_addModuleVersion($oModule->getInfo("version"), $sModuleId);
-            $this->_addModuleExtensions($oModule->getExtensions(), $sModuleId);
-            $this->_addModuleEvents($oModule->getInfo("events"), $sModuleId);
+            $settingsHandler->setModuleType('module')->run($module);
+            $this->_addModuleVersion($module->getInfo("version"), $moduleId);
+            $this->_addModuleExtensions($module->getExtensions(), $moduleId);
+            $this->_addModuleEvents($module->getInfo("events"), $moduleId);
+
+            if (version_compare($module->getMetaDataVersion(), '2.0', '>=')) {
+                try {
+                    /** Support for the key 'controllers' was added in MetaData version 2.0 */
+                    $this->addModuleControllers($module->getControllers(), $moduleId);
+                } catch (ModuleValidationException $exception) {
+                    $this->deactivate($module);
+                    $lang = Registry::getLang();
+                    $message = sprintf($lang->translateString('ERROR_METADATA_CONTROLLERS_NOT_UNIQUE', null, true), $exception->getMessage());
+
+                    $standardException = oxNew(StandardException::class);
+                    $standardException->setMessage($message);
+
+                    throw $standardException;
+                }
+            }
 
             $this->resetCache();
 
-            $this->_callEvent('onActivate', $sModuleId);
+            $this->_callEvent('onActivate', $moduleId);
 
-            $blResult = true;
+            $result = true;
         }
 
-        return $blResult;
+        return $result;
     }
 
     /**
      * Deactivate extension by adding disable module class information to disabled module array
      *
-     * @param oxModule $oModule
+     * @param Module $module
      *
      * @return bool
      */
-    public function deactivate(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
+    public function deactivate(\OxidEsales\EshopCommunity\Core\Module\Module $module)
     {
-        $blResult = false;
-        if ($sModuleId = $oModule->getId()) {
-            $this->_callEvent('onDeactivate', $sModuleId);
+        $result = false;
+        if ($moduleId = $module->getId()) {
+            $this->_callEvent('onDeactivate', $moduleId);
 
-            $this->_addToDisabledList($sModuleId);
+            $this->_addToDisabledList($moduleId);
 
             //removing recoverable options
-            $this->_deleteBlock($sModuleId);
-            $this->_deleteTemplateFiles($sModuleId);
-            $this->_deleteModuleFiles($sModuleId);
-            $this->_deleteModuleEvents($sModuleId);
-            $this->_deleteModuleVersions($sModuleId);
+            $this->_deleteBlock($moduleId);
+            $this->_deleteTemplateFiles($moduleId);
+            $this->_deleteModuleFiles($moduleId);
+            $this->_deleteModuleEvents($moduleId);
+            $this->_deleteModuleVersions($moduleId);
+            $this->deleteModuleControllers($moduleId);
 
             $this->resetCache();
 
-            $blResult = true;
+            $result = true;
         }
 
-        return $blResult;
+        return $result;
     }
 
     /**
@@ -319,7 +344,7 @@ class ModuleInstaller extends \oxSuperCfg
     /**
      * Add extension to module
      *
-     * @param oxModule $oModule
+     * @param Module $oModule
      */
     protected function _addExtensions(\OxidEsales\EshopCommunity\Core\Module\Module $oModule)
     {
@@ -384,7 +409,7 @@ class ModuleInstaller extends \oxSuperCfg
     /**
      * Add module templates to database.
      *
-     * @todo extract oxtplblocks query to ModuleTemplateBlockRepository
+     * @todo extract oxtplblocks query to ]
      *
      * @param array  $moduleBlocks Module blocks array
      * @param string $moduleId     Module id
@@ -506,6 +531,33 @@ class ModuleInstaller extends \oxSuperCfg
     }
 
     /**
+     * Add controllers map for a given module Id to config
+     *
+     * @param array  $moduleControllers Map of controller ids and class names
+     * @param string $moduleId          The Id of the module
+     */
+    protected function addModuleControllers($moduleControllers, $moduleId)
+    {
+        $this->validateModuleMetadataControllersOnActivation($moduleControllers);
+
+        $classProviderStorage = $this->getClassProviderStorage();
+
+        $classProviderStorage->add($moduleId, $moduleControllers);
+    }
+
+    /**
+     * Remove controllers map for a given module Id from config
+     *
+     * @param string $moduleId The Id of the module
+     */
+    protected function deleteModuleControllers($moduleId)
+    {
+        $moduleControllerProvider = $this->getClassProviderStorage();
+
+        $moduleControllerProvider->remove($moduleId);
+    }
+
+    /**
      * Call module event.
      *
      * @param string $sEvent    Event name
@@ -527,14 +579,14 @@ class ModuleInstaller extends \oxSuperCfg
     /**
      * Removes garbage ( module not used extensions ) from all installed extensions list
      *
-     * @param array    $installedExtensions Installed extensions
-     * @param oxModule $module              Module
+     * @param array  $installedExtensions Installed extensions
+     * @param Module $module              Module
      *
      * @deprecated on b-dev, ModuleExtensionsCleaner::cleanExtensions() should be used.
      *
      * @return array
      */
-    protected function _removeNotUsedExtensions($installedExtensions, oxModule $module)
+    protected function _removeNotUsedExtensions($installedExtensions, Module $module)
     {
         return $this->getModuleCleaner()->cleanExtensions($installedExtensions, $module);
     }
@@ -560,6 +612,68 @@ class ModuleInstaller extends \oxSuperCfg
     {
         if ($this->getModuleCache()) {
             $this->getModuleCache()->resetCache();
+        }
+    }
+
+    /**
+     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
+     */
+    protected function getModuleControllerMapProvider()
+    {
+        return oxNew(\OxidEsales\Eshop\Core\Routing\ModuleControllerMapProvider::class);
+    }
+
+    /**
+     * @return \OxidEsales\EshopCommunity\Core\Contract\ControllerMapProviderInterface
+     */
+    protected function getShopControllerMapProvider()
+    {
+        return oxNew(\OxidEsales\Eshop\Core\Routing\ShopControllerMapProvider::class);
+    }
+
+    /**
+     * @return object
+     */
+    protected function getClassProviderStorage()
+    {
+        $classProviderStorage = oxNew(ClassProviderStorage::class);
+
+        return $classProviderStorage;
+    }
+
+    /**
+     * Ensure integrity of the controllerMap before storing it.
+     * Both keys and values must be unique with in the same shop or sub-shop.
+     *
+     * @param array $moduleControllers
+     *
+     * @throws ModuleValidationException
+     */
+    protected function validateModuleMetadataControllersOnActivation($moduleControllers)
+    {
+        $moduleControllerMapProvider = $this->getModuleControllerMapProvider();
+        $shopControllerMapProvider = $this->getShopControllerMapProvider();
+
+        $moduleControllerMap = $moduleControllerMapProvider->getControllerMap();
+        $shopControllerMap = $shopControllerMapProvider->getControllerMap();
+
+        $existingMaps = array_merge($moduleControllerMap, $shopControllerMap);
+
+        /**
+         * Ensure, that controller keys are unique.
+         * As keys are always stored in lower case, we must test against lower case keys here as well
+         */
+        $duplicatedKeys = array_intersect_key(array_change_key_case($moduleControllers, CASE_LOWER), $existingMaps);
+        if (!empty($duplicatedKeys)) {
+            throw new ModuleValidationException(implode(',', $duplicatedKeys));
+        }
+
+        /**
+         * Ensure, that controller values are unique.
+         */
+        $duplicatedValues = array_intersect($moduleControllers, $existingMaps);
+        if (!empty($duplicatedValues)) {
+            throw new ModuleValidationException(implode(',', $duplicatedValues));
         }
     }
 }
