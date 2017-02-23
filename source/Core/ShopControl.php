@@ -156,9 +156,8 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
             $this->_handleSystemException($exception);
         } catch (\OxidEsales\Eshop\Core\Exception\CookieException $exception) {
             $this->_handleCookieException($exception);
-            //@todo: do not handle the same exception twice
-        } catch (\OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception) {
-            $this->handleDbNotConfiguredException();
+        } catch (\OxidEsales\Eshop\Core\Exception\DatabaseNotConfiguredException $exception) {
+            $this->handleDbConnectionException($exception);
         } catch (\OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception) {
             $this->handleDbConnectionException($exception);
         } catch (\OxidEsales\Eshop\Core\Exception\StandardException $exception) {
@@ -633,7 +632,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
      */
     protected function _isDebugMode()
     {
-        return (bool) Registry::get("OxConfigFile")->getVar('iDebug');
+        return (bool) Registry::get("oxConfigFile")->getVar('iDebug');
     }
 
     /**
@@ -808,13 +807,21 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
          */
         if ($this->_isDebugMode()) {
             echo '<pre>' . $exception->getString() . '</pre>';
-            exit();
+            exit(1);
         } else {
             /**
              * The shop standard redirect mechanism needs a working database connection.
              * Use a special method here.
              */
-            $this->redirectToMaintenancePageWithoutDbConnection();
+            /**
+             * Render an error message.
+             * If offline.html exists a redirection is done.
+             * Like this the error message is overridable within that file.
+             */
+            if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
+                $this->redirectToMaintenancePageWithoutDbConnection();
+            };
+            exit(1);
         }
     }
 
@@ -858,9 +865,9 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
     protected function redirectToMaintenancePageWithoutDbConnection()
     {
         header("HTTP/1.1 302 Found");
-        header("Location: offline.html");
+        header("Location: ". OX_OFFLINE_FILE);
         header("Connection: close");
-        exit();
+        exit(1);
     }
 
     /**
@@ -920,7 +927,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
         $wasSentWithinThreshold = false;
 
         /** @var int $threshold Threshold in seconds */
-        $threshold = Registry::get("OxConfigFile")->getVar('offlineWarningInterval');
+        $threshold = Registry::get("oxConfigFile")->getVar('offlineWarningInterval');
         if (file_exists($this->offlineWarningTimestampFile)) {
             $lastSentTimestamp = (int) file_get_contents($this->offlineWarningTimestampFile);
             $lastSentBefore = time() - $lastSentTimestamp;
@@ -946,7 +953,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
     {
         $result = false;
         /** @var  $emailAddress Email address to sent the message to */
-        $emailAddress = Registry::get("OxConfigFile")->getVar('sAdminEmail');
+        $emailAddress = Registry::get("oxConfigFile")->getVar('sAdminEmail');
 
         if ($emailAddress) {
             /** As we are inside the exception handling process, any further exceptions must be caught */

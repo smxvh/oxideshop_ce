@@ -25,8 +25,9 @@ ini_set('display_errors', 0);
 
 define('INSTALLATION_ROOT_PATH', dirname(__DIR__));
 define('OX_BASE_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR);
+define('OX_LOG_FILE', OX_BASE_PATH . 'log' . DIRECTORY_SEPARATOR . 'EXCEPTION_LOG.txt');
+define('OX_OFFLINE_FILE', OX_BASE_PATH . 'offline.html');
 define('VENDOR_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR);
-define('OX_LOG_FILE', OX_BASE_PATH . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'EXCEPTION_LOG.txt');
 
 /**
  * Provide a handler for cachable fatal errors, like failed requirement of files.
@@ -38,26 +39,33 @@ define('OX_LOG_FILE', OX_BASE_PATH . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEP
 function shutDownHandler()
 {
     $error = error_get_last();
-    if (in_array($error['type'], [E_COMPILE_ERROR, E_USER_ERROR])) {
-        $displayMessage = 'No details are available in log file as it does not exist or is not writable';
+    if (in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, ])) {
+        $displayMessage = 'An error occurred. See log file for details';
 
         $time = microtime(true);
         $micro = sprintf("%06d", ($time - floor($time)) * 1000000);
         $date = new DateTime(date('Y-m-d H:i:s.' . $micro, $time));
         $timestamp = $date->format('D M H:i:s.u Y');
 
+        /** report the error */
         $logMessage = "[$timestamp] [:error] [type {$error['type']}] " . $error['message'] . PHP_EOL;
-        if (file_put_contents(OX_LOG_FILE, $logMessage, FILE_APPEND)) {
-            $displayMessage = 'See log file for details';
+        if (!file_put_contents(OX_LOG_FILE, $logMessage, FILE_APPEND)) {
+            $message = 'No details are available in log file as it does not exist or is not writable';
         }
-        echo <<<EOT
-        <p>
-        <strong>
-          <font color="red">An error was captured</font>
-        </strong>
-        </p>
-        <p>$displayMessage</p>
-EOT;
+
+        /**
+         * Render an error message.
+         * If offline.html exists a redirection is done.
+         * Like this the error message is overridable within that file.
+         */
+        if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
+            header("HTTP/1.1 500 Internal Server Error");
+            header("Location: ". OX_OFFLINE_FILE);
+            header("Connection: close");
+            exit();
+        };
+
+        echo $displayMessage;
     }
 }
 

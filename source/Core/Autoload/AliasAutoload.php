@@ -31,13 +31,10 @@ namespace OxidEsales\EshopCommunity\Core\Autoload;
 class AliasAutoload
 {
 
-    private $classMapProvider;
     private $backwardsCompatibilityClassMap;
-    private $reverseBackwardsCompatibilityClassMap; // real class name => lowercase(old class name)
-
 
     /**
-     * BcAliasAutoloader constructor.
+     * AliasAutoload constructor.
      */
     public function __construct()
     {
@@ -46,9 +43,11 @@ class AliasAutoload
     }
 
     /**
-     * @param string $class
+     * Autoload method.
      *
-     * @return null
+     * @param string $class Name of the class to be loaded
+     *
+     * @return bool
      */
     public function autoload($class)
     {
@@ -70,12 +69,15 @@ class AliasAutoload
             $realClass = $this->getRealClassForVirtualAlias($virtualAlias);
         }
 
+        /** Pass over to the next registered autoloader, if no realClass has been found for the requested className  */
         if (!$realClass) {
             return false;
         }
 
+        /** The class  must be loaded before class_alias can be called. */
         $this->forceClassLoading($realClass);
 
+        /** In order not to load classes twice, see if they are already declared. */
         $declaredClasses = get_declared_classes();
         if ($bcAlias && !in_array(strtolower($bcAlias), $declaredClasses)) {
             class_alias($realClass, $bcAlias);
@@ -83,14 +85,17 @@ class AliasAutoload
         if ($virtualAlias && !in_array(strtolower($virtualAlias), $declaredClasses)) {
             class_alias($realClass, $virtualAlias);
 
-            return true; // Implies also generating of $bcAlias
+            /** At this point both a bcAlias and a virtualAlias would have be created successfully */
+            return true;
         }
 
         return false;
     }
 
     /**
-     * @param string $class
+     * Return true, if the given class name is a backwards compatible alias like oxArticle
+     *
+     * @param string $class Name of the class
      *
      * @return bool
      */
@@ -102,67 +107,90 @@ class AliasAutoload
     }
 
     /**
-     * @param string $class
+     * Return true, if the given class name is a virtual alias like OxidEsales\Eshop\Application\Model\Article
      *
-     * @return mixed
-     */
-    private function getVirtualAliasForBcAlias($class)
-    {
-        $classMap = array_flip($this->getBackwardsCompatibilityClassMap());
-
-        return $classMap[strtolower($class)];
-    }
-
-    /**
-     * @param string $class
+     * @param string $class Name of the class. No leading backspaces should be used here.
      *
      * @return bool
      */
     private function isVirtualClassRequest($class)
     {
-        return strpos($class, 'OxidEsales\\Eshop\\') === 0;
+        return strpos(ltrim($class, '\\'), 'OxidEsales\\Eshop\\') === 0;
     }
 
     /**
-     * @param string $class
+     * Return the name of a virtual class for a given backwards compatible class
      *
-     * @return mixed
+     * @param string $class Name of the backwards compatible class like oxArticle
+     *
+     * @return null|string Name of the virtual class like OxidEsales\Eshop\Application\Model\Article
+     */
+    private function getVirtualAliasForBcAlias($class)
+    {
+        $result = null;
+
+        $classMap = $this->getBackwardsCompatibilityClassMap();
+        if ($resolvedClassName = array_search(strtolower($class), $classMap)) {
+            $result = $resolvedClassName;
+        }
+
+        return  $result;
+    }
+
+    /**
+     * Return the name of a backwards compatible class for a given virtual class
+     *
+     * @param string $class Name of the virtual class like OxidEsales\Eshop\Application\Model\Article
+     *
+     * @return null|string Name of the backwards compatible class like oxArticle
      */
     private function getBcAliasForVirtualAlias($class)
     {
+        $result = null;
+
         $classMap = $this->getBackwardsCompatibilityClassMap();
-        if (key_exists($class, $classMap)) {
-            return $classMap[$class];
+        if (key_exists(ltrim($class, '\\'), $classMap)) {
+            $result = $classMap[$class];
         }
+
+        return $result;
     }
 
     /**
-     * @param string $class
+     * Return the name of a real class for a given virtual class
      *
-     * @return string
+     * @param string $class Name of the virtual class like OxidEsales\Eshop\Application\Model\Article
+     *
+     * @return null|string Name of the real class like OxidEsales\EshopCommunity\Application\Model\Article
      */
     private function getRealClassForVirtualAlias($class)
     {
-        $virtualClassMap = $this->getVirtualClassMap();
+        $result = null;
 
+        $virtualClassMap = $this->getVirtualClassMap();
         if (key_exists($class, $virtualClassMap)) {
-            return $virtualClassMap[$class];
-        } else {
-            return null;
+            $result = $virtualClassMap[$class];
         }
+
+        return $result;
     }
 
     /**
-     * @param string $class
+     * Load a given class using the stack of registered autoloaders.
+     * If this class is the first autoloader in the stack, this is the point where recursion would start.
+     *
+     * @param string $class Name of the class to load
      */
     private function forceClassLoading($class)
     {
-        // Calling class_exists will trigger the autoloader
+        /** Calling class_exists will trigger the corresponding autoloader */
         class_exists($class);
     }
 
     /**
-     * @return array
+     * Return the backwards compatibile classmap
+     *
+     * @return array Mapping of virtual to backwards compatibile classes
      */
     private function getBackwardsCompatibilityClassMap()
     {
@@ -170,19 +198,10 @@ class AliasAutoload
     }
 
     /**
-     * @return array
-     */
-    private function getReverseClassMap()
-    {
-        if (!$this->reverseBackwardsCompatibilityClassMap) {
-            $this->reverseBackwardsCompatibilityClassMap = array_flip($this->getBackwardsCompatibilityClassMap());
-        }
-
-        return $this->reverseBackwardsCompatibilityClassMap;
-    }
-
-    /**
-     * @return array
+     * Return the corresponding virtual class map.
+     * When creating the instance of VirtualNameSpaceClassMap is is assured, that no auto loader will be triggered.
+     *
+     * @return array Mapping of virtual to real classes
      */
     private function getVirtualClassMap()
     {
@@ -199,18 +218,24 @@ class AliasAutoload
         if ($edition == 'EE' &&
             file_exists($virtualNameSpaceClassMaps['EE'])
         ) {
+            /** Inlcude all classes needed for object creation in order not to trigger other autoloaders */
+            include_once $virtualNameSpaceClassMaps['CE'];
+            include_once $virtualNameSpaceClassMaps['PE'];
             include_once $virtualNameSpaceClassMaps['EE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopEnterprise\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
         } elseif ($edition == 'PE' &&
             file_exists($virtualNameSpaceClassMaps['PE'])
         ) {
+            /** Inlcude all classes needed for object creation in order not to trigger other autoloaders */
+            include_once $virtualNameSpaceClassMaps['CE'];
             include_once $virtualNameSpaceClassMaps['PE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopProfessional\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();
         } elseif ($edition == 'CE' &&
             file_exists($virtualNameSpaceClassMaps['CE'])
         ) {
+            /** Inlcude all classes needed for object creation in order not to trigger other autoloaders */
             include_once $virtualNameSpaceClassMaps['CE'];
             $virtualNameSpaceClassMap = new \OxidEsales\EshopCommunity\Core\Autoload\VirtualNameSpaceClassMap();
             $virtualClassMap = $virtualNameSpaceClassMap->getClassMap();

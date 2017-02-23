@@ -2234,9 +2234,16 @@ class Config extends \OxidEsales\Eshop\Core\Base
         if (0 != $this->getConfigParam('iDebug')) {
             Registry::getUtils()->showMessageAndExit($ex->getString());
         } else {
-            header("HTTP/1.1 500 Internal Server Error");
-            header("Location: offline.html");
-            header("Connection: close");
+            /**
+             * Render an error message.
+             * If offline.html exists a redirection is done.
+             * Like this the error message is overridable within that file.
+             */
+            if (file_exists(OX_OFFLINE_FILE) && is_readable(OX_OFFLINE_FILE)) {
+                header("HTTP/1.1 500 Internal Server Error");
+                header("Location: ". OX_OFFLINE_FILE);
+                header("Connection: close");
+            };
             exit(1);
         }
     }
