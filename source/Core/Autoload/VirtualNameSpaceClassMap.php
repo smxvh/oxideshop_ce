@@ -602,5 +602,11 @@ class VirtualNameSpaceClassMap
             'OxidEsales\Eshop\Core\WidgetControl' => \OxidEsales\EshopCommunity\Core\WidgetControl::class,
 
         ];
+
+        if (function_exists(parent::getClassMap())) {
+            $classMap = array_merge(parent::getClassMap(), $classMap);
+        }
+
+        return $classMap;
     }
 }
