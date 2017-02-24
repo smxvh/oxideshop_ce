@@ -448,5 +448,4 @@ class UtilsObject
     {
         return count($arguments) < 2 && (!isset($arguments[0]) || is_scalar($arguments[0]));
     }
-
 }
