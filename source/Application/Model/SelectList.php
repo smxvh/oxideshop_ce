@@ -29,7 +29,7 @@ use oxDb;
  * Select list manager
  *
  */
-class SelectList extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements  \OxidEsales\Eshop\Core\Contract\ISelectList
+class SelectList extends \OxidEsales\Eshop\Core\Model\MultiLanguageModel implements \OxidEsales\Eshop\Core\Contract\ISelectList
 {
     /**
      * Select list fields array

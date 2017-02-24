@@ -50,8 +50,8 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     /**
      * Sets dependencies.
      *
-     * @param \OxidEsales\Eshop\Core\Module\ModuleCache             $moduleCache
-     * @param ModuleExtensionsCleaner $moduleCleaner
+     * @param \OxidEsales\Eshop\Core\Module\ModuleCache $moduleCache
+     * @param ModuleExtensionsCleaner                   $moduleCleaner
      */
     public function __construct(\OxidEsales\Eshop\Core\Module\ModuleCache $moduleCache = null, $moduleCleaner = null)
     {
@@ -579,7 +579,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     /**
      * Removes garbage ( module not used extensions ) from all installed extensions list
      *
-     * @param array  $installedExtensions Installed extensions
+     * @param array                                $installedExtensions Installed extensions
      * @param \OxidEsales\Eshop\Core\Module\Module $module              Module
      *
      * @deprecated on b-dev, ModuleExtensionsCleaner::cleanExtensions() should be used.

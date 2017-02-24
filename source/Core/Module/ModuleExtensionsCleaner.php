@@ -36,7 +36,7 @@ class ModuleExtensionsCleaner
      * Removes garbage ( module not used extensions ) from all installed extensions list.
      * For example: some classes were renamed, so these should be removed.
      *
-     * @param array  $installedExtensions
+     * @param array                                $installedExtensions
      * @param \OxidEsales\Eshop\Core\Module\Module $module
      *
      * @return array
