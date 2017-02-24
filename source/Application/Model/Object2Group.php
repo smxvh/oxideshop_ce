@@ -62,7 +62,7 @@ class Object2Group extends \OxidEsales\Eshop\Core\Model\BaseModel
         try {
             return parent::save();
         } catch (\OxidEsales\Eshop\Core\Exception\DatabaseException $exception) {
-            if ($exception->getCode() !== Database::DUPLICATE_KEY_ERROR_CODE) {
+            if ($exception->getCode() !== \OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database::DUPLICATE_KEY_ERROR_CODE) {
                 throw $exception;
             }
         }

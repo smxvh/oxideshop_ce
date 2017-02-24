@@ -118,7 +118,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
                     $lang = Registry::getLang();
                     $message = sprintf($lang->translateString('ERROR_METADATA_CONTROLLERS_NOT_UNIQUE', null, true), $exception->getMessage());
 
-                    $standardException = oxNew(StandardException::class);
+                    $standardException = oxNew(\OxidEsales\Eshop\Core\Exception\StandardException::class);
                     $standardException->setMessage($message);
 
                     throw $standardException;
@@ -665,7 +665,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
          */
         $duplicatedKeys = array_intersect_key(array_change_key_case($moduleControllers, CASE_LOWER), $existingMaps);
         if (!empty($duplicatedKeys)) {
-            throw new ModuleValidationException(implode(',', $duplicatedKeys));
+            throw new \OxidEsales\Eshop\Core\Exception\ModuleValidationException(implode(',', $duplicatedKeys));
         }
 
         /**
@@ -673,7 +673,7 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
          */
         $duplicatedValues = array_intersect($moduleControllers, $existingMaps);
         if (!empty($duplicatedValues)) {
-            throw new ModuleValidationException(implode(',', $duplicatedValues));
+            throw new \OxidEsales\Eshop\Core\Exception\ModuleValidationException(implode(',', $duplicatedValues));
         }
     }
 }

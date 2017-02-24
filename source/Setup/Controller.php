@@ -25,7 +25,7 @@ namespace OxidEsales\EshopCommunity\Setup;
 use Exception;
 use OxidEsales\Eshop\Core\Edition\EditionSelector;
 use OxidEsales\Eshop\Core\SystemRequirements;
-use OxidEsales\EshopCommunity\Setup\Controller\ModuleStateMapGenerator;
+use OxidEsales\Eshop\Setup\Controller\ModuleStateMapGenerator;
 use OxidEsales\Eshop\Setup\Exception\CommandExecutionFailedException;
 use OxidEsales\Eshop\Setup\Exception\SetupControllerExitException;
 
@@ -219,17 +219,17 @@ class Controller extends Core
             $database = $this->getDatabaseInstance();
             $database->openDatabase($databaseConfigValues);
         } catch (Exception $exception) {
-            if ($exception->getCode() === Database::ERROR_DB_CONNECT) {
+            if ($exception->getCode() === \OxidEsales\Eshop\Setup\Database::ERROR_DB_CONNECT) {
                 $setup->setNextStep($setup->getStep('STEP_DB_INFO'));
                 $view->setMessage($language->getText('ERROR_DB_CONNECT') . " - " . $exception->getMessage());
 
                 throw new SetupControllerExitException();
-            } elseif ($exception->getCode() === Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS) {
+            } elseif ($exception->getCode() === \OxidEsales\Eshop\Setup\Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS) {
                 $setup->setNextStep($setup->getStep('STEP_DB_INFO'));
                 $view->setMessage($exception->getMessage());
 
                 throw new SetupControllerExitException();
-            } elseif ($exception->getCode() === Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS) {
+            } elseif ($exception->getCode() === \OxidEsales\Eshop\Setup\Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS) {
                 $setup->setNextStep(null);
                 $this->formMessageIfMySqyVersionIsNotRecommended($view, $language);
                 // check if DB is already UP and running
@@ -296,7 +296,7 @@ class Controller extends Core
             $database = $this->getDatabaseInstance();
             $database->openDatabase($databaseConfigValues);
         } catch (Exception $exception) {
-            if ($exception->getCode() === Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS) {
+            if ($exception->getCode() === \OxidEsales\Eshop\Setup\Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS) {
                 $setup->setNextStep(null);
                 $this->formMessageIfMySqyVersionIsNotRecommended($view, $language);
                 // check if DB is already UP and running
@@ -659,7 +659,7 @@ class Controller extends Core
         $setup = $this->getSetupInstance();
         $language = $this->getLanguageInstance();
 
-        $moduleStateMapGenerator = new Controller\ModuleStateMapGenerator($systemRequirementsInfo);
+        $moduleStateMapGenerator = new \OxidEsales\Eshop\Setup\Controller\ModuleStateMapGenerator($systemRequirementsInfo);
 
         $moduleStateMapGenerator->setModuleStateHtmlClassConvertFunction(function ($moduleState) use ($setup) {
             return $setup->getModuleClass($moduleState);

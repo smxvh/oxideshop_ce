@@ -254,7 +254,7 @@ class UtilsObject
             //expect __autoload() (oxfunctions.php) to do its job when class_exists() is called
             if (!class_exists($realClassName)) {
                 /** @var $exception oxSystemComponentException */
-                $exception = oxNew(SystemComponentException::class);
+                $exception = oxNew(\OxidEsales\Eshop\Core\Exception\SystemComponentException::class);
                 $exception->setMessage('EXCEPTION_SYSTEMCOMPONENT_CLASSNOTFOUND');
                 $exception->setComponent($className);
                 $exception->debugOut();
@@ -307,7 +307,7 @@ class UtilsObject
                     $object = $reflection->newInstanceArgs($arguments);
                 } catch (ReflectionException $reflectionException) {
                     // something went wrong?
-                    $systemComponentException = oxNew(SystemComponentException::class);
+                    $systemComponentException = oxNew(\OxidEsales\Eshop\Core\Exception\SystemComponentException::class);
                     $systemComponentException->setMessage($reflectionException->getMessage());
                     $systemComponentException->setComponent($className);
                     $systemComponentException->debugOut();

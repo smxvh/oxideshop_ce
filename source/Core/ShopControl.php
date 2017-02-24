@@ -258,7 +258,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
 
         // If unmatched controller id is requested throw exception
         if (!$resolvedClass) {
-            throw new RoutingException($controllerKey);
+            throw new \OxidEsales\Eshop\Core\Exception\RoutingException($controllerKey);
         }
 
         return $resolvedClass;
@@ -794,9 +794,9 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
      * Special methods are used here as the normal exception handling routines always need a database connection and
      * this would create a loop.
      *
-     * @param DatabaseConnectionException $exception Exception to handle
+     * @param \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception Exception to handle
      */
-    protected function handleDbConnectionException(DatabaseConnectionException $exception)
+    protected function handleDbConnectionException(\OxidEsales\Eshop\Core\Exception\DatabaseConnectionException $exception)
     {
         /**
          * Report the database connection exception
@@ -942,7 +942,7 @@ class ShopControl extends \OxidEsales\Eshop\Core\Base
      *
      * @return bool Returns true, if the email was sent.
      */
-    protected function sendOfflineWarning(StandardException $exception)
+    protected function sendOfflineWarning(\OxidEsales\Eshop\Core\Exception\StandardException $exception)
     {
         $result = false;
         /** @var  $emailAddress Email address to sent the message to */

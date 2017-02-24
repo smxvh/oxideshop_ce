@@ -277,11 +277,11 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
         if (!$this->_oNewsSubscription->loadFromUserId($this->getId())) {
             if (!$this->_oNewsSubscription->loadFromEmail($this->oxuser__oxusername->value)) {
                 // no subscription defined yet - creating one
-                $this->_oNewsSubscription->oxnewssubscribed__oxuserid = new Field($this->getId(), Field::T_RAW);
-                $this->_oNewsSubscription->oxnewssubscribed__oxemail = new Field($this->oxuser__oxusername->value, Field::T_RAW);
-                $this->_oNewsSubscription->oxnewssubscribed__oxsal = new Field($this->oxuser__oxsal->value, Field::T_RAW);
-                $this->_oNewsSubscription->oxnewssubscribed__oxfname = new Field($this->oxuser__oxfname->value, Field::T_RAW);
-                $this->_oNewsSubscription->oxnewssubscribed__oxlname = new Field($this->oxuser__oxlname->value, Field::T_RAW);
+                $this->_oNewsSubscription->oxnewssubscribed__oxuserid = new \OxidEsales\Eshop\Core\Field($this->getId(), \OxidEsales\Eshop\Core\Field::T_RAW);
+                $this->_oNewsSubscription->oxnewssubscribed__oxemail = new \OxidEsales\Eshop\Core\Field($this->oxuser__oxusername->value, \OxidEsales\Eshop\Core\Field::T_RAW);
+                $this->_oNewsSubscription->oxnewssubscribed__oxsal = new \OxidEsales\Eshop\Core\Field($this->oxuser__oxsal->value, \OxidEsales\Eshop\Core\Field::T_RAW);
+                $this->_oNewsSubscription->oxnewssubscribed__oxfname = new \OxidEsales\Eshop\Core\Field($this->oxuser__oxfname->value, \OxidEsales\Eshop\Core\Field::T_RAW);
+                $this->_oNewsSubscription->oxnewssubscribed__oxlname = new \OxidEsales\Eshop\Core\Field($this->oxuser__oxlname->value, \OxidEsales\Eshop\Core\Field::T_RAW);
             }
         }
 
@@ -304,7 +304,7 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
             $oDb = oxDb::getDb();
             $sViewName = getViewName('oxcountry', $iLang);
             $sQ = "select oxtitle from {$sViewName} where oxid = " . $oDb->quote($sId) . " ";
-            $oCountry = new Field($oDb->getOne($sQ), Field::T_RAW);
+            $oCountry = new \OxidEsales\Eshop\Core\Field($oDb->getOne($sQ), \OxidEsales\Eshop\Core\Field::T_RAW);
             if (!$sCountryId) {
                 $this->_oUserCountryTitle = $oCountry;
             }
@@ -518,15 +518,18 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
         if ($this->oxuser__oxpassword->value && $this->oxuser__oxregister->value < 1) {
             $blAddRemark = true;
             //save oxregister value
-            $this->oxuser__oxregister = new Field(date('Y-m-d H:i:s'), Field::T_RAW);
+            $this->oxuser__oxregister = new \OxidEsales\Eshop\Core\Field(date('Y-m-d H:i:s'), \OxidEsales\Eshop\Core\Field::T_RAW);
         }
 
         // setting user rights
-        $this->oxuser__oxrights = new Field($this->_getUserRights(), Field::T_RAW);
+        $this->oxuser__oxrights = new \OxidEsales\Eshop\Core\Field($this->_getUserRights(), \OxidEsales\Eshop\Core\Field::T_RAW);
 
         // processing birth date which came from output as array
         if (is_array($this->oxuser__oxbirthdate->value)) {
-            $this->oxuser__oxbirthdate = new Field($this->convertBirthday($this->oxuser__oxbirthdate->value), Field::T_RAW);
+            $this->oxuser__oxbirthdate = new \OxidEsales\Eshop\Core\Field(
+                $this->convertBirthday($this->oxuser__oxbirthdate->value),
+                \OxidEsales\Eshop\Core\Field::T_RAW
+            );
         }
 
         $blRet = parent::save();
@@ -534,9 +537,12 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
         //add registered remark
         if ($blAddRemark && $blRet) {
             $oRemark = oxNew('oxremark');
-            $oRemark->oxremark__oxtext = new Field(Registry::getLang()->translateString('usrRegistered', null, true), Field::T_RAW);
-            $oRemark->oxremark__oxtype = new Field('r', Field::T_RAW);
-            $oRemark->oxremark__oxparentid = new Field($this->getId(), Field::T_RAW);
+            $oRemark->oxremark__oxtext = new \OxidEsales\Eshop\Core\Field(
+                Registry::getLang()->translateString('usrRegistered', null, true),
+                \OxidEsales\Eshop\Core\Field::T_RAW
+            );
+            $oRemark->oxremark__oxtype = new \OxidEsales\Eshop\Core\Field('r', \OxidEsales\Eshop\Core\Field::T_RAW);
+            $oRemark->oxremark__oxparentid = new \OxidEsales\Eshop\Core\Field($this->getId(), \OxidEsales\Eshop\Core\Field::T_RAW);
             $oRemark->save();
         }
 
@@ -639,7 +645,7 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
 
         // change newsSubcription user id
         if (isset($this->_oNewsSubscription)) {
-            $this->_oNewsSubscription->oxnewssubscribed__oxuserid = new Field($oxID, Field::T_RAW);
+            $this->_oNewsSubscription->oxnewssubscribed__oxuserid = new \OxidEsales\Eshop\Core\Field($oxID, \OxidEsales\Eshop\Core\Field::T_RAW);
         }
 
         return $blRet;
@@ -879,8 +885,8 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
             $oGroup = oxNew('oxGroups');
             if ($oGroup->load($sGroupID)) {
                 $oNewGroup = oxNew('oxobject2group');
-                $oNewGroup->oxobject2group__oxobjectid = new Field($this->getId(), Field::T_RAW);
-                $oNewGroup->oxobject2group__oxgroupsid = new Field($sGroupID, Field::T_RAW);
+                $oNewGroup->oxobject2group__oxobjectid = new \OxidEsales\Eshop\Core\Field($this->getId(), \OxidEsales\Eshop\Core\Field::T_RAW);
+                $oNewGroup->oxobject2group__oxgroupsid = new \OxidEsales\Eshop\Core\Field($sGroupID, \OxidEsales\Eshop\Core\Field::T_RAW);
                 if ($oNewGroup->save()) {
                     $this->_oGroups[$sGroupID] = $oGroup;
 
@@ -961,8 +967,8 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
 
             // creating if it does not exist
             if (!$oBasket->assignRecord($oBasket->buildSelectString($aWhere))) {
-                $oBasket->oxuserbaskets__oxtitle = new Field($sName);
-                $oBasket->oxuserbaskets__oxuserid = new Field($this->getId());
+                $oBasket->oxuserbaskets__oxtitle = new \OxidEsales\Eshop\Core\Field($sName);
+                $oBasket->oxuserbaskets__oxuserid = new \OxidEsales\Eshop\Core\Field($this->getId());
 
                 // marking basket as new (it will not be saved in DB yet)
                 $oBasket->setIsNewBasket();
@@ -1217,7 +1223,7 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
             $oAddress->setId($sAddressId);
             $oAddress->load($sAddressId);
             $oAddress->assign($aDelAddress);
-            $oAddress->oxaddress__oxuserid = new Field($this->getId(), Field::T_RAW);
+            $oAddress->oxaddress__oxuserid = new \OxidEsales\Eshop\Core\Field($this->getId(), \OxidEsales\Eshop\Core\Field::T_RAW);
             $oAddress->oxaddress__oxcountry = $this->getUserCountry($oAddress->oxaddress__oxcountryid->value);
             $oAddress->save();
 
@@ -1532,10 +1538,10 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
                     $this->$sField = new Field($aData[$fldname]);
                 }
 
-                $this->oxuser__oxactive = new Field(1);
-                $this->oxuser__oxshopid = new Field($sShopID);
-                $this->oxuser__oxldapkey = new Field($sUser);
-                $this->oxuser__oxrights = new Field("user");
+                $this->oxuser__oxactive = new \OxidEsales\Eshop\Core\Field(1);
+                $this->oxuser__oxshopid = new \OxidEsales\Eshop\Core\Field($sShopID);
+                $this->oxuser__oxldapkey = new \OxidEsales\Eshop\Core\Field($sUser);
+                $this->oxuser__oxrights = new \OxidEsales\Eshop\Core\Field("user");
                 $this->setPassword("ldap user");
 
                 $this->save();
@@ -1606,10 +1612,10 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
     {
 
         // set oxcreate date
-        $this->oxuser__oxcreate = new Field(date('Y-m-d H:i:s'), Field::T_RAW);
+        $this->oxuser__oxcreate = new \OxidEsales\Eshop\Core\Field(date('Y-m-d H:i:s'), \OxidEsales\Eshop\Core\Field::T_RAW);
 
         if (!isset($this->oxuser__oxboni->value)) {
-            $this->oxuser__oxboni = new Field($this->getBoni(), Field::T_RAW);
+            $this->oxuser__oxboni = new \OxidEsales\Eshop\Core\Field($this->getBoni(), \OxidEsales\Eshop\Core\Field::T_RAW);
         }
 
         return parent::_insert();
@@ -1824,10 +1830,10 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
         $iUpTime = $blReset ? 0 : Registry::get(UtilsDate::class)->getTime() + $this->getUpdateLinkTerm();
 
         // generating key
-        $this->oxuser__oxupdatekey = new Field($sUpKey, Field::T_RAW);
+        $this->oxuser__oxupdatekey = new \OxidEsales\Eshop\Core\Field($sUpKey, Field::T_RAW);
 
         // setting expiration time for 6 hours
-        $this->oxuser__oxupdateexp = new Field($iUpTime, Field::T_RAW);
+        $this->oxuser__oxupdateexp = new \OxidEsales\Eshop\Core\Field($iUpTime, Field::T_RAW);
 
         // saving
         $this->save();
@@ -1909,8 +1915,8 @@ class User extends \OxidEsales\Eshop\Core\Model\BaseModel
         // encoding only if password was not empty (e.g. user registration without pass)
         $sPassword = $sPassword ? $this->encodePassword($sPassword, $sSalt) : '';
 
-        $this->oxuser__oxpassword = new Field($sPassword, Field::T_RAW);
-        $this->oxuser__oxpasssalt = new Field($sSalt, Field::T_RAW);
+        $this->oxuser__oxpassword = new \OxidEsales\Eshop\Core\Field($sPassword, \OxidEsales\Eshop\Core\Field::T_RAW);
+        $this->oxuser__oxpasssalt = new \OxidEsales\Eshop\Core\Field($sSalt, \OxidEsales\Eshop\Core\Field::T_RAW);
     }
 
     /**

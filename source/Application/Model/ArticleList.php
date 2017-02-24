@@ -669,7 +669,7 @@ class ArticleList extends \OxidEsales\Eshop\Core\Model\ListModel
         $sArticleTable = $oBaseObject->getViewName();
         $sArticleFields = $oBaseObject->getSelectFields();
 
-        $oxIdsSql = implode(',', DatabaseProvider::getDb()->quoteArray($aIds));
+        $oxIdsSql = implode(',', \OxidEsales\Eshop\Core\DatabaseProvider::getDb()->quoteArray($aIds));
 
         $sSelect = "select $sArticleFields from $sArticleTable ";
         $sSelect .= "where $sArticleTable.oxid in ( " . $oxIdsSql . " ) and ";

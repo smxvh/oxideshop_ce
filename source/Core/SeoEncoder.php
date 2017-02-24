@@ -798,7 +798,7 @@ class SeoEncoder extends \OxidEsales\Eshop\Core\Base
         $success = true;
         try {
             $dataBase->execute($query);
-        } catch (StandardException $exception) {
+        } catch (\OxidEsales\Eshop\Core\Exception\StandardException $exception) {
             $exception->debugOut();
             $success = false;
         }

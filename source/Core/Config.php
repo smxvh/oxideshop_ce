@@ -42,7 +42,7 @@ define('MAX_64BIT_INTEGER', '18446744073709551615');
  * @mixin \OxidEsales\EshopEnterprise\Core\Config
  * @mixin \OxidEsales\EshopProfessional\Core\Config
  */
-class Config extends Base
+class Config extends \OxidEsales\Eshop\Core\Base
 {
     const DEFAULT_CONFIG_KEY = 'fq45QS09_fqyx09239QQ';
 
@@ -400,7 +400,7 @@ class Config extends Base
             // loading shop config
             if (empty($shopID) || !$configLoaded) {
                 // if no config values where loaded (some problems with DB), throwing an exception
-                $oEx = new DatabaseConnectionException(
+                $oEx = new \OxidEsales\Eshop\Core\Exception\DatabaseConnectionException(
                     "Unable to load shop config values from database",
                     0,
                     new \Exception()

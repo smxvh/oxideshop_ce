@@ -156,7 +156,10 @@ class Database extends Core
             $oSetup = $this->getInstance("Setup");
             // problems with file
             $oSetup->setNextStep($oSetup->getStep('STEP_DB_INFO'));
-            throw new Exception(sprintf($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_OPENING_SQL_FILE'), $sFilename), Database::ERROR_OPENING_SQL_FILE);
+            throw new Exception(
+                sprintf($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_OPENING_SQL_FILE'), $sFilename),
+                \OxidEsales\Eshop\Setup\Database::ERROR_OPENING_SQL_FILE
+            );
         }
 
         $sQuery = fread($fp, filesize($sFilename));
@@ -227,23 +230,37 @@ class Database extends Core
                 /** @var Setup $oSetup */
                 $oSetup = $this->getInstance("Setup");
                 $oSetup->setNextStep($oSetup->getStep('STEP_DB_INFO'));
-                throw new Exception($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_DB_CONNECT') . " - " . $e->getMessage(), Database::ERROR_DB_CONNECT, $e);
+                throw new Exception(
+                    $this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_DB_CONNECT') . " - " . $e->getMessage(),
+                    \OxidEsales\Eshop\Setup\Database::ERROR_DB_CONNECT,
+                    $e
+                );
             }
 
             // testing version
             $oSysReq = getSystemReqCheck();
             if (0 === $oSysReq->checkMysqlVersion($this->getDatabaseVersion())) {
-                throw new Exception($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS'), Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS);
+                throw new Exception(
+                    $this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS'),
+                    \OxidEsales\Eshop\Setup\Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_REQUIREMENTS
+                );
             }
 
             try {
                 $this->_oConn->exec("USE `{$aParams['dbName']}`");
             } catch (Exception $e) {
-                throw new Exception($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_COULD_NOT_CREATE_DB') . " - " . $e->getMessage(), Database::ERROR_COULD_NOT_CREATE_DB, $e);
+                throw new Exception(
+                    $this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_COULD_NOT_CREATE_DB') . " - " . $e->getMessage(),
+                    \OxidEsales\Eshop\Setup\Database::ERROR_COULD_NOT_CREATE_DB,
+                    $e
+                );
             }
 
             if (1 === $oSysReq->checkMysqlVersion($this->getDatabaseVersion())) {
-                throw new Exception($this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS'), Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS);
+                throw new Exception(
+                    $this->getInstance(\OxidEsales\Eshop\Core\Language::class)->getText('ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS'),
+                    \OxidEsales\Eshop\Setup\Database::ERROR_MYSQL_VERSION_DOES_NOT_FIT_RECOMMENDATIONS
+                );
             }
         }
 
