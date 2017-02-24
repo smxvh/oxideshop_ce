@@ -38,8 +38,7 @@ define('VENDOR_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . 
  *
  * As this is the last resort no further errors must happen.
  */
-register_shutdown_function(function ()
-{
+register_shutdown_function(function () {
     $error = error_get_last();
     if (in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, ])) {
         $time = microtime(true);
