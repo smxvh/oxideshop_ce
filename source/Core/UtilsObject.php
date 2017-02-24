@@ -96,7 +96,7 @@ class UtilsObject
         $this->classNameProvider = $classNameProvider;
 
         if (!$shopIdCalculator) {
-            $moduleVariablesCache = new \OxidEsales\Eshop\Core\FileCache\FileCache();
+            $moduleVariablesCache = new \OxidEsales\Eshop\Core\FileCache();
             $shopIdCalculator = new \OxidEsales\Eshop\Core\ShopIdCalculator($moduleVariablesCache);
         }
         $this->shopIdCalculator = $shopIdCalculator;
