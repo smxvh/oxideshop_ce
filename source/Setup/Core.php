@@ -119,7 +119,7 @@ class Core
      */
     protected function getLanguageInstance()
     {
-        return $this->getInstance(\OxidEsales\Eshop\Core\Language::class);
+        return $this->getInstance("Language");
     }
 
     /**
@@ -135,7 +135,7 @@ class Core
      */
     protected function getSessionInstance()
     {
-        return $this->getInstance(\OxidEsales\Eshop\Core\Session::class);
+        return $this->getInstance("Session");
     }
 
     /**
