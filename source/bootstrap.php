@@ -24,7 +24,9 @@ error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 ini_set('display_errors', 0);
 
 define('INSTALLATION_ROOT_PATH', dirname(__DIR__));
-define('OX_BASE_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR);
+if (!defined('OX_BASE_PATH')) {
+    define('OX_BASE_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR);
+}
 define('OX_LOG_FILE', OX_BASE_PATH . 'log' . DIRECTORY_SEPARATOR . 'EXCEPTION_LOG.txt');
 define('OX_OFFLINE_FILE', OX_BASE_PATH . 'offline.html');
 define('VENDOR_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR);
@@ -36,7 +38,7 @@ define('VENDOR_PATH', INSTALLATION_ROOT_PATH . DIRECTORY_SEPARATOR . 'vendor' . 
  *
  * As this is the last resort no further errors must happen.
  */
-function shutDownHandler()
+register_shutdown_function(function ()
 {
     $error = error_get_last();
     if (in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR, ])) {
@@ -67,9 +69,7 @@ function shutDownHandler()
 
         exit();
     }
-}
-
-register_shutdown_function('shutDownHandler');
+});
 
 /**
  * First of all ensure, that the shop config file is available.
