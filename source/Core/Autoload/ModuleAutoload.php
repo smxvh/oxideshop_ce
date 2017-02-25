@@ -155,5 +155,4 @@ class ModuleAutoload
     }
 }
 
-$moduleAutoload = \OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload::class ;
-spl_autoload_register([$moduleAutoload, 'autoload']);
+spl_autoload_register([\OxidEsales\EshopCommunity\Core\Autoload\ModuleAutoload::class, 'autoload']);

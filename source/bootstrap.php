@@ -118,6 +118,7 @@ require_once OX_BASE_PATH . 'Core' . DIRECTORY_SEPARATOR . 'Autoload' . DIRECTOR
  */
 $configFile = new \OxidEsales\Eshop\Core\ConfigFile(OX_BASE_PATH . "config.inc.php");
 \OxidEsales\Eshop\Core\Registry::set("oxConfigFile", $configFile);
+unset($configFile);
 
 /**
  * Custom bootstrap functionality.
