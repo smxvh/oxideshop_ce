@@ -590,12 +590,9 @@ class VirtualNameSpaceClassMap
             'OxidEsales\Eshop\Core\ViewHelper\StyleRegistrator' => \OxidEsales\EshopCommunity\Core\ViewHelper\StyleRegistrator::class,
             'OxidEsales\Eshop\Core\ViewHelper\StyleRenderer' => \OxidEsales\EshopCommunity\Core\ViewHelper\StyleRenderer::class,
             'OxidEsales\Eshop\Core\WidgetControl' => \OxidEsales\EshopCommunity\Core\WidgetControl::class,
-
         ];
 
-        if (get_parent_class($this)  && function_exists(parent::getClassMap())) {
-            $classMap = array_merge(parent::getClassMap(), $classMap);
-        }
+        
 
         return $classMap;
     }
