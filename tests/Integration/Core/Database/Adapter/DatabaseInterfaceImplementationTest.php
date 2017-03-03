@@ -1001,7 +1001,7 @@ abstract class DatabaseInterfaceImplementationTest extends DatabaseInterfaceImpl
      */
     public function testGetRowIncorrectSqlStatement()
     {
-        $this->loadFixtureToTestTable();
+        $this->truncateTestTable();
 
         $result = $this->database->getRow('INSERT INTO ' . self::TABLE_NAME . " (oxid) VALUES ('" . self::FIXTURE_OXID_1 . "')");
 
