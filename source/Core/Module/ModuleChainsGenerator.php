@@ -115,16 +115,18 @@ class ModuleChainsGenerator
     {
         $variablesLocator = $this->getModuleVariablesLocator();
         $disabledModules = $variablesLocator->getModuleVariable('aDisabledModules');
-        $modulePaths = $variablesLocator->getModuleVariable('aModulePaths');
 
         if (is_array($disabledModules) && count($disabledModules) > 0) {
             foreach ($disabledModules as $disabledModuleId) {
                 $disabledModuleDirectory = $disabledModuleId;
+
+                $modulePaths = $variablesLocator->getModuleVariable('aModulePaths');
                 if (is_array($modulePaths) && array_key_exists($disabledModuleId, $modulePaths)) {
                     if (isset($modulePaths[$disabledModuleId])) {
                         $disabledModuleDirectory = $modulePaths[$disabledModuleId];
                     }
                 }
+
                 foreach ($classChain as $key => $moduleClass) {
                     if (strpos($moduleClass, $disabledModuleDirectory . "/") === 0) {
                         unset($classChain[$key]);
