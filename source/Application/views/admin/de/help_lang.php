@@ -139,6 +139,17 @@ $aLang =  array(
                                                  '<ul><li>Wenn die Einstellung aktiv ist, werden negative Lagerbestände berechnet, wenn weitere Exemplare bestellt werden.</li>' .
                                                  '<li>Wenn die Einstellung nicht aktiv ist, fällt der Lagerbestand eines Artikels nie unter 0. Auch dann nicht, wenn der Artikel bereits ausverkauft ist und noch weitere Exemplare bestellt werden.</li></ul>',
 
+'HELP_SHOP_CONFIG_SETORDELETECURRENCY'        => 'Hier können Sie Währungen hinzufügen oder löschen. Jede Zeile enthält Währungsparameter, mit dem @ Symbol als Trennzeichen.<br /><br />'.
+                                                 '<ul>'.
+                                                 '<li><span class="navipath_or_inputname">[name]</span> - Währungs-Abkürzung laut ISO 4217 ( z.B. EUR )</li>'.
+                                                 '<li><span class="navipath_or_inputname">[rate]</span> - Wechselkurs zu Basiswährung. Basiswährung dabei gleich 1.00</li>'.
+                                                 '<li><span class="navipath_or_inputname">[decimal separator]</span> - Dezimaltrennzeichen</li>'.
+                                                 '<li><span class="navipath_or_inputname">[thousand separator]</span> - Tausendertrennzeichen</li>'.
+                                                 '<li><span class="navipath_or_inputname">[symbol]</span> - Währungszeichen</li>'.
+                                                 '<li><span class="navipath_or_inputname">[decimal precision] - Anzahl der Nachkommastellen. Z.B. 2 - zwei Nachkommastellen</span> - </li>'.
+                                                 '<li><span class="navipath_or_inputname">[symbol position]</span> - optionaler Parameter "Front". Falls angegeben, wird Währungs-Abkürzung vor dem Preis ausgegeben</li>'.
+                                                 '</ul>',
+
 'HELP_SHOP_CONFIG_NEWARTBYINSERT'             => 'Auf der Startseite Ihres eShops werden die unter <span class="filename_filepath_or_italic">Frisch eingetroffen!</span> die neusten Artikel in Ihrem eShop angezeigt. Sie können die Artikel, die hier angezeigt werden, manuell einstellen oder automatisch berechnen lassen. Mit dieser Einstellung wählen Sie, wie die neusten Artikel berechnet werden sollen: Nach dem Datum, an dem die Artikel erstellt wurden, oder nach dem Datum der letzten Änderung im Administrationsbereich/der letzten Bestellung im Shop.',
 
 'HELP_SHOP_CONFIG_LOAD_DYNAMIC_PAGES'         => 'Aktivieren Sie diese Einstellung, um zusätzliche Produktinformationen im Administrationsbereich anzuzeigen und um technische Informationen zu statistischen Zwecken sowie zur Verbesserung unserer Service-Qualität an OXID-Server zu senden. Dabei werden keine geschäftsrelevanten Daten (Benutzer, Umsatz etc.) übermittelt.',
