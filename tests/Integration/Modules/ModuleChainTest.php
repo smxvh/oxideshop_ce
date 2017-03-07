@@ -67,7 +67,28 @@ class ModuleChainTest extends BaseModuleTestCase
      */
     public function testModuleChainIsntUsedForDeactivatedModules()
     {
-        // @todo: implement test case
+        $moduleId = 'virtualnamespace_module1';
+
+        $this->environment->prepare([$moduleId]);
+
+        $expectedChainWithModule = [
+            "Test1ContentController",
+            "OxidEsales\EshopCommunity\Application\Controller\ContentController",
+            "OxidEsales\EshopCommunity\Application\Controller\FrontendController",
+            "OxidEsales\EshopCommunity\Core\Controller\BaseController",
+            "OxidEsales\EshopCommunity\Core\Base"
+        ];
+
+        $expectedChainWithoutModule = $expectedChainWithModule;
+        unset($expectedChainWithoutModule[0]);
+
+        $content = oxNew(\OxidEsales\Eshop\Application\Controller\ContentController::class);
+        $this->assertClassChain($expectedChainWithModule, $content);
+
+        $this->environment->deactivateModuleById($moduleId);
+
+        $content = oxNew(\OxidEsales\Eshop\Application\Controller\ContentController::class);
+        $this->assertClassChain($expectedChainWithModule, $content);
     }
 
     /**
