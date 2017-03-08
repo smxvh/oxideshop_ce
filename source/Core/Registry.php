@@ -149,7 +149,7 @@ class Registry
      *
      * @static
      *
-     * @return OxidEsales\Eshop\Core\UtilsObject
+     * @return \OxidEsales\Eshop\Core\UtilsObject
      */
     public static function getUtilsObject()
     {
@@ -161,7 +161,7 @@ class Registry
      *
      * @static
      *
-     * @return OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver
+     * @return \OxidEsales\Eshop\Core\Routing\ControllerClassNameResolver
      */
     public static function getControllerClassNameResolver()
     {
