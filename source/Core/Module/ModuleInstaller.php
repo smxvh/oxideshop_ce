@@ -343,20 +343,20 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
     /**
      * Add extension to module
      *
-     * @param OxidEsales\Eshop\Core\Module\Module $oModule
+     * @param OxidEsales\Eshop\Core\Module\Module $module
      */
-    protected function _addExtensions(\OxidEsales\Eshop\Core\Module\Module $oModule)
+    protected function _addExtensions(\OxidEsales\Eshop\Core\Module\Module $module)
     {
-        $aModules = $this->_removeNotUsedExtensions($this->getModulesWithExtendedClass(), $oModule);
+        $modules = $this->_removeNotUsedExtensions($this->getModulesWithExtendedClass(), $module);
 
-        if ($oModule->hasExtendClass()) {
-            $aAddModules = $oModule->getExtensions();
-            $aModules = $this->_mergeModuleArrays($aModules, $aAddModules);
+        if ($module->hasExtendClass()) {
+            $addModules = $module->getExtensions();
+            $modules = $this->_mergeModuleArrays($modules, $addModules);
         }
 
-        $aModules = $this->buildModuleChains($aModules);
+        $modules = $this->buildModuleChains($modules);
 
-        $this->_saveToConfig('aModules', $aModules);
+        $this->_saveToConfig('aModules', $modules);
     }
 
     /**
@@ -674,5 +674,28 @@ class ModuleInstaller extends \OxidEsales\Eshop\Core\Base
         if (!empty($duplicatedValues)) {
             throw new \OxidEsales\Eshop\Core\Exception\ModuleValidationException(implode(',', $duplicatedValues));
         }
+    }
+
+    /**
+     * Translate module metadata information about patched shop classes
+     * into virtual namespace. There might still be BC class names used in module metadata.php.
+     *
+     * @param \OxidEsales\Eshop\Core\Module\Module $module
+     *
+     * @return array
+     */
+    protected function getVirtualShopClassExtensions(\OxidEsales\Eshop\Core\Module\Module $module)
+    {
+        $rawExtensions = $module->getExtensions();
+        $extensions = [];
+
+        foreach ($rawExtensions as $classToBePatched => $moduleClass) {
+            if (!\OxidEsales\Eshop\Core\UtilsObject::isNamespacedClass($classToBePatched)) {
+                $bcMap = Registry::getBackwardsCompatibilityClassMap();
+                $classToBePatched = $bcMap[strtolower($classToBePatched)] ?: $classToBePatched;
+            }
+            $extensions[$classToBePatched] = $moduleClass;
+        }
+        return $extensions;
     }
 }
